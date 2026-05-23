@@ -47,6 +47,15 @@ export function Overlay() {
   // Header fades in once user begins scrolling out of the entry frame
   const headerOpacity = Math.min(1, Math.max(0, (p - 0.005) / 0.04));
 
+  // Enter button only appears when first hero text appears, NOT in Frame 0.
+  // Tied to the end of the entry zone so it never competes with the
+  // minimalist symbol-only opening.
+  const entryEnd = zoneById("entry")?.end ?? 0.077;
+  const enterOpacity = Math.min(
+    1,
+    Math.max(0, (p - (entryEnd - 0.005)) / 0.04),
+  );
+
   return (
     <>
       {/* Header — nav + brand name fade in after user scrolls */}
@@ -79,8 +88,14 @@ export function Overlay() {
         </nav>
       </header>
 
-      {/* Enter / Session — ALWAYS visible (doesn't depend on scroll) */}
-      <div className="fixed top-0 right-0 z-40 px-8 lg:px-14 py-7 pointer-events-none">
+      {/* Enter / Session — appears only when first hero text starts to show */}
+      <div
+        className="fixed top-0 right-0 z-40 px-8 lg:px-14 py-7 pointer-events-none transition-opacity duration-700"
+        style={{
+          opacity: enterOpacity,
+          pointerEvents: enterOpacity > 0.5 ? "auto" : "none",
+        }}
+      >
         <div className="flex items-center gap-4 pointer-events-auto">
           {session ? (
             <>
