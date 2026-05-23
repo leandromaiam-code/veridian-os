@@ -25,7 +25,11 @@ export const scrollStore = {
 // Each zone is "a room" in the same Veridian cathedral.
 
 const ZONE_DEFS = [
-  { id: "entry",       weight: 1.4, label: "Entry",       navHidden: false },
+  { id: "entry",       weight: 1.0, label: "Entry",       navHidden: false },
+  { id: "hero-idea",   weight: 0.7, label: "Hero",        navHidden: true  }, // "Your idea."
+  { id: "hero-system", weight: 0.7, label: "Hero",        navHidden: true  }, // "Our operating system."
+  { id: "hero-time",   weight: 0.7, label: "Hero",        navHidden: true  }, // "~12 weeks to revenue."
+  { id: "hero-truth",  weight: 0.8, label: "Hero",        navHidden: true  }, // "We don't coach..."
   { id: "manifesto",   weight: 1.0, label: "Manifesto",   navHidden: false },
   { id: "resources",   weight: 0.9, label: "Veridian OS", navHidden: false }, // OS intro
   { id: "jarvis",      weight: 1.3, label: "Jarvis",      navHidden: true  }, // under Veridian OS

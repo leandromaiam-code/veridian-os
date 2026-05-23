@@ -62,6 +62,10 @@ export function Overlay() {
       </div>
 
       <EntryCopy p={p} zone={g("entry")} />
+      <HeroBeat p={p} zone={g("hero-idea")} variant="idea" />
+      <HeroBeat p={p} zone={g("hero-system")} variant="system" />
+      <HeroBeat p={p} zone={g("hero-time")} variant="time" />
+      <HeroBeat p={p} zone={g("hero-truth")} variant="truth" />
       <ManifestoCopy p={p} zone={g("manifesto")} />
       <ResourcesIntroCopy p={p} zone={g("resources")} />
       <ResourceCopy p={p} zone={g("jarvis")} idx={1} name="JARVIS"
@@ -95,7 +99,7 @@ export function Overlay() {
       {/* Entry scroll cue — only visible while in the very first frame */}
       <div
         className="fixed left-1/2 -translate-x-1/2 bottom-14 z-30 flex flex-col items-center gap-3 transition-opacity duration-1000"
-        style={{ opacity: p > 0.025 ? 0 : 1, pointerEvents: "none" }}
+        style={{ opacity: p > 0.02 ? 0 : 1, pointerEvents: "none" }}
       >
         <span
           className="font-mono uppercase tracking-[0.42em] text-[10px] text-parchment/85"
@@ -161,6 +165,85 @@ const SHADOW_SOFT = { textShadow: "0 2px 10px rgba(0,0,0,0.65)" };
 // The scroll cue lives outside this component (in the global Overlay scope).
 function EntryCopy(_props: { p: number; zone: Z }) {
   return null;
+}
+
+/* ---------------------- HERO BEATS — revealed progressively ----------- */
+function HeroBeat({
+  p,
+  zone,
+  variant,
+}: {
+  p: number;
+  zone: Z;
+  variant: "idea" | "system" | "time" | "truth";
+}) {
+  const o = useZoneOpacity(p, zone, 0.022);
+  // intra-zone progress for subtle text drift
+  const zp = Math.max(0, Math.min(1, (p - zone.start) / (zone.end - zone.start)));
+  const ty = (1 - zp) * 18; // text drifts up as zone progresses
+
+  const content = (() => {
+    switch (variant) {
+      case "idea":
+        return (
+          <h2
+            className="font-cormorant font-light text-parchment leading-[0.95] text-[clamp(3rem,8vw,8.5rem)]"
+            style={{ ...SHADOW_HEAVY, transform: `translateY(${ty}px)` }}
+          >
+            Your idea<span className="text-brass-light">.</span>
+          </h2>
+        );
+      case "system":
+        return (
+          <h2
+            className="font-cormorant font-light italic text-seafoam leading-[0.95] text-[clamp(3rem,8vw,8.5rem)]"
+            style={{ ...SHADOW_HEAVY, transform: `translateY(${ty}px)` }}
+          >
+            Our operating system<span className="text-brass-light not-italic">.</span>
+          </h2>
+        );
+      case "time":
+        return (
+          <h2
+            className="font-cormorant font-light text-parchment leading-[0.95] text-[clamp(2.5rem,7vw,7rem)]"
+            style={{ ...SHADOW_HEAVY, transform: `translateY(${ty}px)` }}
+          >
+            <span className="italic text-brass-light">~12 weeks</span> to revenue<span className="text-brass-light">.</span>
+          </h2>
+        );
+      case "truth":
+        return (
+          <div
+            className="max-w-2xl text-center"
+            style={{ transform: `translateY(${ty}px)` }}
+          >
+            <p
+              className="font-cormorant italic font-light text-parchment/90 leading-snug text-[clamp(1.6rem,3.4vw,3rem)]"
+              style={SHADOW_HEAVY}
+            >
+              We don&apos;t coach.
+              <br />
+              We don&apos;t advise.
+            </p>
+            <p
+              className="mt-4 font-cormorant font-light text-parchment text-[clamp(1.5rem,3vw,2.6rem)]"
+              style={SHADOW_HEAVY}
+            >
+              We build the company while you{" "}
+              <span className="italic text-seafoam">steer</span>.
+            </p>
+          </div>
+        );
+    }
+  })();
+
+  return (
+    <FixedFrame opacity={o} pointer={false}>
+      <div className="absolute inset-0 flex items-center justify-center text-center px-8 pointer-events-none">
+        {content}
+      </div>
+    </FixedFrame>
+  );
 }
 
 /* ---------------------- MANIFESTO — contrast + claim ---------------------- */
