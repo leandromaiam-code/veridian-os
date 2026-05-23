@@ -20,9 +20,15 @@ export function Overlay() {
 
   const g = (id: string) => zoneById(id)!;
 
+  // Header fades in once user begins scrolling out of the entry frame
+  const headerOpacity = Math.min(1, Math.max(0, (p - 0.005) / 0.04));
+
   return (
     <>
-      <header className="fixed top-0 inset-x-0 z-30 flex items-center justify-between px-8 lg:px-14 py-7">
+      <header
+        className="fixed top-0 inset-x-0 z-30 flex items-center justify-between px-8 lg:px-14 py-7 transition-opacity duration-700"
+        style={{ opacity: headerOpacity, pointerEvents: headerOpacity > 0.4 ? "auto" : "none" }}
+      >
         <span
           className="font-mono uppercase tracking-[0.28em] text-[10px] text-parchment/85"
           style={{ textShadow: "0 2px 10px rgba(0,0,0,0.7)" }}
@@ -86,17 +92,33 @@ export function Overlay() {
       <VenturesCopy p={p} zone={g("ventures")} />
       <SanctumCopy p={p} zone={g("sanctum")} />
 
+      {/* Entry scroll cue — only visible while in the very first frame */}
       <div
-        className="fixed left-1/2 -translate-x-1/2 bottom-10 z-30 flex flex-col items-center gap-2 transition-opacity duration-700"
-        style={{ opacity: p > 0.015 ? 0 : 1, pointerEvents: "none" }}
+        className="fixed left-1/2 -translate-x-1/2 bottom-14 z-30 flex flex-col items-center gap-3 transition-opacity duration-1000"
+        style={{ opacity: p > 0.025 ? 0 : 1, pointerEvents: "none" }}
       >
         <span
-          className="font-mono uppercase tracking-[0.3em] text-[9px] text-parchment/70"
-          style={{ textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}
+          className="font-mono uppercase tracking-[0.42em] text-[10px] text-parchment/85"
+          style={{ textShadow: "0 2px 12px rgba(0,0,0,0.75)" }}
         >
-          Enter the studio
+          Scroll to enter the studio
         </span>
-        <div className="h-8 w-px bg-gradient-to-b from-brass-light/60 to-transparent" />
+        <div className="relative h-10 w-px overflow-hidden">
+          <span
+            className="absolute inset-x-0 top-0 h-full bg-gradient-to-b from-brass-light/80 via-brass-light/40 to-transparent"
+            style={{
+              animation: "scroll-cue-pulse 2.4s ease-in-out infinite",
+            }}
+          />
+        </div>
+        <style jsx>{`
+          @keyframes scroll-cue-pulse {
+            0%, 100% { transform: translateY(-60%); opacity: 0; }
+            45% { transform: translateY(0%); opacity: 1; }
+            55% { transform: translateY(0%); opacity: 1; }
+            100% { transform: translateY(60%); opacity: 0; }
+          }
+        `}</style>
       </div>
     </>
   );
@@ -133,60 +155,12 @@ const SHADOW_HEAVY = { textShadow: "0 4px 28px rgba(0,0,0,0.85)" };
 const SHADOW_MED = { textShadow: "0 2px 14px rgba(0,0,0,0.75)" };
 const SHADOW_SOFT = { textShadow: "0 2px 10px rgba(0,0,0,0.65)" };
 
-/* ---------------------- ENTRY — hook + value prop ---------------------- */
-function EntryCopy({ p, zone }: { p: number; zone: Z }) {
-  const o = useZoneOpacity(p, zone);
-  return (
-    <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex flex-col justify-between px-10 lg:px-16 pt-28 pb-32 pointer-events-none">
-        <div className="flex flex-col items-center text-center">
-          <span
-            className="font-cormorant font-light text-parchment tracking-[0.32em] text-[clamp(2rem,4.5vw,4rem)] leading-none"
-            style={SHADOW_HEAVY}
-          >
-            VERIDIAN
-          </span>
-          <span
-            className="mt-3 font-mono uppercase tracking-[0.42em] text-[10px] text-brass-light"
-            style={SHADOW_MED}
-          >
-            AI Studio · Venture Builder
-          </span>
-        </div>
-
-        <div className="grid grid-cols-12 items-end gap-6">
-          <div className="col-span-7">
-            <span
-              className="font-mono uppercase tracking-[0.32em] text-[11px] text-brass-light"
-              style={SHADOW_MED}
-            >
-              Founder · 001
-            </span>
-            <h1
-              className="mt-6 font-cormorant font-light text-parchment leading-[0.92] text-[clamp(2rem,5vw,5rem)]"
-              style={SHADOW_HEAVY}
-            >
-              Your idea.
-              <br />
-              <span className="italic text-seafoam">Our operating system.</span>
-              <br />
-              <span className="text-brass-light">~12 weeks</span> to revenue<span className="text-brass-light">.</span>
-            </h1>
-          </div>
-          <div className="col-span-5 flex flex-col items-end text-right gap-3">
-            <div className="h-px w-16 bg-brass-light/70" />
-            <p
-              className="font-cormorant text-parchment/90 text-lg italic font-light max-w-xs"
-              style={SHADOW_MED}
-            >
-              We don&apos;t coach. We don&apos;t advise. We build the company
-              while you steer.
-            </p>
-          </div>
-        </div>
-      </div>
-    </FixedFrame>
-  );
+/* ---------------------- ENTRY — pure symbol + scroll cue --------------- */
+// The entry frame is intentionally text-free.
+// The cathedral background carries the Veridian shield as the sole focal element.
+// The scroll cue lives outside this component (in the global Overlay scope).
+function EntryCopy(_props: { p: number; zone: Z }) {
+  return null;
 }
 
 /* ---------------------- MANIFESTO — contrast + claim ---------------------- */
