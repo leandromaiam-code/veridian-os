@@ -62,10 +62,7 @@ export function Overlay() {
       </div>
 
       <EntryCopy p={p} zone={g("entry")} />
-      <HeroBeat p={p} zone={g("hero-idea")} variant="idea" />
-      <HeroBeat p={p} zone={g("hero-system")} variant="system" />
-      <HeroBeat p={p} zone={g("hero-time")} variant="time" />
-      <HeroBeat p={p} zone={g("hero-truth")} variant="truth" />
+      <HeroProgressiveCopy p={p} zone={g("hero")} />
       <ManifestoCopy p={p} zone={g("manifesto")} />
       <ResourcesIntroCopy p={p} zone={g("resources")} />
       <ResourceCopy p={p} zone={g("jarvis")} idx={1} name="JARVIS"
@@ -167,80 +164,100 @@ function EntryCopy(_props: { p: number; zone: Z }) {
   return null;
 }
 
-/* ---------------------- HERO BEATS — revealed progressively ----------- */
-function HeroBeat({
-  p,
-  zone,
-  variant,
-}: {
-  p: number;
-  zone: Z;
-  variant: "idea" | "system" | "time" | "truth";
-}) {
-  const o = useZoneOpacity(p, zone, 0.022);
-  // intra-zone progress for subtle text drift
+/* ---------------------- HERO — progressive reveal (original layout) --- */
+// Restores the original entry composition (VERIDIAN top + headline bottom-left
+// + tagline bottom-right) but reveals each block progressively as the user
+// scrolls through the hero zone.
+function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
+  const o = useZoneOpacity(p, zone, 0.04);
   const zp = Math.max(0, Math.min(1, (p - zone.start) / (zone.end - zone.start)));
-  const ty = (1 - zp) * 18; // text drifts up as zone progresses
 
-  const content = (() => {
-    switch (variant) {
-      case "idea":
-        return (
-          <h2
-            className="font-cormorant font-light text-parchment leading-[0.95] text-[clamp(3rem,8vw,8.5rem)]"
-            style={{ ...SHADOW_HEAVY, transform: `translateY(${ty}px)` }}
-          >
-            Your idea<span className="text-brass-light">.</span>
-          </h2>
-        );
-      case "system":
-        return (
-          <h2
-            className="font-cormorant font-light italic text-seafoam leading-[0.95] text-[clamp(3rem,8vw,8.5rem)]"
-            style={{ ...SHADOW_HEAVY, transform: `translateY(${ty}px)` }}
-          >
-            Our operating system<span className="text-brass-light not-italic">.</span>
-          </h2>
-        );
-      case "time":
-        return (
-          <h2
-            className="font-cormorant font-light text-parchment leading-[0.95] text-[clamp(2.5rem,7vw,7rem)]"
-            style={{ ...SHADOW_HEAVY, transform: `translateY(${ty}px)` }}
-          >
-            <span className="italic text-brass-light">~12 weeks</span> to revenue<span className="text-brass-light">.</span>
-          </h2>
-        );
-      case "truth":
-        return (
-          <div
-            className="max-w-2xl text-center"
-            style={{ transform: `translateY(${ty}px)` }}
-          >
-            <p
-              className="font-cormorant italic font-light text-parchment/90 leading-snug text-[clamp(1.6rem,3.4vw,3rem)]"
-              style={SHADOW_HEAVY}
-            >
-              We don&apos;t coach.
-              <br />
-              We don&apos;t advise.
-            </p>
-            <p
-              className="mt-4 font-cormorant font-light text-parchment text-[clamp(1.5rem,3vw,2.6rem)]"
-              style={SHADOW_HEAVY}
-            >
-              We build the company while you{" "}
-              <span className="italic text-seafoam">steer</span>.
-            </p>
-          </div>
-        );
-    }
-  })();
+  // Three sub-thresholds within the hero zone:
+  //  0.00 → 0.18  wordmark fades in (VERIDIAN top)
+  //  0.30 → 0.55  headline fades in (left)
+  //  0.60 → 0.85  tagline fades in (right)
+  const wordmarkOp = smoothstep(0.00, 0.18, zp);
+  const headlineOp = smoothstep(0.30, 0.55, zp);
+  const taglineOp = smoothstep(0.60, 0.85, zp);
+
+  // Subtle upward drift for each block as it enters
+  const drift = (op: number) => (1 - op) * 14;
 
   return (
     <FixedFrame opacity={o} pointer={false}>
-      <div className="absolute inset-0 flex items-center justify-center text-center px-8 pointer-events-none">
-        {content}
+      <div className="absolute inset-0 flex flex-col justify-between px-10 lg:px-16 pt-28 pb-32 pointer-events-none">
+        {/* Top — wordmark */}
+        <div
+          className="flex flex-col items-center text-center"
+          style={{
+            opacity: wordmarkOp,
+            transform: `translateY(${drift(wordmarkOp)}px)`,
+            transition: "transform 0.4s var(--ease-organic)",
+          }}
+        >
+          <span
+            className="font-cormorant font-light text-parchment tracking-[0.32em] text-[clamp(2rem,4.5vw,4rem)] leading-none"
+            style={SHADOW_HEAVY}
+          >
+            VERIDIAN
+          </span>
+          <span
+            className="mt-3 font-mono uppercase tracking-[0.42em] text-[10px] text-brass-light"
+            style={SHADOW_MED}
+          >
+            AI Studio · Venture Builder
+          </span>
+        </div>
+
+        {/* Bottom — headline left + tagline right */}
+        <div className="grid grid-cols-12 items-end gap-6">
+          {/* Left — headline */}
+          <div
+            className="col-span-7"
+            style={{
+              opacity: headlineOp,
+              transform: `translateY(${drift(headlineOp)}px)`,
+              transition: "transform 0.4s var(--ease-organic)",
+            }}
+          >
+            <span
+              className="font-mono uppercase tracking-[0.32em] text-[11px] text-brass-light"
+              style={SHADOW_MED}
+            >
+              Founder · 001
+            </span>
+            <h1
+              className="mt-6 font-cormorant font-light text-parchment leading-[0.92] text-[clamp(2rem,5vw,5rem)]"
+              style={SHADOW_HEAVY}
+            >
+              Your idea.
+              <br />
+              <span className="italic text-seafoam">Our operating system.</span>
+              <br />
+              <span className="text-brass-light">~12 weeks</span> to revenue
+              <span className="text-brass-light">.</span>
+            </h1>
+          </div>
+
+          {/* Right — tagline */}
+          <div
+            className="col-span-5 flex flex-col items-end text-right gap-3"
+            style={{
+              opacity: taglineOp,
+              transform: `translateY(${drift(taglineOp)}px)`,
+              transition: "transform 0.4s var(--ease-organic)",
+            }}
+          >
+            <div className="h-px w-16 bg-brass-light/70" />
+            <p
+              className="font-cormorant text-parchment/90 text-lg italic font-light max-w-xs"
+              style={SHADOW_MED}
+            >
+              We don&apos;t coach. We don&apos;t advise. We build the company
+              while you steer.
+            </p>
+          </div>
+        </div>
       </div>
     </FixedFrame>
   );

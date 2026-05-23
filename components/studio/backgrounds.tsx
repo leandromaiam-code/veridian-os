@@ -36,10 +36,7 @@ function build(): Zone[] {
   //  Sanctum      → return to shrine        (forward)
   return [
     { id: "entry",      ...map("entry"),       src: "/assets/hero/veridian-cathedral.jpg", dolly: "still" },
-    { id: "hero-idea",  ...map("hero-idea"),   src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
-    { id: "hero-system",...map("hero-system"), src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
-    { id: "hero-time",  ...map("hero-time"),   src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
-    { id: "hero-truth", ...map("hero-truth"),  src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
+    { id: "hero",       ...map("hero"),        src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
     { id: "manifesto",  ...map("manifesto"),   src: "/assets/hero/env-wide.jpg",           dolly: "sideways-left" },
     { id: "resources",  ...map("resources"), src: "/assets/hero/env-mid.jpg",            dolly: "forward" },
     { id: "jarvis",     ...map("jarvis"),    src: "/assets/hero/jarvis-cathedral.jpg",   dolly: "forward" },
