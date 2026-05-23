@@ -293,7 +293,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
 
   return (
     <FixedFrame opacity={o} pointer={o > 0.4}>
-      <div className="absolute inset-0 flex flex-col justify-between px-10 lg:px-16 pt-28 pb-32 pointer-events-none">
+      <div className="absolute inset-0 flex flex-col justify-between px-6 lg:px-16 pt-24 lg:pt-28 pb-20 lg:pb-32 pointer-events-none">
         {/* Top — wordmark */}
         <div
           className="flex flex-col items-center text-center"
@@ -304,24 +304,24 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
           }}
         >
           <span
-            className="font-cormorant font-light text-parchment tracking-[0.32em] text-[clamp(2rem,4.5vw,4rem)] leading-none"
+            className="font-cormorant font-light text-parchment tracking-[0.28em] lg:tracking-[0.32em] text-[clamp(1.5rem,4.5vw,4rem)] leading-none"
             style={SHADOW_HEAVY}
           >
             VERIDIAN
           </span>
           <span
-            className="mt-3 font-mono uppercase tracking-[0.42em] text-[10px] text-brass-light"
+            className="mt-3 font-mono uppercase tracking-[0.32em] lg:tracking-[0.42em] text-[9px] lg:text-[10px] text-brass-light"
             style={SHADOW_MED}
           >
             AI Studio · Venture Builder
           </span>
         </div>
 
-        {/* Bottom — headline left + tagline right */}
-        <div className="grid grid-cols-12 items-end gap-6">
-          {/* Left — headline + CTA */}
+        {/* Bottom — stacked on mobile, 7/5 grid on lg+ */}
+        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:items-end lg:gap-6">
+          {/* Headline + CTA */}
           <div
-            className="col-span-7"
+            className="lg:col-span-7"
             style={{
               opacity: headlineOp,
               transform: `translateY(${drift(headlineOp)}px)`,
@@ -329,13 +329,13 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
             }}
           >
             <span
-              className="font-mono uppercase tracking-[0.32em] text-[11px] text-brass-light"
+              className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
               style={SHADOW_MED}
             >
               Founder · 001
             </span>
             <h1
-              className="mt-6 font-cormorant font-light text-parchment leading-[0.92] text-[clamp(2rem,5vw,5rem)]"
+              className="mt-5 lg:mt-6 font-cormorant font-light text-parchment leading-[0.94] text-[clamp(2.2rem,5vw,5rem)]"
               style={SHADOW_HEAVY}
             >
               Your idea.
@@ -345,29 +345,32 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
               <span className="text-brass-light">~12 weeks</span> to revenue
               <span className="text-brass-light">.</span>
             </h1>
-            <button
-              type="button"
-              onClick={() => scrollToZone("sanctum")}
-              className="pointer-events-auto mt-10 inline-flex items-center gap-3 px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+            <a
+              href="#sanctum"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToZone("sanctum");
+              }}
+              className="pointer-events-auto mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
               style={SHADOW_MED}
             >
               Apply now
               <span aria-hidden>↘</span>
-            </button>
+            </a>
           </div>
 
-          {/* Right — tagline */}
+          {/* Tagline */}
           <div
-            className="col-span-5 flex flex-col items-end text-right gap-3"
+            className="lg:col-span-5 flex flex-col items-start lg:items-end text-left lg:text-right gap-3"
             style={{
               opacity: taglineOp,
               transform: `translateY(${drift(taglineOp)}px)`,
               transition: "transform 0.4s var(--ease-organic)",
             }}
           >
-            <div className="h-px w-16 bg-brass-light/70" />
+            <div className="h-px w-12 lg:w-16 bg-brass-light/70" />
             <p
-              className="font-cormorant text-parchment/90 text-lg italic font-light max-w-xs"
+              className="font-cormorant text-parchment/90 text-base lg:text-lg italic font-light max-w-xs"
               style={SHADOW_MED}
             >
               We don&apos;t coach. We don&apos;t advise. We build the company
@@ -805,7 +808,7 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex flex-col items-center justify-end text-center px-6 lg:px-8 pb-20 lg:pb-32 pointer-events-none">
+      <div id="sanctum" className="absolute inset-0 flex flex-col items-center justify-end text-center px-6 lg:px-8 pb-20 lg:pb-32 pointer-events-none">
         <span
           className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
           style={SHADOW_MED}
