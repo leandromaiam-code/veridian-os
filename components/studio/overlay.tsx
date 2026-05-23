@@ -127,10 +127,26 @@ export function Overlay() {
 
 type Z = { start: number; end: number };
 
-function useZoneOpacity(p: number, z: Z, pad = 0.025): number {
-  const fadeIn = smoothstep(z.start - pad * 0.5, z.start + pad, p);
-  const fadeOut = 1 - smoothstep(z.end - pad, z.end + pad * 0.5, p);
+// Overlay (text) fades tighter than backgrounds so adjacent zones with similar
+// layouts (e.g. all 4 modules) don't visually overlap during cross-fade.
+function useZoneOpacity(p: number, z: Z, pad = 0.015): number {
+  // Asymmetric: text fades OUT faster than IN — leaves clean space for next zone
+  const fadeIn = smoothstep(z.start - pad * 0.3, z.start + pad * 1.2, p);
+  const fadeOut = 1 - smoothstep(z.end - pad * 1.2, z.end + pad * 0.3, p);
   return Math.max(0, Math.min(1, Math.min(fadeIn, fadeOut)));
+}
+
+function scrollToZone(zoneId: string) {
+  const z = ZONES.find((zone) => zone.id === zoneId);
+  if (!z) return;
+  const lenis = typeof window !== "undefined" ? window.__lenis : null;
+  const total = document.body.scrollHeight - window.innerHeight;
+  const target = total * (z.start + 0.005);
+  if (lenis) {
+    lenis.scrollTo(target, { duration: 2.5 });
+  } else {
+    window.scrollTo({ top: target, behavior: "smooth" });
+  }
 }
 
 function FixedFrame({
@@ -184,7 +200,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
   const drift = (op: number) => (1 - op) * 14;
 
   return (
-    <FixedFrame opacity={o} pointer={false}>
+    <FixedFrame opacity={o} pointer={o > 0.4}>
       <div className="absolute inset-0 flex flex-col justify-between px-10 lg:px-16 pt-28 pb-32 pointer-events-none">
         {/* Top — wordmark */}
         <div
@@ -211,7 +227,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
 
         {/* Bottom — headline left + tagline right */}
         <div className="grid grid-cols-12 items-end gap-6">
-          {/* Left — headline */}
+          {/* Left — headline + CTA */}
           <div
             className="col-span-7"
             style={{
@@ -237,6 +253,15 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
               <span className="text-brass-light">~12 weeks</span> to revenue
               <span className="text-brass-light">.</span>
             </h1>
+            <button
+              type="button"
+              onClick={() => scrollToZone("sanctum")}
+              className="pointer-events-auto mt-10 inline-flex items-center gap-3 px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+              style={SHADOW_MED}
+            >
+              Apply now
+              <span aria-hidden>↘</span>
+            </button>
           </div>
 
           {/* Right — tagline */}

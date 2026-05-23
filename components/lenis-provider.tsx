@@ -4,6 +4,12 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 import { scrollStore } from "@/lib/scroll-store";
 
+declare global {
+  interface Window {
+    __lenis?: Lenis;
+  }
+}
+
 export function LenisProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const lenis = new Lenis({
@@ -13,6 +19,8 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       wheelMultiplier: 0.85,
       touchMultiplier: 1.5,
     });
+
+    window.__lenis = lenis;
 
     lenis.on("scroll", ({ scroll, limit }: { scroll: number; limit: number }) => {
       const p = limit > 0 ? scroll / limit : 0;
@@ -26,6 +34,7 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     requestAnimationFrame(raf);
 
     return () => {
+      delete window.__lenis;
       lenis.destroy();
     };
   }, []);
