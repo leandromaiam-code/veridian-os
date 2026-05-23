@@ -10,8 +10,9 @@ import {
   zoneById,
   zoneProgress,
 } from "@/lib/scroll-store";
+import { supabase } from "@/lib/supabase";
 
-type Session = { email: string; ts: number } | null;
+type Session = { email: string } | null;
 
 export function Overlay() {
   const [p, setP] = useState(0);
@@ -23,22 +24,21 @@ export function Overlay() {
   }, []);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("veridian_session");
-      if (raw) setSession(JSON.parse(raw));
-    } catch {}
-    // Sync across tabs / after logout
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === "veridian_session") {
-        setSession(e.newValue ? JSON.parse(e.newValue) : null);
-      }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    // initial fetch
+    supabase.auth.getSession().then(({ data }) => {
+      const u = data.session?.user;
+      if (u?.email) setSession({ email: u.email });
+    });
+    // live updates
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+      const u = s?.user;
+      setSession(u?.email ? { email: u.email } : null);
+    });
+    return () => sub.subscription.unsubscribe();
   }, []);
 
-  const onLogout = () => {
-    localStorage.removeItem("veridian_session");
+  const onLogout = async () => {
+    await supabase.auth.signOut();
     setSession(null);
   };
 
@@ -49,8 +49,9 @@ export function Overlay() {
 
   return (
     <>
+      {/* Header — nav + brand name fade in after user scrolls */}
       <header
-        className="fixed top-0 inset-x-0 z-30 flex items-center justify-between px-8 lg:px-14 py-7 transition-opacity duration-700"
+        className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-8 lg:px-14 py-7 transition-opacity duration-700"
         style={{ opacity: headerOpacity, pointerEvents: headerOpacity > 0.4 ? "auto" : "none" }}
       >
         <span
@@ -59,59 +60,72 @@ export function Overlay() {
         >
           Veridian · AI Studio
         </span>
-        <div className="flex items-center gap-5 lg:gap-7">
-          <nav className="hidden md:flex items-center gap-4 lg:gap-6">
-            {ZONES.filter((z) => !z.navHidden).map((z, i) => {
-              const active = p >= z.start && p < z.end;
-              return (
-                <span
-                  key={z.id}
-                  className={`font-mono uppercase tracking-[0.2em] text-[9px] transition-colors ${
-                    active ? "text-brass-light" : "text-parchment/45"
-                  }`}
-                  style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
-                >
-                  <span className="mr-1.5 opacity-50">0{i + 1}</span>
-                  {z.label}
-                </span>
-              );
-            })}
-          </nav>
-
-          {/* Subtle separator + Enter / Session */}
-          <span className="hidden md:inline-block h-3 w-px bg-parchment/25" aria-hidden />
-
-          {session ? (
-            <div className="flex items-center gap-3">
+        <nav className="hidden md:flex items-center gap-4 lg:gap-6">
+          {ZONES.filter((z) => !z.navHidden).map((z, i) => {
+            const active = p >= z.start && p < z.end;
+            return (
               <span
-                className="hidden lg:inline font-mono uppercase tracking-[0.2em] text-[9px] text-parchment/65"
+                key={z.id}
+                className={`font-mono uppercase tracking-[0.2em] text-[9px] transition-colors ${
+                  active ? "text-brass-light" : "text-parchment/45"
+                }`}
                 style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
+              >
+                <span className="mr-1.5 opacity-50">0{i + 1}</span>
+                {z.label}
+              </span>
+            );
+          })}
+        </nav>
+      </header>
+
+      {/* Enter / Session — ALWAYS visible (doesn't depend on scroll) */}
+      <div className="fixed top-0 right-0 z-40 px-8 lg:px-14 py-7 pointer-events-none">
+        <div className="flex items-center gap-4 pointer-events-auto">
+          {session ? (
+            <>
+              <span
+                className="hidden lg:inline font-mono uppercase tracking-[0.22em] text-[9px] text-parchment/70"
+                style={{ textShadow: "0 2px 8px rgba(0,0,0,0.85)" }}
               >
                 {session.email.split("@")[0]}
               </span>
               <button
                 type="button"
                 onClick={onLogout}
-                className="font-mono uppercase tracking-[0.22em] text-[9px] text-parchment/60 hover:text-brass-light transition-colors"
-                style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-parchment/20 hover:border-brass-light/50 font-mono uppercase tracking-[0.22em] text-[10px] text-parchment/75 hover:text-brass-light transition-all duration-500"
+                style={{
+                  textShadow: "0 2px 8px rgba(0,0,0,0.85)",
+                  background: "rgba(10,22,16,0.35)",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                }}
               >
                 Logout
               </button>
-            </div>
+            </>
           ) : (
             <Link
               href="/login"
-              className="group inline-flex items-center gap-2 font-mono uppercase tracking-[0.24em] text-[10px] text-brass-light hover:gap-3 transition-all duration-500"
-              style={{ textShadow: "0 2px 10px rgba(0,0,0,0.75)" }}
+              className="group inline-flex items-center gap-2 px-5 py-2 rounded-full border border-brass-light/40 hover:border-brass-light font-mono uppercase tracking-[0.26em] text-[10px] text-brass-light hover:gap-3 transition-all duration-500"
+              style={{
+                textShadow: "0 2px 10px rgba(0,0,0,0.85)",
+                background: "rgba(10,22,16,0.4)",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+              }}
             >
               Enter
-              <span aria-hidden className="transition-transform duration-500 group-hover:translate-x-0.5">
+              <span
+                aria-hidden
+                className="transition-transform duration-500 group-hover:translate-x-0.5"
+              >
                 ↗
               </span>
             </Link>
           )}
         </div>
-      </header>
+      </div>
 
       <div className="fixed left-0 right-0 bottom-0 z-30 h-px bg-brass-deep/20">
         <div

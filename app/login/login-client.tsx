@@ -4,36 +4,68 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+
+type Mode = "password" | "magic";
 
 export default function LoginClient() {
   const router = useRouter();
+  const [mode, setMode] = useState<Mode>("password");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    // If already signed in, bounce to /
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) router.replace("/");
+    });
+  }, [router]);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmitPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
     setError(null);
+    setInfo(null);
     setSubmitting(true);
-    // Stub auth — accept anything for now; production wires to Supabase.
-    await new Promise((r) => setTimeout(r, 700));
-    try {
-      localStorage.setItem(
-        "veridian_session",
-        JSON.stringify({ email, ts: Date.now() }),
-      );
-      router.push("/");
-    } catch {
-      setError("Could not start session. Try again.");
-      setSubmitting(false);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    setSubmitting(false);
+    if (error) {
+      setError(error.message || "Sign-in failed.");
+      return;
     }
+    router.push("/");
+  };
+
+  const onMagicLink = async () => {
+    if (!email) {
+      setError("Enter your email first.");
+      return;
+    }
+    setError(null);
+    setInfo(null);
+    setSubmitting(true);
+    const redirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/login`
+        : undefined;
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirectTo },
+    });
+    setSubmitting(false);
+    if (error) {
+      setError(error.message || "Could not send magic link.");
+      return;
+    }
+    setInfo("Magic link sent. Check your inbox.");
   };
 
   return (
@@ -48,7 +80,6 @@ export default function LoginClient() {
           sizes="100vw"
           className="object-cover"
         />
-        {/* Darkening overlay for legibility */}
         <div
           className="absolute inset-0"
           style={{
@@ -56,7 +87,6 @@ export default function LoginClient() {
               "radial-gradient(ellipse at center, rgba(10,22,16,0.5) 0%, rgba(10,22,16,0.85) 100%)",
           }}
         />
-        {/* Subtle vignette */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -66,17 +96,18 @@ export default function LoginClient() {
         />
       </div>
 
-      {/* Brass dust */}
       <AmbientDustOverlay />
 
-      {/* Header — back link */}
       <header className="relative z-20 flex items-center justify-between px-8 lg:px-14 py-7">
         <Link
           href="/"
           className="group inline-flex items-center gap-2 font-mono uppercase tracking-[0.28em] text-[10px] text-parchment/75 hover:text-brass-light transition-colors"
           style={{ textShadow: "0 2px 10px rgba(0,0,0,0.7)" }}
         >
-          <span aria-hidden className="transition-transform duration-500 group-hover:-translate-x-1">
+          <span
+            aria-hidden
+            className="transition-transform duration-500 group-hover:-translate-x-1"
+          >
             ←
           </span>
           Back to studio
@@ -89,10 +120,9 @@ export default function LoginClient() {
         </span>
       </header>
 
-      {/* Form card */}
       <div className="relative z-10 flex items-center justify-center px-6 py-16 min-h-[calc(100vh-120px)]">
         <form
-          onSubmit={onSubmit}
+          onSubmit={onSubmitPassword}
           className="w-full max-w-[440px] p-10 lg:p-14 rounded-[2px] relative"
           style={{
             background: "rgba(10,22,16,0.55)",
@@ -107,7 +137,6 @@ export default function LoginClient() {
               "opacity 1.2s var(--ease-organic), transform 1.2s var(--ease-organic)",
           }}
         >
-          {/* Top — wordmark */}
           <div className="flex flex-col items-center text-center mb-12">
             <Image
               src="/assets/logos/veridian-symbol.png"
@@ -140,33 +169,53 @@ export default function LoginClient() {
             autoFocus
           />
 
-          <div className="h-7" />
-
-          <Field
-            label="Password"
-            type="password"
-            value={password}
-            onChange={setPassword}
-            placeholder="••••••••"
-          />
+          {mode === "password" && (
+            <>
+              <div className="h-7" />
+              <Field
+                label="Password"
+                type="password"
+                value={password}
+                onChange={setPassword}
+                placeholder="••••••••"
+              />
+            </>
+          )}
 
           {error && (
             <p className="mt-6 font-mono uppercase tracking-[0.18em] text-[9px] text-[#e8634a]">
               {error}
             </p>
           )}
+          {info && (
+            <p className="mt-6 font-mono uppercase tracking-[0.18em] text-[9px] text-seafoam">
+              {info}
+            </p>
+          )}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="mt-10 w-full inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full bg-brass-deep/85 text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40 disabled:opacity-50"
-            style={{ textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}
-          >
-            {submitting ? "Entering…" : "Enter"}
-            <span aria-hidden>↗</span>
-          </button>
+          {mode === "password" ? (
+            <button
+              type="submit"
+              disabled={submitting}
+              className="mt-10 w-full inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full bg-brass-deep/85 text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40 disabled:opacity-50"
+              style={{ textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}
+            >
+              {submitting ? "Entering…" : "Enter"}
+              <span aria-hidden>↗</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={onMagicLink}
+              disabled={submitting}
+              className="mt-10 w-full inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full bg-brass-deep/85 text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40 disabled:opacity-50"
+              style={{ textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}
+            >
+              {submitting ? "Sending…" : "Send magic link"}
+              <span aria-hidden>↗</span>
+            </button>
+          )}
 
-          {/* OR divider */}
           <div className="mt-8 flex items-center gap-3">
             <span className="h-px flex-1 bg-parchment/15" />
             <span className="font-mono uppercase tracking-[0.32em] text-[9px] text-parchment/40">
@@ -175,17 +224,26 @@ export default function LoginClient() {
             <span className="h-px flex-1 bg-parchment/15" />
           </div>
 
-          {/* Magic link / OAuth slot (placeholder, click sends to Apply for now) */}
-          <a
-            href="mailto:contato@veridian.ai?subject=Veridian%20application"
+          <button
+            type="button"
+            onClick={() => {
+              setMode((m) => (m === "password" ? "magic" : "password"));
+              setError(null);
+              setInfo(null);
+            }}
             className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-parchment/15 text-parchment/75 font-mono uppercase tracking-[0.22em] text-[10px] transition-all duration-500 hover:border-brass-light/40 hover:text-brass-light hover:gap-3"
           >
-            Request access
-            <span aria-hidden>↗</span>
-          </a>
+            {mode === "password" ? "Use magic link instead" : "Use password instead"}
+          </button>
 
           <p className="mt-8 text-center font-mono uppercase tracking-[0.22em] text-[9px] text-parchment/45">
-            By entering you accept the studio code of practice.
+            New here?{" "}
+            <a
+              href="mailto:contato@veridian.ai?subject=Veridian%20access"
+              className="text-brass-light/85 hover:text-brass-light transition-colors"
+            >
+              Request access ↗
+            </a>
           </p>
         </form>
       </div>
