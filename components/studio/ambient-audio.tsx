@@ -8,7 +8,8 @@ import { useEffect, useRef, useState } from "react";
  * waits for the first user interaction before attempting to play.
  */
 const STORAGE_KEY = "veridian_audio";
-const VOLUME = 0.12;
+// Ambient floor — barely audible. Should sit under voice/typing, never compete.
+const VOLUME = 0.045;
 
 export function AmbientAudio() {
   const audioRef = useRef<HTMLAudioElement>(null);
