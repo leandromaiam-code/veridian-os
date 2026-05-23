@@ -84,7 +84,7 @@ export function AmbientAudio() {
         onClick={toggle}
         aria-label={enabled ? "Mute background track" : "Play background track"}
         title={enabled ? "Mute background track" : "Play background track"}
-        className="fixed bottom-6 left-6 z-40 inline-flex items-center justify-center w-10 h-10 rounded-full border border-brass-light/30 hover:border-brass-light/70 text-parchment/75 hover:text-brass-light transition-all duration-500"
+        className="fixed bottom-5 left-4 lg:bottom-6 lg:left-6 z-40 inline-flex items-center justify-center w-9 h-9 lg:w-10 lg:h-10 rounded-full border border-brass-light/30 hover:border-brass-light/70 text-parchment/75 hover:text-brass-light transition-all duration-500"
         style={{
           background: "rgba(10,22,16,0.55)",
           backdropFilter: "blur(10px)",

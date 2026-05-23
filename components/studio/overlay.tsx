@@ -60,11 +60,11 @@ export function Overlay() {
     <>
       {/* Header — nav + brand name fade in after user scrolls */}
       <header
-        className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-8 lg:px-14 py-7 transition-opacity duration-700"
+        className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 lg:px-14 py-5 lg:py-7 transition-opacity duration-700"
         style={{ opacity: headerOpacity, pointerEvents: headerOpacity > 0.4 ? "auto" : "none" }}
       >
         <span
-          className="font-mono uppercase tracking-[0.28em] text-[10px] text-parchment/85"
+          className="font-mono uppercase tracking-[0.24em] lg:tracking-[0.28em] text-[9px] lg:text-[10px] text-parchment/85"
           style={{ textShadow: "0 2px 10px rgba(0,0,0,0.7)" }}
         >
           Veridian · AI Studio
@@ -90,7 +90,7 @@ export function Overlay() {
 
       {/* Enter / Session — appears only when first hero text starts to show */}
       <div
-        className="fixed top-0 right-0 z-40 px-8 lg:px-14 py-7 pointer-events-none transition-opacity duration-700"
+        className="fixed top-0 right-0 z-40 px-6 lg:px-14 py-5 lg:py-7 pointer-events-none transition-opacity duration-700"
         style={{
           opacity: enterOpacity,
           pointerEvents: enterOpacity > 0.5 ? "auto" : "none",
@@ -385,16 +385,16 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex items-end justify-start px-10 lg:px-16 py-32 pointer-events-none">
+      <div className="absolute inset-0 flex items-end justify-start px-6 lg:px-16 py-20 lg:py-32 pointer-events-none">
         <div className="max-w-2xl">
           <span
-            className="font-mono uppercase tracking-[0.32em] text-[11px] text-brass-light"
+            className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
             style={SHADOW_MED}
           >
             Manifesto · 002
           </span>
           <h2
-            className="mt-6 font-cormorant font-light text-parchment text-[clamp(2rem,4.5vw,4rem)] leading-[1.02]"
+            className="mt-5 lg:mt-6 font-cormorant font-light text-parchment text-[clamp(1.75rem,4.5vw,4rem)] leading-[1.05]"
             style={SHADOW_HEAVY}
           >
             Most founders burn{" "}
@@ -404,7 +404,7 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
             looking for product-market fit.
           </h2>
           <p
-            className="mt-6 border-l-2 border-brass-light pl-4 font-cormorant italic text-seafoam text-2xl lg:text-3xl font-light"
+            className="mt-5 lg:mt-6 border-l-2 border-brass-light pl-3 lg:pl-4 font-cormorant italic text-seafoam text-xl lg:text-3xl font-light"
             style={SHADOW_HEAVY}
           >
             We give you{" "}
@@ -414,7 +414,7 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
             and a 12-week shortcut.
           </p>
           <p
-            className="mt-5 font-mono uppercase tracking-[0.28em] text-[11px] text-parchment/65"
+            className="mt-5 font-mono uppercase tracking-[0.24em] lg:tracking-[0.28em] text-[10px] lg:text-[11px] text-parchment/65"
             style={SHADOW_MED}
           >
             Veridian OS · Jarvis · Fabric · Vortex · Pulse
@@ -430,41 +430,41 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 pointer-events-none">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 pointer-events-none">
         <span
-          className="font-mono uppercase tracking-[0.32em] text-[11px] text-brass-light"
+          className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
           style={SHADOW_MED}
         >
           The Studio · 003
         </span>
         <h2
-          className="mt-5 font-cormorant font-light text-parchment text-[clamp(3rem,7.5vw,7.5rem)] leading-[0.95]"
+          className="mt-4 lg:mt-5 font-cormorant font-light text-parchment text-[clamp(2.4rem,7.5vw,7.5rem)] leading-[0.95]"
           style={SHADOW_HEAVY}
         >
           Veridian <span className="italic text-seafoam">OS</span>.
         </h2>
         <p
-          className="mt-4 font-cormorant italic text-parchment/90 text-xl lg:text-2xl font-light max-w-xl"
+          className="mt-3 lg:mt-4 font-cormorant italic text-parchment/90 text-lg lg:text-2xl font-light max-w-xl"
           style={SHADOW_MED}
         >
           One operating system. Four modules. None of them sleep.
         </p>
 
         <div
-          className="mt-10 flex flex-wrap justify-center items-center gap-x-5 lg:gap-x-8 gap-y-2 font-cormorant text-parchment/95 text-xl lg:text-2xl font-light"
+          className="mt-8 lg:mt-10 flex flex-wrap justify-center items-center gap-x-4 lg:gap-x-8 gap-y-2 font-cormorant text-parchment/95 text-lg lg:text-2xl font-light"
           style={SHADOW_MED}
         >
           <span><span className="text-brass-light not-italic">Jarvis</span> <span className="italic">commands</span>.</span>
-          <span className="text-parchment/30">·</span>
+          <span className="text-parchment/30 hidden sm:inline">·</span>
           <span><span className="text-brass-light not-italic">Fabric</span> <span className="italic">builds</span>.</span>
-          <span className="text-parchment/30">·</span>
+          <span className="text-parchment/30 hidden sm:inline">·</span>
           <span><span className="text-brass-light not-italic">Vortex</span> <span className="italic">sells</span>.</span>
-          <span className="text-parchment/30">·</span>
+          <span className="text-parchment/30 hidden sm:inline">·</span>
           <span><span className="text-brass-light not-italic">Pulse</span> <span className="italic">watches</span>.</span>
         </div>
 
         <p
-          className="mt-10 font-cormorant italic text-parchment/80 text-base lg:text-lg font-light max-w-lg"
+          className="mt-8 lg:mt-10 font-cormorant italic text-parchment/80 text-sm lg:text-lg font-light max-w-lg"
           style={SHADOW_MED}
         >
           Built once. Inherited by every venture, from day zero.
@@ -503,23 +503,24 @@ function ResourceCopy({
   const isSoon = launchUrl === "soon";
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex items-end justify-between px-10 lg:px-16 py-32 pointer-events-none gap-6">
+      <div className="absolute inset-0 flex flex-col justify-end gap-6 px-6 lg:px-16 py-20 lg:py-32 pointer-events-none lg:flex-row lg:items-end lg:justify-between lg:gap-6">
+        {/* Identity block */}
         <div className="max-w-md">
           <span
-            className="font-mono uppercase tracking-[0.32em] text-[11px] text-brass-light"
+            className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
             style={SHADOW_MED}
           >
             Module · 0{idx} of Veridian OS
           </span>
           <h3
-            className="mt-4 font-cormorant font-light text-parchment text-[clamp(3rem,7vw,7rem)] leading-[0.9]"
+            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(2.5rem,7vw,7rem)] leading-[0.9]"
             style={SHADOW_HEAVY}
           >
             {name}
             <span className="text-brass-light">.</span>
           </h3>
           <p
-            className="mt-2 font-cormorant italic font-light text-seafoam text-2xl lg:text-3xl"
+            className="mt-1 lg:mt-2 font-cormorant italic font-light text-seafoam text-xl lg:text-3xl"
             style={SHADOW_HEAVY}
           >
             {tag}.
@@ -528,7 +529,7 @@ function ResourceCopy({
           {showLaunch &&
             (isSoon ? (
               <span
-                className="mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-parchment/15 text-parchment/55 font-mono uppercase tracking-[0.22em] text-[10px]"
+                className="mt-6 lg:mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-parchment/15 text-parchment/55 font-mono uppercase tracking-[0.22em] text-[10px]"
                 style={SHADOW_SOFT}
               >
                 Coming soon
@@ -538,7 +539,7 @@ function ResourceCopy({
                 href={launchUrl as string}
                 target="_blank"
                 rel="noreferrer"
-                className="pointer-events-auto mt-8 inline-flex items-center gap-3 px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+                className="pointer-events-auto mt-6 lg:mt-8 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
                 style={SHADOW_MED}
               >
                 Launch {name.charAt(0) + name.slice(1).toLowerCase()}
@@ -546,21 +547,23 @@ function ResourceCopy({
               </a>
             ))}
         </div>
-        <div className="max-w-sm text-right self-end flex flex-col gap-2.5">
+
+        {/* Pitch block */}
+        <div className="max-w-md lg:max-w-sm lg:text-right lg:self-end flex flex-col gap-2 lg:gap-2.5">
           <p
-            className="font-cormorant text-parchment text-2xl lg:text-3xl font-light leading-tight italic"
+            className="font-cormorant text-parchment text-xl lg:text-3xl font-light leading-snug italic"
             style={SHADOW_HEAVY}
           >
             {promise}
           </p>
           <p
-            className="font-cormorant text-brass-light/95 text-lg lg:text-xl font-light leading-tight"
+            className="font-cormorant text-brass-light/95 text-base lg:text-xl font-light leading-tight"
             style={SHADOW_MED}
           >
             {line1}
           </p>
           <p
-            className="font-sans text-parchment/80 text-sm lg:text-base leading-relaxed"
+            className="font-sans text-parchment/80 text-[13px] lg:text-base leading-relaxed"
             style={SHADOW_MED}
           >
             {line2}
@@ -576,15 +579,15 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 pointer-events-none">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 pointer-events-none">
         <span
-          className="font-mono uppercase tracking-[0.32em] text-[11px] text-brass-light"
+          className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
           style={SHADOW_MED}
         >
           The shortcut · 007
         </span>
         <h2
-          className="mt-6 font-cormorant font-light text-parchment text-[clamp(2.5rem,6vw,6rem)] leading-[0.95] max-w-3xl"
+          className="mt-5 lg:mt-6 font-cormorant font-light text-parchment text-[clamp(2rem,6vw,6rem)] leading-[0.95] max-w-3xl"
           style={SHADOW_HEAVY}
         >
           Idea to <span className="italic text-seafoam">revenue</span>
@@ -592,13 +595,13 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
           in <span className="italic text-brass-light">~12 weeks</span>.
         </h2>
         <p
-          className="mt-8 font-cormorant text-parchment/85 text-xl italic font-light max-w-lg"
+          className="mt-6 lg:mt-8 font-cormorant text-parchment/85 text-lg lg:text-xl italic font-light max-w-lg"
           style={SHADOW_MED}
         >
           You bring the conviction. Veridian OS does the work.
         </p>
         <div
-          className="mt-6 flex items-center gap-2 lg:gap-3 font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] text-brass-light/85"
+          className="mt-6 flex flex-wrap justify-center items-center gap-x-2 lg:gap-x-3 gap-y-1 font-mono uppercase tracking-[0.18em] lg:tracking-[0.22em] text-[9px] lg:text-[11px] text-brass-light/85"
           style={SHADOW_MED}
         >
           <span>Submit</span>
@@ -655,21 +658,21 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
       {/* Title — top */}
-      <div className="absolute inset-x-0 top-[10%] flex flex-col items-center text-center pointer-events-none px-8">
+      <div className="absolute inset-x-0 top-[8%] lg:top-[10%] flex flex-col items-center text-center pointer-events-none px-6 lg:px-8">
         <span
-          className="font-mono uppercase tracking-[0.32em] text-[11px] text-brass-light"
+          className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
           style={SHADOW_MED}
         >
           Portfolio · 008
         </span>
         <h2
-          className="mt-3 font-cormorant font-light text-parchment text-[clamp(2rem,4.2vw,3.8rem)] leading-[1] max-w-3xl"
+          className="mt-2 lg:mt-3 font-cormorant font-light text-parchment text-[clamp(1.7rem,4.2vw,3.8rem)] leading-[1] max-w-3xl"
           style={SHADOW_HEAVY}
         >
           Ventures <span className="italic text-seafoam">in motion.</span>
         </h2>
         <p
-          className="mt-3 font-cormorant italic text-parchment/80 text-base lg:text-lg font-light"
+          className="mt-2 lg:mt-3 font-cormorant italic text-parchment/80 text-sm lg:text-lg font-light"
           style={SHADOW_MED}
         >
           Real customers. Real revenue. Growing weekly.
@@ -679,13 +682,13 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
       {/* Marquee row — centered vertically */}
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 overflow-hidden pointer-events-none">
         <div
-          className="flex items-center gap-8 lg:gap-14 will-change-transform"
+          className="flex items-center gap-6 sm:gap-8 lg:gap-14 will-change-transform"
           style={{
             transform: `translate3d(${translateX}%, 0, 0)`,
             width: "max-content",
           }}
         >
-          {/* Double the list for seamless infinite loop */}
+          {/* Triple the list for seamless infinite loop */}
           {[...VENTURES, ...VENTURES, ...VENTURES].map((v, i) => (
             <PaintingCard key={`${v.id}-${i}`} v={v} />
           ))}
@@ -694,14 +697,14 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
 
       {/* Edge fade masks for elegance */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-32 lg:w-48 pointer-events-none"
+        className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 lg:w-48 pointer-events-none"
         style={{
           background:
             "linear-gradient(90deg, rgba(20,35,29,0.85) 0%, rgba(20,35,29,0) 100%)",
         }}
       />
       <div
-        className="absolute right-0 top-0 bottom-0 w-32 lg:w-48 pointer-events-none"
+        className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 lg:w-48 pointer-events-none"
         style={{
           background:
             "linear-gradient(270deg, rgba(20,35,29,0.85) 0%, rgba(20,35,29,0) 100%)",
@@ -709,9 +712,9 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
       />
 
       {/* Footnote */}
-      <div className="absolute inset-x-0 bottom-[8%] text-center pointer-events-none px-8">
+      <div className="absolute inset-x-0 bottom-[6%] lg:bottom-[8%] text-center pointer-events-none px-6 lg:px-8">
         <p
-          className="font-sans text-parchment/85 text-sm max-w-md mx-auto"
+          className="font-sans text-parchment/85 text-xs lg:text-sm max-w-md mx-auto"
           style={SHADOW_MED}
         >
           Each running on Jarvis · Fabric · Vortex · Pulse.
@@ -731,8 +734,8 @@ function PaintingCard({
       href={v.url}
       target={v.url.startsWith("http") ? "_blank" : undefined}
       rel="noreferrer"
-      className="pointer-events-auto group flex flex-col items-center gap-4 transition-all duration-500 hover:-translate-y-1.5 shrink-0"
-      style={{ width: "clamp(150px, 17vw, 230px)" }}
+      className="pointer-events-auto group flex flex-col items-center gap-3 lg:gap-4 transition-all duration-500 hover:-translate-y-1.5 shrink-0"
+      style={{ width: "clamp(170px, 45vw, 230px)" }}
     >
       {/* Frame outer container — aspect 3:4 (slightly taller for the gold border) */}
       <div
@@ -802,22 +805,22 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex flex-col items-center justify-end text-center px-8 pb-32 pointer-events-none">
+      <div className="absolute inset-0 flex flex-col items-center justify-end text-center px-6 lg:px-8 pb-20 lg:pb-32 pointer-events-none">
         <span
-          className="font-mono uppercase tracking-[0.32em] text-[11px] text-brass-light"
+          className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
           style={SHADOW_MED}
         >
           Apply · 009
         </span>
         <h2
-          className="mt-4 font-cormorant font-light text-parchment text-[clamp(2rem,5vw,4.5rem)] leading-[0.95] max-w-3xl"
+          className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.8rem,5vw,4.5rem)] leading-[1] max-w-3xl"
           style={SHADOW_HEAVY}
         >
           Your idea deserves more than{" "}
           <span className="italic text-seafoam">advice</span>.
         </h2>
         <p
-          className="mt-4 font-cormorant italic text-parchment/90 text-lg lg:text-xl font-light max-w-md"
+          className="mt-3 lg:mt-4 font-cormorant italic text-parchment/90 text-base lg:text-xl font-light max-w-md"
           style={SHADOW_MED}
         >
           Two founders per quarter. Reviewed personally within 7 days.
@@ -825,21 +828,21 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
 
         <a
           href="mailto:contato@veridian.ai?subject=Veridian%20application"
-          className="pointer-events-auto mt-8 inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[12px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
+          className="pointer-events-auto mt-6 lg:mt-8 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] lg:text-[12px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
         >
           Apply for Q3 2026
           <span aria-hidden>↗</span>
         </a>
 
         <div
-          className="mt-6 font-mono uppercase tracking-[0.26em] text-[10px] text-brass-light/80"
+          className="mt-5 lg:mt-6 font-mono uppercase tracking-[0.22em] lg:tracking-[0.26em] text-[9px] lg:text-[10px] text-brass-light/80 text-center"
           style={SHADOW_SOFT}
         >
           Q3 2026 · 1 slot remaining · Closes when filled
         </div>
 
         <div
-          className="mt-12 font-mono uppercase tracking-[0.26em] text-[10px] text-parchment/55"
+          className="mt-10 lg:mt-12 font-mono uppercase tracking-[0.2em] lg:tracking-[0.26em] text-[9px] lg:text-[10px] text-parchment/55"
           style={SHADOW_SOFT}
         >
           © 2026 · Veridian AI Studio · Built by 4Profit.AI
