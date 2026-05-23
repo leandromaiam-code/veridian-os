@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   scrollStore,
@@ -10,13 +11,36 @@ import {
   zoneProgress,
 } from "@/lib/scroll-store";
 
+type Session = { email: string; ts: number } | null;
+
 export function Overlay() {
   const [p, setP] = useState(0);
+  const [session, setSession] = useState<Session>(null);
 
   useEffect(() => {
     setP(scrollStore.get());
     return scrollStore.subscribe(setP);
   }, []);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("veridian_session");
+      if (raw) setSession(JSON.parse(raw));
+    } catch {}
+    // Sync across tabs / after logout
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "veridian_session") {
+        setSession(e.newValue ? JSON.parse(e.newValue) : null);
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const onLogout = () => {
+    localStorage.removeItem("veridian_session");
+    setSession(null);
+  };
 
   const g = (id: string) => zoneById(id)!;
 
@@ -35,23 +59,58 @@ export function Overlay() {
         >
           Veridian · AI Studio
         </span>
-        <nav className="hidden md:flex items-center gap-4 lg:gap-6">
-          {ZONES.filter((z) => !z.navHidden).map((z, i) => {
-            const active = p >= z.start && p < z.end;
-            return (
+        <div className="flex items-center gap-5 lg:gap-7">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-6">
+            {ZONES.filter((z) => !z.navHidden).map((z, i) => {
+              const active = p >= z.start && p < z.end;
+              return (
+                <span
+                  key={z.id}
+                  className={`font-mono uppercase tracking-[0.2em] text-[9px] transition-colors ${
+                    active ? "text-brass-light" : "text-parchment/45"
+                  }`}
+                  style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
+                >
+                  <span className="mr-1.5 opacity-50">0{i + 1}</span>
+                  {z.label}
+                </span>
+              );
+            })}
+          </nav>
+
+          {/* Subtle separator + Enter / Session */}
+          <span className="hidden md:inline-block h-3 w-px bg-parchment/25" aria-hidden />
+
+          {session ? (
+            <div className="flex items-center gap-3">
               <span
-                key={z.id}
-                className={`font-mono uppercase tracking-[0.2em] text-[9px] transition-colors ${
-                  active ? "text-brass-light" : "text-parchment/45"
-                }`}
+                className="hidden lg:inline font-mono uppercase tracking-[0.2em] text-[9px] text-parchment/65"
                 style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
               >
-                <span className="mr-1.5 opacity-50">0{i + 1}</span>
-                {z.label}
+                {session.email.split("@")[0]}
               </span>
-            );
-          })}
-        </nav>
+              <button
+                type="button"
+                onClick={onLogout}
+                className="font-mono uppercase tracking-[0.22em] text-[9px] text-parchment/60 hover:text-brass-light transition-colors"
+                style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="group inline-flex items-center gap-2 font-mono uppercase tracking-[0.24em] text-[10px] text-brass-light hover:gap-3 transition-all duration-500"
+              style={{ textShadow: "0 2px 10px rgba(0,0,0,0.75)" }}
+            >
+              Enter
+              <span aria-hidden className="transition-transform duration-500 group-hover:translate-x-0.5">
+                ↗
+              </span>
+            </Link>
+          )}
+        </div>
       </header>
 
       <div className="fixed left-0 right-0 bottom-0 z-30 h-px bg-brass-deep/20">
@@ -70,24 +129,28 @@ export function Overlay() {
         promise="One channel. Total command."
         line1="Your single point of command and operation."
         line2="Talk to Jarvis · he orchestrates Fabric, Vortex, Pulse for you."
+        launchUrl={session ? "https://jarvis.4profitai.com" : null}
       />
       <ResourceCopy p={p} zone={g("fabric")} idx={2} name="FABRIC"
         tag="The Foundry"
         promise="Builds while you sleep."
         line1="The product team, automated."
         line2="Designs · codes · deploys — no backlog, no standup."
+        launchUrl={session ? "https://fabric.4profitai.com" : null}
       />
       <ResourceCopy p={p} zone={g("vortex")} idx={3} name="VORTEX"
         tag="The Engine"
         promise="Sells while you sleep."
         line1="The sales floor, automated."
         line2="Finds · pitches · closes — across 12 languages, 24/7."
+        launchUrl={session ? "https://vortex.4profitai.com" : null}
       />
       <ResourceCopy p={p} zone={g("pulse")} idx={4} name="PULSE"
         tag="The Nervous System"
         promise="Watches while you sleep."
         line1="The operations desk, automated."
         line2="Users · infrastructure · agents — heals before you notice."
+        launchUrl={session ? "soon" : null}
       />
       <MethodCopy p={p} zone={g("method")} />
       <VenturesCopy p={p} zone={g("ventures")} />
@@ -382,7 +445,9 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
   );
 }
 
-/* ---------------------- RESOURCE COPY — promise + 2 lines proof ---------- */
+/* ---------------------- RESOURCE COPY — promise + 2 lines proof ----------
+   launchUrl: when logged in, shows a "Launch ↗" button linking to the
+   module's subdomain. Use "soon" to render a disabled Coming-soon chip. */
 function ResourceCopy({
   p,
   zone,
@@ -392,6 +457,7 @@ function ResourceCopy({
   promise,
   line1,
   line2,
+  launchUrl,
 }: {
   p: number;
   zone: Z;
@@ -401,8 +467,11 @@ function ResourceCopy({
   promise: string;
   line1: string;
   line2: string;
+  launchUrl?: string | null;
 }) {
   const o = useZoneOpacity(p, zone);
+  const showLaunch = !!launchUrl;
+  const isSoon = launchUrl === "soon";
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
       <div className="absolute inset-0 flex items-end justify-between px-10 lg:px-16 py-32 pointer-events-none gap-6">
@@ -426,6 +495,27 @@ function ResourceCopy({
           >
             {tag}.
           </p>
+
+          {showLaunch &&
+            (isSoon ? (
+              <span
+                className="mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-parchment/15 text-parchment/55 font-mono uppercase tracking-[0.22em] text-[10px]"
+                style={SHADOW_SOFT}
+              >
+                Coming soon
+              </span>
+            ) : (
+              <a
+                href={launchUrl as string}
+                target="_blank"
+                rel="noreferrer"
+                className="pointer-events-auto mt-8 inline-flex items-center gap-3 px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+                style={SHADOW_MED}
+              >
+                Launch {name.charAt(0) + name.slice(1).toLowerCase()}
+                <span aria-hidden>↗</span>
+              </a>
+            ))}
         </div>
         <div className="max-w-sm text-right self-end flex flex-col gap-2.5">
           <p
