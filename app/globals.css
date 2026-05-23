@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@theme {
+  /* Veridian Light Parchment palette */
+  --color-parchment: #efece0;
+  --color-linen: #ddd8c9;
+  --color-ink: #14231d;
+  --color-stone: #5c6560;
+  --color-forest: #1e3b33;
+  --color-emerald: #2d5d4e;
+  --color-seafoam: #a8c4b8;
+  --color-celadon: #c9d8cf;
+  --color-brass-light: #e8c88a;
+  --color-brass: #c9a56b;
+  --color-brass-deep: #9b7f4e;
+
+  /* Fonts */
+  --font-cormorant: var(--font-cormorant);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono-jb);
+
+  /* Easing tokens */
+  --ease-organic: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html,
+body {
+  background: var(--color-parchment);
+  color: var(--color-ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Paper texture subtle */
+/* No paper texture overlay — would sit on top of canvas */
+
+main,
+section,
+footer,
+header {
+  position: relative;
+  z-index: 2;
+}
+
+/* Selection */
+::selection {
+  background: var(--color-brass);
+  color: var(--color-ink);
+}
+
+/* Scrollbar minimal */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-parchment);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-brass-deep);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Cinematic breathing */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 30px 60px rgba(20, 35, 29, 0.18));
+  }
+  50% {
+    transform: scale(1.015) translateY(-6px);
+    filter: drop-shadow(0 50px 80px rgba(20, 35, 29, 0.22));
+  }
+}
+
+.breathe {
+  animation: breathe 6s var(--ease-organic) infinite;
+}
+
+@keyframes float-particle {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(40px);
+    opacity: 0;
+  }
+}
+
+.brass-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-brass);
+  box-shadow: 0 0 8px var(--color-brass-light);
+  animation: float-particle 14s linear infinite;
+}
+
+/* Numeração romana brass */
+.roman {
+  font-family: var(--font-cormorant), serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-brass);
+  letter-spacing: 0.02em;
+}
+
+/* Underline animation brass */
+.brass-link {
+  position: relative;
+  display: inline-block;
+  color: var(--color-brass-deep);
+}
+.brass-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: var(--color-brass);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease-organic);
+}
+.brass-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
