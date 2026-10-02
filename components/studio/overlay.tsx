@@ -1097,8 +1097,12 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
       <Scrim background={SCRIM.topBottom} />
+      {/* Title, marquee and footnote are stacked in one column (not absolutely
+          positioned) so they can never overlap; the cards shrink with the
+          viewport height instead — see PaintingCard width. */}
+      <div className="absolute inset-0 flex flex-col justify-center gap-[clamp(10px,3vh,36px)] pt-[clamp(64px,10vh,96px)] pb-[clamp(20px,5vh,56px)] pointer-events-none">
       {/* Title — top */}
-      <div className="absolute inset-x-0 top-[6%] lg:top-[7%] flex flex-col items-center text-center pointer-events-none px-6 lg:px-8">
+      <div className="flex flex-col items-center text-center pointer-events-none px-6 lg:px-8">
         <span
           className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
           style={SHADOW_LABEL}
@@ -1106,7 +1110,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
           {t.ventures.eyebrow}
         </span>
         <h2
-          className="mt-2 lg:mt-3 font-cormorant font-light text-parchment text-[clamp(1.7rem,4.2vw,3.8rem)] leading-[1] max-w-3xl"
+          className="mt-2 lg:mt-3 font-cormorant font-light text-parchment text-[clamp(1.5rem,min(4.2vw,7vh),3.8rem)] leading-[1] max-w-3xl"
           style={SHADOW_HEAVY}
         >
           {t.ventures.title}<span className="italic text-seafoam">{t.ventures.titleHl}</span>
@@ -1119,8 +1123,8 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
         </p>
       </div>
 
-      {/* Marquee row — centered vertically */}
-      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 overflow-hidden pointer-events-none">
+      {/* Marquee row */}
+      <div className="overflow-hidden pointer-events-none py-2">
         <div
           className="flex items-center will-change-transform"
           style={{
@@ -1136,6 +1140,17 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
               </div>
             ))}
         </div>
+      </div>
+
+      {/* Footnote */}
+      <div className="text-center pointer-events-none px-6 lg:px-8">
+        <p
+          className="font-sans text-parchment/85 text-xs lg:text-sm max-w-md mx-auto"
+          style={SHADOW_MED}
+        >
+          {t.ventures.footnote}
+        </p>
+      </div>
       </div>
 
       {/* Edge fade masks for elegance */}
@@ -1154,15 +1169,6 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
         }}
       />
 
-      {/* Footnote */}
-      <div className="absolute inset-x-0 bottom-[6%] lg:bottom-[8%] text-center pointer-events-none px-6 lg:px-8">
-        <p
-          className="font-sans text-parchment/85 text-xs lg:text-sm max-w-md mx-auto"
-          style={SHADOW_MED}
-        >
-          {t.ventures.footnote}
-        </p>
-      </div>
     </FixedFrame>
   );
 }
@@ -1180,7 +1186,12 @@ function PaintingCard({
       target={v.url.startsWith("http") ? "_blank" : undefined}
       rel="noreferrer"
       className="group flex flex-col items-center gap-3 lg:gap-4 transition-all duration-500 hover:-translate-y-1.5 shrink-0"
-      style={{ width: "clamp(170px, 45vw, 230px)", pointerEvents: active ? "auto" : "none" }}
+      style={{
+        // Width follows the viewport HEIGHT too: ~390px are taken by the title,
+        // plaque, footnote and paddings; the frame (3:4) gets what is left.
+        width: "clamp(110px, min(45vw, calc((100svh - 390px) * 0.75)), 230px)",
+        pointerEvents: active ? "auto" : "none",
+      }}
     >
       {/* Frame outer container — aspect 3:4 (slightly taller for the gold border) */}
       <div
