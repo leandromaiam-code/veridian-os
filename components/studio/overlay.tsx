@@ -356,6 +356,36 @@ const SHADOW_MED = {
   textShadow:
     "0 1px 2px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.8), 0 5px 24px rgba(0,0,0,0.65)",
 };
+// Small brass labels need the densest edge: they are thin, widely tracked and
+// often sit on the brightest part of the image.
+const SHADOW_LABEL = {
+  textShadow:
+    "0 0 2px rgba(0,0,0,1), 0 1px 3px rgba(0,0,0,0.95), 0 2px 12px rgba(0,0,0,0.9), 0 4px 22px rgba(0,0,0,0.7)",
+};
+
+// Scrims darken only the region behind the copy, so the cathedral stays
+// bright everywhere else.
+const SCRIM = {
+  // copy anchored bottom-left (hero, manifesto)
+  left: "linear-gradient(90deg, rgba(6,14,11,0.8) 0%, rgba(6,14,11,0.56) 28%, rgba(6,14,11,0.18) 50%, rgba(6,14,11,0) 66%), linear-gradient(0deg, rgba(6,14,11,0.55) 0%, rgba(6,14,11,0) 45%)",
+  // wordmark at the top-centre of the hero
+  top: "radial-gradient(ellipse 38% 17% at 50% 14%, rgba(6,14,11,0.6) 0%, rgba(6,14,11,0.32) 55%, rgba(6,14,11,0) 100%)",
+  // centred copy (Veridian OS intro)
+  center: "radial-gradient(ellipse 62% 58% at 50% 50%, rgba(6,14,11,0.78) 0%, rgba(6,14,11,0.5) 55%, rgba(6,14,11,0) 100%)",
+  // title on top + footnote at the bottom (ventures)
+  topBottom: "linear-gradient(180deg, rgba(6,14,11,0.8) 0%, rgba(6,14,11,0.45) 22%, rgba(6,14,11,0) 38%), linear-gradient(0deg, rgba(6,14,11,0.78) 0%, rgba(6,14,11,0) 26%)",
+};
+
+function Scrim({ background }: { background: string }) {
+  return (
+    <div
+      aria-hidden
+      className="absolute inset-0 pointer-events-none"
+      style={{ background }}
+    />
+  );
+}
+
 const SHADOW_SOFT = {
   textShadow: "0 1px 2px rgba(0,0,0,0.85), 0 2px 10px rgba(0,0,0,0.75)",
 };
@@ -388,6 +418,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
 
   return (
     <FixedFrame opacity={o} pointer={o > 0.4}>
+      <Scrim background={`${SCRIM.top}, ${SCRIM.left}`} />
       <div className="absolute inset-0 flex flex-col justify-between px-6 lg:px-16 pt-24 lg:pt-28 pb-20 lg:pb-32 pointer-events-none">
         {/* Top — wordmark */}
         <div
@@ -406,7 +437,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
           </span>
           <span
             className="mt-3 font-mono uppercase tracking-[0.32em] lg:tracking-[0.42em] text-[11px] lg:text-[11.5px] text-brass-light"
-            style={SHADOW_MED}
+            style={SHADOW_LABEL}
           >
             {t.hero.wordmarkTag}
           </span>
@@ -416,7 +447,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
         <div className="flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:items-end lg:gap-6">
           {/* Headline + CTA */}
           <div
-            className="lg:col-span-7"
+            className="lg:col-span-8"
             style={{
               opacity: headlineOp,
               transform: `translateY(${drift(headlineOp)}px)`,
@@ -425,12 +456,12 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
           >
             <span
               className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-              style={SHADOW_MED}
+              style={SHADOW_LABEL}
             >
               {t.hero.eyebrow}
             </span>
             <h1
-              className="mt-5 lg:mt-6 font-cormorant font-light text-parchment leading-[1.05] text-[clamp(1.6rem,3.6vw,3.8rem)]"
+              className="mt-5 lg:mt-6 font-cormorant font-light text-parchment leading-[1.05] text-[clamp(1.6rem,3.3vw,3.5rem)]"
               style={SHADOW_HEAVY}
             >
               <Headline />
@@ -441,7 +472,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
                 e.preventDefault();
                 scrollToZone("sanctum");
               }}
-              className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+              className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
               style={{ ...SHADOW_MED, pointerEvents: o > 0.4 ? "auto" : "none" }}
             >
               {t.cta}
@@ -461,11 +492,12 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
   const t = useT();
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
+      <Scrim background={SCRIM.left} />
       <div className="absolute inset-0 flex items-end justify-start px-6 lg:px-16 py-20 lg:py-32 pointer-events-none">
         <div className="max-w-2xl">
           <span
             className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_MED}
+            style={SHADOW_LABEL}
           >
             {t.manifesto.eyebrow}
           </span>
@@ -487,7 +519,7 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
               e.preventDefault();
               scrollToZone("sanctum");
             }}
-            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
             style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
             {t.cta}
@@ -505,10 +537,11 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
   const t = useT();
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
+      <Scrim background={SCRIM.center} />
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 pointer-events-none">
         <span
           className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-          style={SHADOW_MED}
+          style={SHADOW_LABEL}
         >
           {t.os.eyebrow}
         </span>
@@ -519,7 +552,7 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
           Veridian <span className="italic text-seafoam">OS</span>.
         </h2>
         <p
-          className="mt-3 lg:mt-4 font-cormorant italic text-parchment/90 text-lg lg:text-2xl font-light max-w-xl"
+          className="mt-3 lg:mt-4 font-cormorant italic text-parchment/90 text-lg lg:text-2xl font-light max-w-3xl"
           style={SHADOW_MED}
         >
           {t.os.tagline}
@@ -820,7 +853,7 @@ function ResourceCopy({
         <div className="max-w-md">
           <span
             className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_MED}
+            style={SHADOW_LABEL}
           >
             {t.module.eyebrow}
           </span>
@@ -851,7 +884,7 @@ function ResourceCopy({
                 href={launchUrl as string}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-6 lg:mt-8 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+                className="mt-6 lg:mt-8 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
                 style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
               >
                 {t.module.launch} {name.charAt(0) + name.slice(1).toLowerCase()}
@@ -869,7 +902,7 @@ function ResourceCopy({
             {promise}
           </p>
           <p
-            className="font-cormorant text-brass-light/95 text-base lg:text-xl font-light leading-tight"
+            className="font-cormorant text-brass-light text-base lg:text-xl font-light leading-tight"
             style={SHADOW_MED}
           >
             {line1}
@@ -908,7 +941,7 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
         >
           <span
             className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_MED}
+            style={SHADOW_LABEL}
           >
             {t.method.eyebrow}
           </span>
@@ -935,7 +968,7 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
           {/* Safety block — addresses scam / theft / quality / unknown-company objections */}
           <h3
             className="mt-9 lg:mt-12 font-mono uppercase tracking-[0.28em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_MED}
+            style={SHADOW_LABEL}
           >
             {t.method.safetyTitle}
           </h3>
@@ -953,7 +986,7 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
             href={whatsappUrl(t.whatsappText)}
             target="_blank"
             rel="noreferrer"
-            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[12.5px] lg:text-[13px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
+            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[12.5px] lg:text-[13px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
             style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
             {t.cta}
@@ -977,8 +1010,8 @@ function Milestone({
   return (
     <div className="flex flex-col items-center gap-1 px-1.5">
       <span
-        className="font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] text-brass-light/85"
-        style={SHADOW_SOFT}
+        className="font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] text-brass-light"
+        style={SHADOW_LABEL}
       >
         {wk}
       </span>
@@ -1052,11 +1085,12 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
 
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
+      <Scrim background={SCRIM.topBottom} />
       {/* Title — top */}
       <div className="absolute inset-x-0 top-[8%] lg:top-[10%] flex flex-col items-center text-center pointer-events-none px-6 lg:px-8">
         <span
           className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-          style={SHADOW_MED}
+          style={SHADOW_LABEL}
         >
           {t.ventures.eyebrow}
         </span>
@@ -1187,8 +1221,8 @@ function PaintingCard({
           {v.name}
         </div>
         <div
-          className="mt-1.5 font-mono uppercase tracking-[0.18em] text-[11px] text-brass-light/85 leading-tight"
-          style={SHADOW_MED}
+          className="mt-1.5 font-mono uppercase tracking-[0.18em] text-[11px] text-brass-light leading-tight"
+          style={SHADOW_LABEL}
         >
           {v.tag}
         </div>
@@ -1220,7 +1254,7 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
         >
           <span
             className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_MED}
+            style={SHADOW_LABEL}
           >
             {t.sanctum.eyebrow}
           </span>
@@ -1241,7 +1275,7 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
             href={whatsappUrl(t.whatsappText)}
             target="_blank"
             rel="noreferrer"
-            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[12.5px] lg:text-[13px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
+            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[12.5px] lg:text-[13px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
             style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
             {t.cta}

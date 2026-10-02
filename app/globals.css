@@ -49,6 +49,14 @@ header {
   font-weight: 500;
 }
 
+/* Display serif never renders lighter than medium: the copy sits on
+   photographic backgrounds, where regular-weight serifs lose their thin
+   strokes. Overrides the `font-light` utility used across the scenes. */
+.font-cormorant,
+.font-cormorant.font-light {
+  font-weight: 500;
+}
+
 /* Selection */
 ::selection {
   background: var(--color-brass);
