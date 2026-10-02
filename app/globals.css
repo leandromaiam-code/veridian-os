@@ -43,6 +43,12 @@ header {
   z-index: 2;
 }
 
+/* Mono eyebrows/labels are tiny and widely tracked — medium weight keeps
+   them readable over imagery. */
+.font-mono {
+  font-weight: 500;
+}
+
 /* Selection */
 ::selection {
   background: var(--color-brass);

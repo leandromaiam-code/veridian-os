@@ -66,8 +66,8 @@ export function Overlay() {
         style={{ opacity: headerOpacity, pointerEvents: headerOpacity > 0.4 ? "auto" : "none" }}
       >
         <span
-          className="font-mono uppercase tracking-[0.24em] lg:tracking-[0.28em] text-[9px] lg:text-[10px] text-parchment/85"
-          style={{ textShadow: "0 2px 10px rgba(0,0,0,0.7)" }}
+          className="font-mono uppercase tracking-[0.24em] lg:tracking-[0.28em] text-[11px] lg:text-[11.5px] text-parchment/85"
+          style={SHADOW_MED}
         >
           {t.brand}
         </span>
@@ -77,10 +77,10 @@ export function Overlay() {
             return (
               <span
                 key={z.id}
-                className={`font-mono uppercase tracking-[0.2em] text-[9px] transition-colors ${
-                  active ? "text-brass-light" : "text-parchment/45"
+                className={`font-mono uppercase tracking-[0.2em] text-[11px] transition-colors ${
+                  active ? "text-brass-light" : "text-parchment/90"
                 }`}
-                style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
+                style={SHADOW_MED}
               >
                 <span className="mr-1.5 opacity-50">0{i + 1}</span>
                 {t.nav[z.id] ?? z.label}
@@ -103,17 +103,17 @@ export function Overlay() {
           {session ? (
             <>
               <span
-                className="hidden lg:inline font-mono uppercase tracking-[0.22em] text-[9px] text-parchment/70"
-                style={{ textShadow: "0 2px 8px rgba(0,0,0,0.85)" }}
+                className="hidden lg:inline font-mono uppercase tracking-[0.22em] text-[11px] text-parchment/90"
+                style={SHADOW_MED}
               >
                 {session.email.split("@")[0]}
               </span>
               <button
                 type="button"
                 onClick={onLogout}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-parchment/20 hover:border-brass-light/50 font-mono uppercase tracking-[0.22em] text-[10px] text-parchment/75 hover:text-brass-light transition-all duration-500"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-parchment/20 hover:border-brass-light/50 font-mono uppercase tracking-[0.22em] text-[11.5px] text-parchment/90 hover:text-brass-light transition-all duration-500"
                 style={{
-                  textShadow: "0 2px 8px rgba(0,0,0,0.85)",
+                  ...SHADOW_MED,
                   background: "rgba(10,22,16,0.35)",
                   backdropFilter: "blur(10px)",
                   WebkitBackdropFilter: "blur(10px)",
@@ -125,9 +125,9 @@ export function Overlay() {
           ) : (
             <Link
               href={t.login}
-              className="group inline-flex items-center gap-2 px-5 py-2 rounded-full border border-brass-light/40 hover:border-brass-light font-mono uppercase tracking-[0.26em] text-[10px] text-brass-light hover:gap-3 transition-all duration-500"
+              className="group inline-flex items-center gap-2 px-5 py-2 rounded-full border border-brass-light/40 hover:border-brass-light font-mono uppercase tracking-[0.26em] text-[11.5px] text-brass-light hover:gap-3 transition-all duration-500"
               style={{
-                textShadow: "0 2px 10px rgba(0,0,0,0.85)",
+                ...SHADOW_MED,
                 background: "rgba(10,22,16,0.4)",
                 backdropFilter: "blur(10px)",
                 WebkitBackdropFilter: "blur(10px)",
@@ -216,8 +216,8 @@ export function Overlay() {
         style={{ opacity: p > 0.02 ? 0 : 1, pointerEvents: "none" }}
       >
         <span
-          className="font-mono uppercase tracking-[0.42em] text-[10px] text-parchment/85"
-          style={{ textShadow: "0 2px 12px rgba(0,0,0,0.75)" }}
+          className="font-mono uppercase tracking-[0.42em] text-[11.5px] text-parchment/85"
+          style={SHADOW_MED}
         >
           {t.scrollCue}
         </span>
@@ -317,8 +317,8 @@ function LocaleSwitch() {
   ];
   return (
     <span
-      className="inline-flex items-center gap-2 font-mono uppercase tracking-[0.22em] text-[10px]"
-      style={{ textShadow: "0 2px 8px rgba(0,0,0,0.85)" }}
+      className="inline-flex items-center gap-2 font-mono uppercase tracking-[0.22em] text-[11.5px]"
+      style={SHADOW_MED}
     >
       {items.map((it, i) => (
         <span key={it.code} className="inline-flex items-center gap-2">
@@ -335,7 +335,7 @@ function LocaleSwitch() {
             <a
               href={it.href}
               hrefLang={it.hrefLang}
-              className="text-parchment/55 hover:text-brass-light transition-colors duration-500"
+              className="text-parchment/95 hover:text-brass-light transition-colors duration-500"
             >
               {it.label}
             </a>
@@ -346,9 +346,19 @@ function LocaleSwitch() {
   );
 }
 
-const SHADOW_HEAVY = { textShadow: "0 4px 28px rgba(0,0,0,0.85)" };
-const SHADOW_MED = { textShadow: "0 2px 14px rgba(0,0,0,0.75)" };
-const SHADOW_SOFT = { textShadow: "0 2px 10px rgba(0,0,0,0.65)" };
+// Layered text shadows: a tight dark edge keeps letter shapes crisp, the wide
+// soft layers lift the text off bright parts of the background image.
+const SHADOW_HEAVY = {
+  textShadow:
+    "0 1px 2px rgba(0,0,0,0.9), 0 3px 14px rgba(0,0,0,0.8), 0 8px 40px rgba(0,0,0,0.75)",
+};
+const SHADOW_MED = {
+  textShadow:
+    "0 1px 2px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.8), 0 5px 24px rgba(0,0,0,0.65)",
+};
+const SHADOW_SOFT = {
+  textShadow: "0 1px 2px rgba(0,0,0,0.85), 0 2px 10px rgba(0,0,0,0.75)",
+};
 
 /* ---------------------- ENTRY — pure symbol + scroll cue --------------- */
 // The entry frame is intentionally text-free.
@@ -395,7 +405,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
             VERIDIAN
           </span>
           <span
-            className="mt-3 font-mono uppercase tracking-[0.32em] lg:tracking-[0.42em] text-[9px] lg:text-[10px] text-brass-light"
+            className="mt-3 font-mono uppercase tracking-[0.32em] lg:tracking-[0.42em] text-[11px] lg:text-[11.5px] text-brass-light"
             style={SHADOW_MED}
           >
             {t.hero.wordmarkTag}
@@ -414,7 +424,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
             }}
           >
             <span
-              className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
+              className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
               style={SHADOW_MED}
             >
               {t.hero.eyebrow}
@@ -431,7 +441,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
                 e.preventDefault();
                 scrollToZone("sanctum");
               }}
-              className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+              className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
               style={{ ...SHADOW_MED, pointerEvents: o > 0.4 ? "auto" : "none" }}
             >
               {t.cta}
@@ -454,7 +464,7 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
       <div className="absolute inset-0 flex items-end justify-start px-6 lg:px-16 py-20 lg:py-32 pointer-events-none">
         <div className="max-w-2xl">
           <span
-            className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
+            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
             style={SHADOW_MED}
           >
             {t.manifesto.eyebrow}
@@ -477,7 +487,7 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
               e.preventDefault();
               scrollToZone("sanctum");
             }}
-            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
             style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
             {t.cta}
@@ -497,7 +507,7 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
     <FixedFrame opacity={o} pointer={o > 0.5}>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 pointer-events-none">
         <span
-          className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
+          className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
           style={SHADOW_MED}
         >
           {t.os.eyebrow}
@@ -529,7 +539,7 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
         </div>
 
         <p
-          className="mt-8 lg:mt-10 font-cormorant italic text-parchment/80 text-sm lg:text-lg font-light max-w-lg"
+          className="mt-8 lg:mt-10 font-cormorant italic text-parchment/95 text-sm lg:text-lg font-light max-w-lg"
           style={SHADOW_MED}
         >
           {t.os.footnote}
@@ -794,11 +804,22 @@ function ResourceCopy({
           (zp < ~0.25), then fan out into a clean mosaic as the user scrolls. */}
       {hasPrints && <ModuleShowcase prints={prints!} zp={zp} accent={name === "VORTEX" ? "seafoam" : "brass"} />}
 
+      {/* Bottom scrim — the showcase cards can be bright; this keeps the copy
+          that sits over their lower half readable. */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 z-[6] h-[62%] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(0deg, rgba(10,22,16,0.94) 0%, rgba(10,22,16,0.8) 38%, rgba(10,22,16,0) 100%)",
+        }}
+      />
+
       <div className="absolute inset-0 z-10 flex flex-col justify-end gap-6 px-6 lg:px-16 py-20 lg:py-32 pointer-events-none lg:flex-row lg:items-end lg:justify-between lg:gap-6">
         {/* Identity block */}
         <div className="max-w-md">
           <span
-            className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
+            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
             style={SHADOW_MED}
           >
             {t.module.eyebrow}
@@ -820,7 +841,7 @@ function ResourceCopy({
           {showLaunch &&
             (isSoon ? (
               <span
-                className="mt-6 lg:mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-parchment/15 text-parchment/55 font-mono uppercase tracking-[0.22em] text-[10px]"
+                className="mt-6 lg:mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-parchment/15 text-parchment/95 font-mono uppercase tracking-[0.22em] text-[11.5px]"
                 style={SHADOW_SOFT}
               >
                 {t.module.soon}
@@ -830,7 +851,7 @@ function ResourceCopy({
                 href={launchUrl as string}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-6 lg:mt-8 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+                className="mt-6 lg:mt-8 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
                 style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
               >
                 {t.module.launch} {name.charAt(0) + name.slice(1).toLowerCase()}
@@ -854,7 +875,7 @@ function ResourceCopy({
             {line1}
           </p>
           <p
-            className="font-sans text-parchment/80 text-[13px] lg:text-base leading-relaxed"
+            className="font-sans text-parchment/95 text-[14px] lg:text-base leading-relaxed"
             style={SHADOW_MED}
           >
             {line2}
@@ -886,7 +907,7 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
           }}
         >
           <span
-            className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
+            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
             style={SHADOW_MED}
           >
             {t.method.eyebrow}
@@ -913,7 +934,7 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
 
           {/* Safety block — addresses scam / theft / quality / unknown-company objections */}
           <h3
-            className="mt-9 lg:mt-12 font-mono uppercase tracking-[0.28em] text-[10px] lg:text-[11px] text-brass-light"
+            className="mt-9 lg:mt-12 font-mono uppercase tracking-[0.28em] text-[11.5px] lg:text-[12.5px] text-brass-light"
             style={SHADOW_MED}
           >
             {t.method.safetyTitle}
@@ -932,7 +953,7 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
             href={whatsappUrl(t.whatsappText)}
             target="_blank"
             rel="noreferrer"
-            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] lg:text-[12px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
+            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[12.5px] lg:text-[13px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
             style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
             {t.cta}
@@ -956,19 +977,19 @@ function Milestone({
   return (
     <div className="flex flex-col items-center gap-1 px-1.5">
       <span
-        className="font-mono uppercase tracking-[0.22em] text-[8.5px] lg:text-[9.5px] text-brass-light/85"
+        className="font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] text-brass-light/85"
         style={SHADOW_SOFT}
       >
         {wk}
       </span>
       <span
-        className="font-sans text-parchment text-[13px] lg:text-base font-medium tracking-tight"
+        className="font-sans text-parchment text-[14px] lg:text-base font-medium tracking-tight"
         style={SHADOW_MED}
       >
         {title}
       </span>
       <span
-        className="font-sans text-parchment/70 text-[10.5px] lg:text-[11.5px] leading-tight max-w-[15ch]"
+        className="font-sans text-parchment/90 text-[12px] lg:text-[13px] leading-tight max-w-[15ch]"
         style={SHADOW_SOFT}
       >
         {detail}
@@ -985,7 +1006,7 @@ function SafetyItem({ title }: { title: string }) {
         className="shrink-0 inline-block w-1.5 h-1.5 rounded-full bg-brass-light"
         style={{ boxShadow: "0 0 8px rgba(232,200,138,0.7)" }}
       />
-      <span className="font-sans text-parchment text-[13.5px] lg:text-[15px] font-normal leading-tight">
+      <span className="font-sans text-parchment text-[14.5px] lg:text-[15px] font-normal leading-tight">
         {title}
       </span>
     </li>
@@ -1034,7 +1055,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
       {/* Title — top */}
       <div className="absolute inset-x-0 top-[8%] lg:top-[10%] flex flex-col items-center text-center pointer-events-none px-6 lg:px-8">
         <span
-          className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
+          className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
           style={SHADOW_MED}
         >
           {t.ventures.eyebrow}
@@ -1046,7 +1067,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
           {t.ventures.title}<span className="italic text-seafoam">{t.ventures.titleHl}</span>
         </h2>
         <p
-          className="mt-2 lg:mt-3 font-cormorant italic text-parchment/80 text-sm lg:text-lg font-light"
+          className="mt-2 lg:mt-3 font-cormorant italic text-parchment/95 text-sm lg:text-lg font-light"
           style={SHADOW_MED}
         >
           {t.ventures.sub}
@@ -1166,7 +1187,7 @@ function PaintingCard({
           {v.name}
         </div>
         <div
-          className="mt-1.5 font-mono uppercase tracking-[0.18em] text-[9px] text-brass-light/85 leading-tight"
+          className="mt-1.5 font-mono uppercase tracking-[0.18em] text-[11px] text-brass-light/85 leading-tight"
           style={SHADOW_MED}
         >
           {v.tag}
@@ -1198,13 +1219,13 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
           }}
         >
           <span
-            className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
+            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
             style={SHADOW_MED}
           >
             {t.sanctum.eyebrow}
           </span>
           <h2
-            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.8rem,4.4vw,3.8rem)] leading-[1.1] max-w-2xl"
+            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.5rem,3vw,2.7rem)] leading-[1.12] max-w-2xl"
             style={SHADOW_HEAVY}
           >
             <Headline />
@@ -1220,7 +1241,7 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
             href={whatsappUrl(t.whatsappText)}
             target="_blank"
             rel="noreferrer"
-            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] lg:text-[12px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
+            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[12.5px] lg:text-[13px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
             style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
             {t.cta}
@@ -1229,7 +1250,7 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
         </div>
 
         <div
-          className="mt-10 lg:mt-12 font-mono uppercase tracking-[0.2em] lg:tracking-[0.26em] text-[9px] lg:text-[10px] text-parchment/55"
+          className="mt-10 lg:mt-12 font-mono uppercase tracking-[0.2em] lg:tracking-[0.26em] text-[11px] lg:text-[11.5px] text-parchment/95"
           style={SHADOW_SOFT}
         >
           {t.sanctum.footer}

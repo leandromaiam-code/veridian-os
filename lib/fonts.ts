@@ -1,9 +1,13 @@
-import { Cormorant_Garamond, Inter, JetBrains_Mono } from "next/font/google";
+import { EB_Garamond, Inter, JetBrains_Mono } from "next/font/google";
 
-const cormorant = Cormorant_Garamond({
+// Display serif. Keeps the --font-cormorant variable name (used by the
+// `font-cormorant` utility everywhere) but loads EB Garamond: its strokes are
+// thick enough to stay readable over the cathedral imagery, where Cormorant
+// Light dissolved. `font-light` resolves to 400, the lightest weight loaded.
+const cormorant = EB_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
 });
 
