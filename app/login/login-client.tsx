@@ -6,17 +6,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-type Mode = "password" | "magic";
-
 export default function LoginClient() {
   const router = useRouter();
-  const [mode, setMode] = useState<Mode>("password");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [info, setInfo] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -30,7 +26,6 @@ export default function LoginClient() {
     e.preventDefault();
     if (!email || !password) return;
     setError(null);
-    setInfo(null);
     setSubmitting(true);
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -42,30 +37,6 @@ export default function LoginClient() {
       return;
     }
     router.push("/");
-  };
-
-  const onMagicLink = async () => {
-    if (!email) {
-      setError("Enter your email first.");
-      return;
-    }
-    setError(null);
-    setInfo(null);
-    setSubmitting(true);
-    const redirectTo =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/login`
-        : undefined;
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: redirectTo },
-    });
-    setSubmitting(false);
-    if (error) {
-      setError(error.message || "Could not send magic link.");
-      return;
-    }
-    setInfo("Magic link sent. Check your inbox.");
   };
 
   return (
@@ -169,71 +140,29 @@ export default function LoginClient() {
             autoFocus
           />
 
-          {mode === "password" && (
-            <>
-              <div className="h-7" />
-              <Field
-                label="Password"
-                type="password"
-                value={password}
-                onChange={setPassword}
-                placeholder="••••••••"
-              />
-            </>
-          )}
+          <div className="h-7" />
+          <Field
+            label="Password"
+            type="password"
+            value={password}
+            onChange={setPassword}
+            placeholder="••••••••"
+          />
 
           {error && (
             <p className="mt-6 font-mono uppercase tracking-[0.18em] text-[9px] text-[#e8634a]">
               {error}
             </p>
           )}
-          {info && (
-            <p className="mt-6 font-mono uppercase tracking-[0.18em] text-[9px] text-seafoam">
-              {info}
-            </p>
-          )}
-
-          {mode === "password" ? (
-            <button
-              type="submit"
-              disabled={submitting}
-              className="mt-10 w-full inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full bg-brass-deep/85 text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40 disabled:opacity-50"
-              style={{ textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}
-            >
-              {submitting ? "Entering…" : "Enter"}
-              <span aria-hidden>↗</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={onMagicLink}
-              disabled={submitting}
-              className="mt-10 w-full inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full bg-brass-deep/85 text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40 disabled:opacity-50"
-              style={{ textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}
-            >
-              {submitting ? "Sending…" : "Send magic link"}
-              <span aria-hidden>↗</span>
-            </button>
-          )}
-
-          <div className="mt-8 flex items-center gap-3">
-            <span className="h-px flex-1 bg-parchment/15" />
-            <span className="font-mono uppercase tracking-[0.32em] text-[9px] text-parchment/40">
-              or
-            </span>
-            <span className="h-px flex-1 bg-parchment/15" />
-          </div>
 
           <button
-            type="button"
-            onClick={() => {
-              setMode((m) => (m === "password" ? "magic" : "password"));
-              setError(null);
-              setInfo(null);
-            }}
-            className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-parchment/15 text-parchment/75 font-mono uppercase tracking-[0.22em] text-[10px] transition-all duration-500 hover:border-brass-light/40 hover:text-brass-light hover:gap-3"
+            type="submit"
+            disabled={submitting}
+            className="mt-10 w-full inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full bg-brass-deep/85 text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40 disabled:opacity-50"
+            style={{ textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}
           >
-            {mode === "password" ? "Use magic link instead" : "Use password instead"}
+            {submitting ? "Entering…" : "Enter"}
+            <span aria-hidden>↗</span>
           </button>
 
           <p className="mt-8 text-center font-mono uppercase tracking-[0.22em] text-[9px] text-parchment/45">

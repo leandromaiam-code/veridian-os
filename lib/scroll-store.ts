@@ -28,13 +28,13 @@ const ZONE_DEFS = [
   { id: "entry",       weight: 1.0, label: "Entry",       navHidden: false },
   { id: "hero",        weight: 1.8, label: "Hero",        navHidden: true  }, // progressive reveal of original layout
   { id: "manifesto",   weight: 1.0, label: "Manifesto",   navHidden: false },
+  { id: "ventures",    weight: 1.2, label: "Ventures",    navHidden: false }, // portfolio proof right after manifesto
+  { id: "method",      weight: 1.0, label: "Method",      navHidden: false }, // process + safety before product showcase
   { id: "resources",   weight: 0.9, label: "Veridian OS", navHidden: false }, // OS intro
-  { id: "jarvis",      weight: 1.3, label: "Jarvis",      navHidden: true  }, // under Veridian OS
   { id: "fabric",      weight: 1.3, label: "Fabric",      navHidden: true  },
   { id: "vortex",      weight: 1.3, label: "Vortex",      navHidden: true  },
   { id: "pulse",       weight: 1.3, label: "Pulse",       navHidden: true  },
-  { id: "method",      weight: 1.0, label: "Method",      navHidden: false },
-  { id: "ventures",    weight: 1.2, label: "Ventures",    navHidden: false },
+  { id: "jarvis",      weight: 1.3, label: "Jarvis",      navHidden: true  }, // closing operator
   { id: "sanctum",     weight: 1.4, label: "Apply",       navHidden: false },
 ] as const;
 
@@ -50,8 +50,9 @@ export const ZONES = (() => {
   });
 })();
 
-// 110vh per weight unit — generous scroll for smooth Lenis-driven transitions
-export const SCROLL_HEIGHT_VH = Math.round(TOTAL_W * 110);
+// 80vh per weight unit — tighter scroll so each text beat lands in ~1-2 wheel
+// ticks. Backgrounds still cross-fade smoothly via Lenis interpolation.
+export const SCROLL_HEIGHT_VH = Math.round(TOTAL_W * 80);
 
 export function zoneById(id: string) {
   return ZONES.find((z) => z.id === id);

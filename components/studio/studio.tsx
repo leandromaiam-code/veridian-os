@@ -3,6 +3,7 @@
 import { EnvironmentBackgrounds } from "./backgrounds";
 import { Overlay } from "./overlay";
 import { AmbientAudio } from "./ambient-audio";
+import { VortexAgent } from "@/components/vortex-agent";
 import { SCROLL_HEIGHT_VH } from "@/lib/scroll-store";
 
 export function Studio() {
@@ -13,6 +14,7 @@ export function Studio() {
         <Overlay />
       </div>
       <AmbientAudio />
+      <VortexAgent />
     </>
   );
 }

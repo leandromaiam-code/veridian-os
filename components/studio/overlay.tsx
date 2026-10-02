@@ -153,33 +153,55 @@ export function Overlay() {
       <HeroProgressiveCopy p={p} zone={g("hero")} />
       <ManifestoCopy p={p} zone={g("manifesto")} />
       <ResourcesIntroCopy p={p} zone={g("resources")} />
-      <ResourceCopy p={p} zone={g("jarvis")} idx={1} name="JARVIS"
-        tag="The Command Channel"
-        promise="One channel. Total command."
-        line1="Your single point of command and operation."
-        line2="Talk to Jarvis · he orchestrates Fabric, Vortex, Pulse for you."
-        launchUrl={session ? "https://jarvis.4profitai.com" : null}
-      />
-      <ResourceCopy p={p} zone={g("fabric")} idx={2} name="FABRIC"
+      <ResourceCopy p={p} zone={g("fabric")} idx={1} name="FABRIC"
         tag="The Foundry"
         promise="Builds while you sleep."
         line1="The product team, automated."
         line2="Designs · codes · deploys — no backlog, no standup."
         launchUrl={session ? "https://fabric.4profitai.com" : null}
+        prints={[
+          "/assets/modules/fabric-01.jpg",
+          "/assets/modules/fabric-02.jpg",
+          "/assets/modules/fabric-00.jpg",
+        ]}
       />
-      <ResourceCopy p={p} zone={g("vortex")} idx={3} name="VORTEX"
+      <ResourceCopy p={p} zone={g("vortex")} idx={2} name="VORTEX"
         tag="The Engine"
         promise="Sells while you sleep."
         line1="The sales floor, automated."
         line2="Finds · pitches · closes — across 12 languages, 24/7."
         launchUrl={session ? "https://vortex.4profitai.com" : null}
+        prints={[
+          "/assets/modules/vortex-01.jpg",
+          "/assets/modules/vortex-02.jpg",
+          "/assets/modules/vortex-03.jpg",
+          "/assets/modules/vortex-00.jpg",
+        ]}
       />
-      <ResourceCopy p={p} zone={g("pulse")} idx={4} name="PULSE"
-        tag="The Nervous System"
+      <ResourceCopy p={p} zone={g("pulse")} idx={3} name="PULSE"
+        tag="The Heart Beat"
         promise="Watches while you sleep."
         line1="The operations desk, automated."
         line2="Users · infrastructure · agents — heals before you notice."
         launchUrl={session ? "soon" : null}
+        prints={[
+          "/assets/modules/pulse-03.jpg",
+          "/assets/modules/pulse-04.jpg",
+          "/assets/modules/pulse-02.jpg",
+        ]}
+      />
+      <ResourceCopy p={p} zone={g("jarvis")} idx={4} name="JARVIS"
+        tag="The Command Channel"
+        promise="One channel. Total command."
+        line1="Your single point of command and operation."
+        line2="Talk to Jarvis · he orchestrates Fabric, Vortex, Pulse for you."
+        launchUrl={session ? "https://jarvis.4profitai.com" : null}
+        prints={[
+          "/assets/modules/jarvis-02.jpg",
+          "/assets/modules/jarvis-03.jpg",
+          "/assets/modules/jarvis-04.jpg",
+          "/assets/modules/jarvis-01.jpg",
+        ]}
       />
       <MethodCopy p={p} zone={g("method")} />
       <VenturesCopy p={p} zone={g("ventures")} />
@@ -280,13 +302,11 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone, 0.04);
   const zp = Math.max(0, Math.min(1, (p - zone.start) / (zone.end - zone.start)));
 
-  // Three sub-thresholds within the hero zone:
-  //  0.00 → 0.18  wordmark fades in (VERIDIAN top)
-  //  0.30 → 0.55  headline fades in (left)
-  //  0.60 → 0.85  tagline fades in (right)
-  const wordmarkOp = smoothstep(0.00, 0.18, zp);
-  const headlineOp = smoothstep(0.30, 0.55, zp);
-  const taglineOp = smoothstep(0.60, 0.85, zp);
+  // Three sub-thresholds within the hero zone — compressed so EVERYTHING is
+  // fully revealed by zp=0.62, which is where section-snap parks the camera.
+  const wordmarkOp = smoothstep(0.0, 0.12, zp);
+  const headlineOp = smoothstep(0.18, 0.40, zp);
+  const taglineOp = smoothstep(0.42, 0.62, zp);
 
   // Subtle upward drift for each block as it enters
   const drift = (op: number) => (1 - op) * 14;
@@ -332,18 +352,17 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
               className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
               style={SHADOW_MED}
             >
-              Founder · 001
+              Founder
             </span>
             <h1
-              className="mt-5 lg:mt-6 font-cormorant font-light text-parchment leading-[0.94] text-[clamp(2.2rem,5vw,5rem)]"
+              className="mt-5 lg:mt-6 font-cormorant font-light text-parchment leading-[1.05] text-[clamp(1.6rem,3.6vw,3.8rem)]"
               style={SHADOW_HEAVY}
             >
-              Your idea.
+              Turn your <span className="italic text-seafoam">idea</span> into
               <br />
-              <span className="italic text-seafoam">Our operating system.</span>
+              a <span className="italic text-brass-light">working product</span> in weeks.
               <br />
-              <span className="text-brass-light">~12 weeks</span> to revenue
-              <span className="text-brass-light">.</span>
+              Without hiring a full team.
             </h1>
             <a
               href="#sanctum"
@@ -351,32 +370,14 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
                 e.preventDefault();
                 scrollToZone("sanctum");
               }}
-              className="pointer-events-auto mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
-              style={SHADOW_MED}
+              className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+              style={{ ...SHADOW_MED, pointerEvents: o > 0.4 ? "auto" : "none" }}
             >
-              Apply now
+              Start with a Product Sprint
               <span aria-hidden>↘</span>
             </a>
           </div>
 
-          {/* Tagline */}
-          <div
-            className="lg:col-span-5 flex flex-col items-start lg:items-end text-left lg:text-right gap-3"
-            style={{
-              opacity: taglineOp,
-              transform: `translateY(${drift(taglineOp)}px)`,
-              transition: "transform 0.4s var(--ease-organic)",
-            }}
-          >
-            <div className="h-px w-12 lg:w-16 bg-brass-light/70" />
-            <p
-              className="font-cormorant text-parchment/90 text-base lg:text-lg italic font-light max-w-xs"
-              style={SHADOW_MED}
-            >
-              We don&apos;t coach. We don&apos;t advise. We build the company
-              while you steer.
-            </p>
-          </div>
         </div>
       </div>
     </FixedFrame>
@@ -394,34 +395,29 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
             className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
             style={SHADOW_MED}
           >
-            Manifesto · 002
+            Why we exist
           </span>
-          <h2
-            className="mt-5 lg:mt-6 font-cormorant font-light text-parchment text-[clamp(1.75rem,4.5vw,4rem)] leading-[1.05]"
+          <p
+            className="mt-5 lg:mt-6 font-cormorant text-parchment text-[clamp(1.6rem,3.6vw,3.4rem)] font-light leading-[1.15]"
             style={SHADOW_HEAVY}
           >
-            Most founders burn{" "}
-            <span className="italic text-brass-light">18 months</span> and{" "}
-            <span className="italic text-brass-light">$2M</span>
-            <br />
-            looking for product-market fit.
-          </h2>
-          <p
-            className="mt-5 lg:mt-6 border-l-2 border-brass-light pl-3 lg:pl-4 font-cormorant italic text-seafoam text-xl lg:text-3xl font-light"
-            style={SHADOW_HEAVY}
-          >
-            We give you{" "}
-            <span className="not-italic text-parchment font-normal">
-              an operating system
-            </span>{" "}
-            and a 12-week shortcut.
+            Veridian helps founders and companies{" "}
+            <span className="italic text-seafoam">build, test and launch</span> new products faster, with{" "}
+            <span className="italic text-brass-light">senior execution</span>{" "}
+            and <span className="italic">AI-powered development</span>.
           </p>
-          <p
-            className="mt-5 font-mono uppercase tracking-[0.24em] lg:tracking-[0.28em] text-[10px] lg:text-[11px] text-parchment/65"
-            style={SHADOW_MED}
+          <a
+            href="#sanctum"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToZone("sanctum");
+            }}
+            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+            style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
-            Veridian OS · Jarvis · Fabric · Vortex · Pulse
-          </p>
+            Start with a Product Sprint
+            <span aria-hidden>↘</span>
+          </a>
         </div>
       </div>
     </FixedFrame>
@@ -438,7 +434,7 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
           className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
           style={SHADOW_MED}
         >
-          The Studio · 003
+          How we operate
         </span>
         <h2
           className="mt-4 lg:mt-5 font-cormorant font-light text-parchment text-[clamp(2.4rem,7.5vw,7.5rem)] leading-[0.95]"
@@ -477,6 +473,223 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
   );
 }
 
+/* ---------------------- MODULE SHOWCASE — Minority Report scatter ---------
+   Holographic UI panels materialize one at a time, scattered in 3D space:
+   different sizes, different depths, different rotations — like floating
+   glass screens being summoned around the user. Each panel reveals with a
+   clip-path sweep + scale + depth animation so it feels assembled, not
+   pasted.                                                                  */
+function ModuleShowcase({
+  prints,
+  zp,
+  accent,
+}: {
+  prints: string[];
+  zp: number;
+  accent: "seafoam" | "brass";
+}) {
+  const overallOp = smoothstep(0.02, 0.12, zp);
+  const slots = prints.slice(0, 4);
+  const count = slots.length;
+
+  // Cards arrive sequentially — each gets its own slice of the zone progress.
+  // The section-snap parks the camera at REST_FRACTION (0.65) of the zone, so
+  // we MUST finish revealing all cards well before that. We aim for REVEAL_END
+  // = 0.55, which leaves ~0.10 of zone progress where every card sits fully
+  // visible and still — at least a beat of "stable" before the user advances.
+  const REVEAL_START = 0.04;
+  const REVEAL_END = 0.55;
+  const slotWindow = (REVEAL_END - REVEAL_START) / count;
+  const cardDuration = slotWindow * 1.0;
+
+  // Scattered layout in 3D space: different X/Y, different depths (Z),
+  // different sizes (scale), different Y-axis rotations (panels facing
+  // toward the viewer at slightly different angles).
+  //   x, y in % of stage (-50..50)
+  //   z  in px (depth) — negative = back, positive = forward
+  //   rotY in deg — Y-axis rotation (small to suggest 3D facing)
+  //   scale in multiplier of base width
+  const layouts: Record<number, Array<{
+    x: number; y: number; z: number; rotY: number; scale: number; w: number;
+  }>> = {
+    1: [{ x: 0, y: 0, z: 0, rotY: 0, scale: 1, w: 70 }],
+    2: [
+      { x: -22, y: -8,  z:  -30, rotY:   7, scale: 0.97, w: 58 },
+      { x:  22, y:  8,  z:   30, rotY:  -7, scale: 1.04, w: 58 },
+    ],
+    3: [
+      // top-left, back
+      { x: -24, y: -22, z:  -30, rotY:  10, scale: 0.94, w: 56 },
+      // top-right, back
+      { x:  24, y: -22, z:  -30, rotY: -10, scale: 0.94, w: 56 },
+      // bottom-center, foreground (focal)
+      { x:   0, y:  22, z:   40, rotY:   0, scale: 1.06, w: 62 },
+    ],
+    4: [
+      // 2x2 layout — clean, no card hidden behind another
+      // top-left
+      { x: -25, y: -22, z:  -20, rotY:   8, scale: 0.96, w: 52 },
+      // top-right
+      { x:  25, y: -22, z:  -20, rotY:  -8, scale: 0.96, w: 52 },
+      // bottom-left
+      { x: -25, y:  22, z:  -10, rotY:   6, scale: 0.98, w: 52 },
+      // bottom-right, foreground (focal)
+      { x:  25, y:  22, z:   30, rotY:  -6, scale: 1.04, w: 54 },
+    ],
+  };
+  const positions = layouts[count] || layouts[3];
+
+  const borderColor =
+    accent === "seafoam" ? "rgba(133,191,168,0.55)" : "rgba(232,200,138,0.55)";
+  const glowColor =
+    accent === "seafoam" ? "rgba(133,191,168,0.32)" : "rgba(232,200,138,0.28)";
+
+  return (
+    <div
+      aria-hidden
+      className="absolute inset-0 z-[5] pointer-events-none flex items-center justify-center"
+      style={{ opacity: overallOp, transition: "opacity 0.4s linear" }}
+    >
+      {/* Backdrop gradient — frames the holographic stage */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(10,22,16,0.50) 0%, rgba(10,22,16,0.75) 60%, rgba(10,22,16,0.88) 100%)",
+        }}
+      />
+
+      {/* Stage with perspective so depth offsets read as 3D */}
+      <div
+        className="relative"
+        style={{
+          width: "min(96vw, 1440px)",
+          height: "min(72vh, 760px)",
+          perspective: "1800px",
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {slots.map((src, i) => {
+          const pos = positions[i];
+          const startAt = REVEAL_START + i * slotWindow;
+          const endAt = Math.min(REVEAL_END, startAt + cardDuration);
+          const settle = smoothstep(startAt, endAt, zp);
+          // The "sweep" phase is the first 55% of the card's animation —
+          // clip-path reveals from top to bottom + blur fades out
+          const sweep = smoothstep(startAt, startAt + cardDuration * 0.55, zp);
+          const enterOffset = 1 - settle;
+
+          // Final pose values
+          const finalX = pos.x;
+          const finalY = pos.y;
+          const finalZ = pos.z;
+          const finalRotY = pos.rotY;
+          const finalScale = pos.scale;
+          // Entry: coming from deep z with reduced scale and counter-rotation
+          const enterZ = -260;
+          const enterRotY = pos.rotY > 0 ? pos.rotY + 18 : pos.rotY - 18;
+          const enterScale = 0.55;
+
+          const x = finalX;
+          const y = finalY;
+          const z = enterZ + (finalZ - enterZ) * settle;
+          const rotY = enterRotY + (finalRotY - enterRotY) * settle;
+          const scale = enterScale + (finalScale - enterScale) * settle;
+          // Clip path: starts as inset(100% 0 0 0) (fully hidden, sweep down)
+          const clip = `inset(${(1 - sweep) * 100}% 0 0 0)`;
+          // Slight blur on entry, sharp on settle
+          const blur = (1 - sweep) * 4;
+
+          return (
+            <div
+              key={src}
+              className="absolute left-1/2 top-1/2 rounded-[6px]"
+              style={{
+                width: `${pos.w}%`,
+                aspectRatio: "16 / 7.2",
+                transform: `translate3d(calc(-50% + ${x}%), calc(-50% + ${y}%), ${z}px) rotateY(${rotY}deg) scale(${scale})`,
+                opacity: settle,
+                zIndex: Math.round(20 + finalZ / 10),
+                transformStyle: "preserve-3d",
+                transition: "transform 0.6s var(--ease-organic), opacity 0.55s linear",
+              }}
+            >
+              {/* Card body with clip-path sweep + holographic frame */}
+              <div
+                className="absolute inset-0 overflow-hidden rounded-[6px]"
+                style={{
+                  clipPath: clip,
+                  WebkitClipPath: clip,
+                  border: `1px solid ${borderColor}`,
+                  boxShadow: `0 28px 80px -18px rgba(0,0,0,0.9), 0 0 1px rgba(0,0,0,0.5), 0 0 56px -10px ${glowColor}`,
+                  background: "rgba(10,22,16,0.95)",
+                  filter: `blur(${blur}px)`,
+                  transition: "clip-path 0.55s linear, filter 0.45s linear, -webkit-clip-path 0.55s linear",
+                }}
+              >
+                <img
+                  src={src}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="block w-full h-full object-cover"
+                  style={{ filter: "saturate(1.06) contrast(1.03)" }}
+                />
+                {/* Top-edge holographic highlight */}
+                <span
+                  aria-hidden
+                  className="absolute inset-x-0 top-0 h-px"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, transparent 0%, rgba(232,200,138,0.7) 50%, transparent 100%)",
+                  }}
+                />
+                {/* Scan line during reveal — moving brass glow */}
+                {sweep > 0.02 && sweep < 0.98 && (
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-0 h-[2px]"
+                    style={{
+                      top: `${sweep * 100}%`,
+                      background:
+                        accent === "seafoam"
+                          ? "linear-gradient(90deg, transparent 0%, rgba(133,191,168,0.95) 50%, transparent 100%)"
+                          : "linear-gradient(90deg, transparent 0%, rgba(232,200,138,0.95) 50%, transparent 100%)",
+                      boxShadow:
+                        accent === "seafoam"
+                          ? "0 0 18px rgba(133,191,168,0.85)"
+                          : "0 0 18px rgba(232,200,138,0.8)",
+                    }}
+                  />
+                )}
+                {/* Bottom vignette so text on top stays readable */}
+                <span
+                  aria-hidden
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(10,22,16,0.5) 100%)",
+                  }}
+                />
+              </div>
+              {/* Outer glow halo that fades after settle (like a materialization aura) */}
+              <span
+                aria-hidden
+                className="absolute -inset-2 rounded-[10px] pointer-events-none"
+                style={{
+                  opacity: enterOffset * 0.7,
+                  boxShadow: `0 0 60px 10px ${glowColor}`,
+                  transition: "opacity 0.5s linear",
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ---------------------- RESOURCE COPY — promise + 2 lines proof ----------
    launchUrl: when logged in, shows a "Launch ↗" button linking to the
    module's subdomain. Use "soon" to render a disabled Coming-soon chip. */
@@ -490,6 +703,7 @@ function ResourceCopy({
   line1,
   line2,
   launchUrl,
+  prints,
 }: {
   p: number;
   zone: Z;
@@ -500,20 +714,27 @@ function ResourceCopy({
   line1: string;
   line2: string;
   launchUrl?: string | null;
+  prints?: string[];
 }) {
   const o = useZoneOpacity(p, zone);
+  const zp = zoneProgress(p, zone.start, zone.end);
   const showLaunch = !!launchUrl;
   const isSoon = launchUrl === "soon";
+  const hasPrints = !!prints && prints.length > 0;
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex flex-col justify-end gap-6 px-6 lg:px-16 py-20 lg:py-32 pointer-events-none lg:flex-row lg:items-end lg:justify-between lg:gap-6">
+      {/* Showcase mosaic — sits behind the text. Cards stack collapsed at first
+          (zp < ~0.25), then fan out into a clean mosaic as the user scrolls. */}
+      {hasPrints && <ModuleShowcase prints={prints!} zp={zp} accent={name === "VORTEX" ? "seafoam" : "brass"} />}
+
+      <div className="absolute inset-0 z-10 flex flex-col justify-end gap-6 px-6 lg:px-16 py-20 lg:py-32 pointer-events-none lg:flex-row lg:items-end lg:justify-between lg:gap-6">
         {/* Identity block */}
         <div className="max-w-md">
           <span
             className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
             style={SHADOW_MED}
           >
-            Module · 0{idx} of Veridian OS
+            Module of Veridian OS
           </span>
           <h3
             className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(2.5rem,7vw,7rem)] leading-[0.9]"
@@ -542,8 +763,8 @@ function ResourceCopy({
                 href={launchUrl as string}
                 target="_blank"
                 rel="noreferrer"
-                className="pointer-events-auto mt-6 lg:mt-8 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
-                style={SHADOW_MED}
+                className="mt-6 lg:mt-8 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+                style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
               >
                 Launch {name.charAt(0) + name.slice(1).toLowerCase()}
                 <span aria-hidden>↗</span>
@@ -577,48 +798,132 @@ function ResourceCopy({
   );
 }
 
-/* ---------------------- METHOD — proof + urgency ---------------------- */
+/* ---------------------- METHOD — process + objection handling ----------- */
 function MethodCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 pointer-events-none">
-        <span
-          className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
-          style={SHADOW_MED}
-        >
-          The shortcut · 007
-        </span>
-        <h2
-          className="mt-5 lg:mt-6 font-cormorant font-light text-parchment text-[clamp(2rem,6vw,6rem)] leading-[0.95] max-w-3xl"
-          style={SHADOW_HEAVY}
-        >
-          Idea to <span className="italic text-seafoam">revenue</span>
-          <br />
-          in <span className="italic text-brass-light">~12 weeks</span>.
-        </h2>
-        <p
-          className="mt-6 lg:mt-8 font-cormorant text-parchment/85 text-lg lg:text-xl italic font-light max-w-lg"
-          style={SHADOW_MED}
-        >
-          You bring the conviction. Veridian OS does the work.
-        </p>
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 lg:px-8 py-12 lg:py-16 pointer-events-none">
+        {/* Subtle contrast card so the dense info reads cleanly */}
         <div
-          className="mt-6 flex flex-wrap justify-center items-center gap-x-2 lg:gap-x-3 gap-y-1 font-mono uppercase tracking-[0.18em] lg:tracking-[0.22em] text-[9px] lg:text-[11px] text-brass-light/85"
-          style={SHADOW_MED}
+          className="flex flex-col items-center max-w-5xl w-full px-6 lg:px-12 py-8 lg:py-12 rounded-[3px]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(10,22,16,0.78) 0%, rgba(10,22,16,0.55) 70%, rgba(10,22,16,0.30) 100%)",
+            backdropFilter: "blur(6px)",
+            WebkitBackdropFilter: "blur(6px)",
+            border: "1px solid rgba(232,200,138,0.18)",
+            boxShadow:
+              "0 40px 80px -20px rgba(0,0,0,0.55), inset 0 0 1px rgba(232,200,138,0.2)",
+          }}
         >
-          <span>Submit</span>
-          <span className="text-brass-light/40">→</span>
-          <span>Research</span>
-          <span className="text-brass-light/40">→</span>
-          <span>Build</span>
-          <span className="text-brass-light/40">→</span>
-          <span>Launch</span>
-          <span className="text-brass-light/40">→</span>
-          <span>Scale</span>
+          <span
+            className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
+            style={SHADOW_MED}
+          >
+            The Process
+          </span>
+          <h2
+            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.4rem,3.2vw,2.8rem)] leading-[1.15] max-w-3xl text-center"
+            style={SHADOW_HEAVY}
+          >
+            A clear process. A fair contract.
+            <br />
+            A <span className="text-brass-light">working product</span>.
+          </h2>
+
+          {/* Milestone timeline */}
+          <div className="mt-7 lg:mt-9 w-full max-w-4xl">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-y-4 gap-x-2 text-center">
+              <Milestone wk="Week 1" title="Discovery" detail="NDA signed. Brief, scope and milestones defined." />
+              <Milestone wk="Week 1" title="Scope locked" detail="Fixed price, fixed deliverables. You approve." />
+              <Milestone wk="Weeks 2–3" title="Build" detail="Senior engineers + AI execute against the spec." />
+              <Milestone wk="Week 3–4" title="Review" detail="You see and test each milestone before payment." />
+              <Milestone wk="Week 4+" title="Ship" detail="Live product. Revenue. Iterate from real data." />
+            </div>
+          </div>
+
+          {/* Safety block — addresses scam / theft / quality / unknown-company objections */}
+          <h3
+            className="mt-9 lg:mt-12 font-mono uppercase tracking-[0.28em] text-[10px] lg:text-[11px] text-brass-light"
+            style={SHADOW_MED}
+          >
+            How we protect you
+          </h3>
+          <ul
+            className="mt-4 lg:mt-5 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2.5 max-w-3xl w-full"
+            style={SHADOW_MED}
+          >
+            <SafetyItem title="U.S. registered company (4Profit AI LLC)" />
+            <SafetyItem title="NDA signed before discovery" />
+            <SafetyItem title="Fixed scope, clear milestones" />
+            <SafetyItem title="Milestone payments via Stripe" />
+            <SafetyItem title="Senior engineers + AI tools" />
+            <SafetyItem title="IP belongs to you" />
+          </ul>
+
+          {/* CTA */}
+          <a
+            href="https://wa.me/5531971701177?text=I%27d%20like%20to%20start%20a%20Product%20Sprint%20with%20Veridian"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] lg:text-[12px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
+            style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
+          >
+            Start with a Product Sprint
+            <span aria-hidden>↗</span>
+          </a>
         </div>
       </div>
     </FixedFrame>
+  );
+}
+
+function Milestone({
+  wk,
+  title,
+  detail,
+}: {
+  wk: string;
+  title: string;
+  detail: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-1 px-1.5">
+      <span
+        className="font-mono uppercase tracking-[0.22em] text-[8.5px] lg:text-[9.5px] text-brass-light/85"
+        style={SHADOW_SOFT}
+      >
+        {wk}
+      </span>
+      <span
+        className="font-sans text-parchment text-[13px] lg:text-base font-medium tracking-tight"
+        style={SHADOW_MED}
+      >
+        {title}
+      </span>
+      <span
+        className="font-sans text-parchment/70 text-[10.5px] lg:text-[11.5px] leading-tight max-w-[15ch]"
+        style={SHADOW_SOFT}
+      >
+        {detail}
+      </span>
+    </div>
+  );
+}
+
+function SafetyItem({ title }: { title: string }) {
+  return (
+    <li className="flex items-center gap-3">
+      <span
+        aria-hidden
+        className="shrink-0 inline-block w-1.5 h-1.5 rounded-full bg-brass-light"
+        style={{ boxShadow: "0 0 8px rgba(232,200,138,0.7)" }}
+      />
+      <span className="font-sans text-parchment text-[13.5px] lg:text-[15px] font-normal leading-tight">
+        {title}
+      </span>
+    </li>
   );
 }
 
@@ -666,7 +971,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
           className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
           style={SHADOW_MED}
         >
-          Portfolio · 008
+          Portfolio
         </span>
         <h2
           className="mt-2 lg:mt-3 font-cormorant font-light text-parchment text-[clamp(1.7rem,4.2vw,3.8rem)] leading-[1] max-w-3xl"
@@ -693,7 +998,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
         >
           {/* Triple the list for seamless infinite loop */}
           {[...VENTURES, ...VENTURES, ...VENTURES].map((v, i) => (
-            <PaintingCard key={`${v.id}-${i}`} v={v} />
+            <PaintingCard key={`${v.id}-${i}`} v={v} active={o > 0.5} />
           ))}
         </div>
       </div>
@@ -729,16 +1034,18 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
 
 function PaintingCard({
   v,
+  active,
 }: {
   v: { id: string; name: string; tag: string; url: string };
+  active: boolean;
 }) {
   return (
     <a
       href={v.url}
       target={v.url.startsWith("http") ? "_blank" : undefined}
       rel="noreferrer"
-      className="pointer-events-auto group flex flex-col items-center gap-3 lg:gap-4 transition-all duration-500 hover:-translate-y-1.5 shrink-0"
-      style={{ width: "clamp(170px, 45vw, 230px)" }}
+      className="group flex flex-col items-center gap-3 lg:gap-4 transition-all duration-500 hover:-translate-y-1.5 shrink-0"
+      style={{ width: "clamp(170px, 45vw, 230px)", pointerEvents: active ? "auto" : "none" }}
     >
       {/* Frame outer container — aspect 3:4 (slightly taller for the gold border) */}
       <div
@@ -808,40 +1115,54 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div id="sanctum" className="absolute inset-0 flex flex-col items-center justify-end text-center px-6 lg:px-8 pb-20 lg:pb-32 pointer-events-none">
-        <span
-          className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
-          style={SHADOW_MED}
-        >
-          Apply · 009
-        </span>
-        <h2
-          className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.8rem,5vw,4.5rem)] leading-[1] max-w-3xl"
-          style={SHADOW_HEAVY}
-        >
-          Your idea deserves more than{" "}
-          <span className="italic text-seafoam">advice</span>.
-        </h2>
-        <p
-          className="mt-3 lg:mt-4 font-cormorant italic text-parchment/90 text-base lg:text-xl font-light max-w-md"
-          style={SHADOW_MED}
-        >
-          Two founders per quarter. Reviewed personally within 7 days.
-        </p>
-
-        <a
-          href="mailto:contato@veridian.ai?subject=Veridian%20application"
-          className="pointer-events-auto mt-6 lg:mt-8 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] lg:text-[12px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
-        >
-          Apply for Q3 2026
-          <span aria-hidden>↗</span>
-        </a>
-
+      <div id="sanctum" className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 py-20 lg:py-24 pointer-events-none">
+        {/* Contrast card behind text — semi-opaque so the cathedral
+            still shows through but the copy reads strongly. */}
         <div
-          className="mt-5 lg:mt-6 font-mono uppercase tracking-[0.22em] lg:tracking-[0.26em] text-[9px] lg:text-[10px] text-brass-light/80 text-center"
-          style={SHADOW_SOFT}
+          className="flex flex-col items-center max-w-3xl px-8 lg:px-14 py-10 lg:py-14 rounded-[3px]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(10,22,16,0.78) 0%, rgba(10,22,16,0.55) 70%, rgba(10,22,16,0.25) 100%)",
+            backdropFilter: "blur(6px)",
+            WebkitBackdropFilter: "blur(6px)",
+            border: "1px solid rgba(232,200,138,0.18)",
+            boxShadow:
+              "0 40px 80px -20px rgba(0,0,0,0.6), inset 0 0 1px rgba(232,200,138,0.2)",
+          }}
         >
-          Q3 2026 · 1 slot remaining · Closes when filled
+          <span
+            className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
+            style={SHADOW_MED}
+          >
+            Get started
+          </span>
+          <h2
+            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.8rem,4.4vw,3.8rem)] leading-[1.1] max-w-2xl"
+            style={SHADOW_HEAVY}
+          >
+            Turn your <span className="italic text-seafoam">idea</span> into
+            <br />
+            a <span className="italic text-brass-light">working product</span> in weeks.
+            <br />
+            Without hiring a full team.
+          </h2>
+          <p
+            className="mt-4 lg:mt-5 font-cormorant italic text-parchment/90 text-base lg:text-xl font-light max-w-md"
+            style={SHADOW_MED}
+          >
+            Reviewed personally within 7 days.
+          </p>
+
+          <a
+            href="https://wa.me/5531971701177?text=I%27d%20like%20to%20start%20a%20Product%20Sprint%20with%20Veridian"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] lg:text-[12px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
+            style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
+          >
+            Start with a Product Sprint
+            <span aria-hidden>↗</span>
+          </a>
         </div>
 
         <div

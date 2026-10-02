@@ -8,8 +8,9 @@ import { useEffect, useRef, useState } from "react";
  * waits for the first user interaction before attempting to play.
  */
 const STORAGE_KEY = "veridian_audio";
-// Ambient floor — barely audible. Should sit under voice/typing, never compete.
-const VOLUME = 0.045;
+// Driving electronic — more present than ambient. Sits at low-medium volume,
+// still under voice/typing but actually audible as motion energy.
+const VOLUME = 0.085;
 
 export function AmbientAudio() {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -76,7 +77,7 @@ export function AmbientAudio() {
     <>
       <audio
         ref={audioRef}
-        src="/assets/audio/clockwork-ascent.mp3"
+        src="/assets/audio/the-glass-horizon.mp3"
         preload="auto"
         loop
       />
