@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useT } from "@/lib/i18n";
 
 /**
  * Background ambient track. Loops at very low volume. User can toggle anytime.
@@ -13,6 +14,7 @@ const STORAGE_KEY = "veridian_audio";
 const VOLUME = 0.085;
 
 export function AmbientAudio() {
+  const t = useT();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [enabled, setEnabled] = useState(false);
   const [interacted, setInteracted] = useState(false);
@@ -84,8 +86,8 @@ export function AmbientAudio() {
       <button
         type="button"
         onClick={toggle}
-        aria-label={enabled ? "Mute background track" : "Play background track"}
-        title={enabled ? "Mute background track" : "Play background track"}
+        aria-label={enabled ? t.audio.mute : t.audio.play}
+        title={enabled ? t.audio.mute : t.audio.play}
         className="fixed bottom-5 left-4 lg:bottom-6 lg:left-6 z-40 inline-flex items-center justify-center w-9 h-9 lg:w-10 lg:h-10 rounded-full border border-brass-light/30 hover:border-brass-light/70 text-parchment/75 hover:text-brass-light transition-all duration-500"
         style={{
           background: "rgba(10,22,16,0.55)",

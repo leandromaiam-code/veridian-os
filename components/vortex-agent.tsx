@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useT } from "@/lib/i18n";
 
 /* -----------------------------------------------------------------------------
  * VERIS — Veridian Intelligence agent
@@ -20,10 +21,8 @@ const APPEAR_AFTER_MS = 30_000;
 
 type Msg = { role: "agent" | "user"; text: string };
 
-const FALLBACK_WELCOME =
-  "I'm Veris, the Veridian intelligence. Tell me about your idea — I'll show you what we'd build in 2 weeks.";
-
 export function VortexAgent() {
+  const t = useT();
   // visibility phases
   const [appeared, setAppeared] = useState(false); // orb materialized
   const [expanded, setExpanded] = useState(false); // chat panel open
@@ -70,10 +69,10 @@ export function VortexAgent() {
       }
       // Always lead with our brand welcome; the API welcome is product-config
       // dependent (and currently points at the default product).
-      setMessages([{ role: "agent", text: FALLBACK_WELCOME }]);
+      setMessages([{ role: "agent", text: t.veris.welcome }]);
     } catch {
-      setBootError("Connection failed. Try again.");
-      setMessages([{ role: "agent", text: FALLBACK_WELCOME }]);
+      setBootError(t.veris.bootError);
+      setMessages([{ role: "agent", text: t.veris.welcome }]);
     } finally {
       setSending(false);
     }
@@ -108,7 +107,7 @@ export function VortexAgent() {
         ...m,
         {
           role: "agent",
-          text: "Connection slipped. Try once more — I'm still here.",
+          text: t.veris.sendError,
         },
       ]);
     } finally {
@@ -132,7 +131,7 @@ export function VortexAgent() {
         <button
           type="button"
           onClick={openChat}
-          aria-label="Talk to Veris, the Veridian intelligence"
+          aria-label={t.veris.orbLabel}
           className="group fixed bottom-5 right-5 lg:bottom-7 lg:right-7 z-50 w-[68px] h-[68px] lg:w-[76px] lg:h-[76px] rounded-full flex items-center justify-center pointer-events-auto"
           style={{ animation: "veris-arrive 700ms var(--ease-organic, cubic-bezier(0.22, 1, 0.36, 1)) both" }}
         >
@@ -205,7 +204,7 @@ export function VortexAgent() {
             <span className="font-mono uppercase tracking-[0.22em] text-[9px] text-brass-light mr-2">
               Veris
             </span>
-            <span>Need help? I&apos;m here.</span>
+            <span>{t.veris.balloon}</span>
             {/* tail pointing to orb */}
             <span
               className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rotate-45"
@@ -266,7 +265,7 @@ export function VortexAgent() {
             <button
               type="button"
               onClick={() => setExpanded(false)}
-              aria-label="Minimize"
+              aria-label={t.veris.minimize}
               className="font-mono uppercase tracking-[0.22em] text-[10px] text-parchment/55 hover:text-brass-light transition-colors duration-500 px-2 py-1"
             >
               ✕
@@ -281,7 +280,7 @@ export function VortexAgent() {
                   className="font-mono uppercase tracking-[0.28em] text-[10px] text-brass-light/70"
                   style={{ textShadow: "0 1px 6px rgba(0,0,0,0.6)" }}
                 >
-                  Materializing…
+                  {t.veris.loading}
                 </span>
               </div>
             )}
@@ -318,7 +317,7 @@ export function VortexAgent() {
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={onKey}
                 rows={1}
-                placeholder="Tell me about your idea…"
+                placeholder={t.veris.placeholder}
                 className="flex-1 resize-none bg-transparent border-b border-brass-light/25 focus:border-brass-light/80 outline-none font-cormorant text-parchment text-base lg:text-lg placeholder:text-parchment/35 py-2 transition-colors"
                 style={{ caretColor: "#e8c88a", maxHeight: 120 }}
                 disabled={sending}
@@ -327,7 +326,7 @@ export function VortexAgent() {
                 type="button"
                 onClick={send}
                 disabled={sending || !draft.trim()}
-                aria-label="Send"
+                aria-label={t.veris.send}
                 className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-parchment hover:text-[#0a1610] hover:bg-brass-light transition-all duration-400 disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
                   border: "1px solid rgba(232,200,138,0.45)",
@@ -449,13 +448,14 @@ function AgentMessage({ text }: { text: string }) {
 }
 
 function UserMessage({ text }: { text: string }) {
+  const t = useT();
   return (
     <div className="flex flex-col gap-1.5 items-end">
       <span
         className="font-mono uppercase tracking-[0.28em] text-[8.5px] text-parchment/55"
         style={{ textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}
       >
-        You
+        {t.veris.you}
       </span>
       <p
         className="font-cormorant text-parchment/90 text-base lg:text-lg font-light leading-[1.45] text-right max-w-[88%]"

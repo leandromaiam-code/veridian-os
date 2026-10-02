@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LoginClient from "./login-client";
+import LoginClient from "@/components/login-client";
 
 export const metadata: Metadata = {
   title: "Enter the studio · Veridian",

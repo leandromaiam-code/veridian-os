@@ -11,12 +11,14 @@ import {
   zoneProgress,
 } from "@/lib/scroll-store";
 import { supabase } from "@/lib/supabase";
+import { useLocale, useT } from "@/lib/i18n";
 
 type Session = { email: string } | null;
 
 export function Overlay() {
   const [p, setP] = useState(0);
   const [session, setSession] = useState<Session>(null);
+  const t = useT();
 
   useEffect(() => {
     setP(scrollStore.get());
@@ -67,7 +69,7 @@ export function Overlay() {
           className="font-mono uppercase tracking-[0.24em] lg:tracking-[0.28em] text-[9px] lg:text-[10px] text-parchment/85"
           style={{ textShadow: "0 2px 10px rgba(0,0,0,0.7)" }}
         >
-          Veridian · AI Studio
+          {t.brand}
         </span>
         <nav className="hidden md:flex items-center gap-4 lg:gap-6">
           {ZONES.filter((z) => !z.navHidden).map((z, i) => {
@@ -81,7 +83,7 @@ export function Overlay() {
                 style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
               >
                 <span className="mr-1.5 opacity-50">0{i + 1}</span>
-                {z.label}
+                {t.nav[z.id] ?? z.label}
               </span>
             );
           })}
@@ -97,6 +99,7 @@ export function Overlay() {
         }}
       >
         <div className="flex items-center gap-4 pointer-events-auto">
+          <LocaleSwitch />
           {session ? (
             <>
               <span
@@ -116,12 +119,12 @@ export function Overlay() {
                   WebkitBackdropFilter: "blur(10px)",
                 }}
               >
-                Logout
+                {t.logout}
               </button>
             </>
           ) : (
             <Link
-              href="/login"
+              href={t.login}
               className="group inline-flex items-center gap-2 px-5 py-2 rounded-full border border-brass-light/40 hover:border-brass-light font-mono uppercase tracking-[0.26em] text-[10px] text-brass-light hover:gap-3 transition-all duration-500"
               style={{
                 textShadow: "0 2px 10px rgba(0,0,0,0.85)",
@@ -130,7 +133,7 @@ export function Overlay() {
                 WebkitBackdropFilter: "blur(10px)",
               }}
             >
-              Enter
+              {t.enter}
               <span
                 aria-hidden
                 className="transition-transform duration-500 group-hover:translate-x-0.5"
@@ -154,10 +157,10 @@ export function Overlay() {
       <ManifestoCopy p={p} zone={g("manifesto")} />
       <ResourcesIntroCopy p={p} zone={g("resources")} />
       <ResourceCopy p={p} zone={g("fabric")} idx={1} name="FABRIC"
-        tag="The Foundry"
-        promise="Builds while you sleep."
-        line1="The product team, automated."
-        line2="Designs · codes · deploys — no backlog, no standup."
+        tag={t.modules.fabric.tag}
+        promise={t.modules.fabric.promise}
+        line1={t.modules.fabric.line1}
+        line2={t.modules.fabric.line2}
         launchUrl={session ? "https://fabric.4profitai.com" : null}
         prints={[
           "/assets/modules/fabric-01.jpg",
@@ -166,10 +169,10 @@ export function Overlay() {
         ]}
       />
       <ResourceCopy p={p} zone={g("vortex")} idx={2} name="VORTEX"
-        tag="The Engine"
-        promise="Sells while you sleep."
-        line1="The sales floor, automated."
-        line2="Finds · pitches · closes — across 12 languages, 24/7."
+        tag={t.modules.vortex.tag}
+        promise={t.modules.vortex.promise}
+        line1={t.modules.vortex.line1}
+        line2={t.modules.vortex.line2}
         launchUrl={session ? "https://vortex.4profitai.com" : null}
         prints={[
           "/assets/modules/vortex-01.jpg",
@@ -179,10 +182,10 @@ export function Overlay() {
         ]}
       />
       <ResourceCopy p={p} zone={g("pulse")} idx={3} name="PULSE"
-        tag="The Heart Beat"
-        promise="Watches while you sleep."
-        line1="The operations desk, automated."
-        line2="Users · infrastructure · agents — heals before you notice."
+        tag={t.modules.pulse.tag}
+        promise={t.modules.pulse.promise}
+        line1={t.modules.pulse.line1}
+        line2={t.modules.pulse.line2}
         launchUrl={session ? "soon" : null}
         prints={[
           "/assets/modules/pulse-03.jpg",
@@ -191,10 +194,10 @@ export function Overlay() {
         ]}
       />
       <ResourceCopy p={p} zone={g("jarvis")} idx={4} name="JARVIS"
-        tag="The Command Channel"
-        promise="One channel. Total command."
-        line1="Your single point of command and operation."
-        line2="Talk to Jarvis · he orchestrates Fabric, Vortex, Pulse for you."
+        tag={t.modules.jarvis.tag}
+        promise={t.modules.jarvis.promise}
+        line1={t.modules.jarvis.line1}
+        line2={t.modules.jarvis.line2}
         launchUrl={session ? "https://jarvis.4profitai.com" : null}
         prints={[
           "/assets/modules/jarvis-02.jpg",
@@ -216,7 +219,7 @@ export function Overlay() {
           className="font-mono uppercase tracking-[0.42em] text-[10px] text-parchment/85"
           style={{ textShadow: "0 2px 12px rgba(0,0,0,0.75)" }}
         >
-          Scroll to enter the studio
+          {t.scrollCue}
         </span>
         <div className="relative h-10 w-px overflow-hidden">
           <span
@@ -282,6 +285,67 @@ function FixedFrame({
   );
 }
 
+function whatsappUrl(text: string) {
+  return `https://wa.me/5531971701177?text=${encodeURIComponent(text)}`;
+}
+
+// Shared hero / closing headline — same highlight styling in every locale.
+function Headline() {
+  const { headline: h } = useT();
+  return (
+    <>
+      {h.a}
+      <span className="italic text-seafoam">{h.idea}</span>
+      {h.b}
+      <br />
+      {h.c}
+      <span className="italic text-brass-light">{h.product}</span>
+      {h.d}
+      <br />
+      {h.e}
+    </>
+  );
+}
+
+// EN · PT switch — plain anchors: each locale has its own root layout,
+// so switching is a full document navigation.
+function LocaleSwitch() {
+  const locale = useLocale();
+  const items = [
+    { code: "en", label: "EN", href: "/", hrefLang: "en" },
+    { code: "pt", label: "PT", href: "/pt", hrefLang: "pt-BR" },
+  ];
+  return (
+    <span
+      className="inline-flex items-center gap-2 font-mono uppercase tracking-[0.22em] text-[10px]"
+      style={{ textShadow: "0 2px 8px rgba(0,0,0,0.85)" }}
+    >
+      {items.map((it, i) => (
+        <span key={it.code} className="inline-flex items-center gap-2">
+          {i > 0 && (
+            <span aria-hidden className="text-parchment/30">
+              ·
+            </span>
+          )}
+          {it.code === locale ? (
+            <span aria-current="true" className="text-brass-light">
+              {it.label}
+            </span>
+          ) : (
+            <a
+              href={it.href}
+              hrefLang={it.hrefLang}
+              className="text-parchment/55 hover:text-brass-light transition-colors duration-500"
+            >
+              {it.label}
+            </a>
+          )}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 const SHADOW_HEAVY = { textShadow: "0 4px 28px rgba(0,0,0,0.85)" };
 const SHADOW_MED = { textShadow: "0 2px 14px rgba(0,0,0,0.75)" };
 const SHADOW_SOFT = { textShadow: "0 2px 10px rgba(0,0,0,0.65)" };
@@ -300,6 +364,7 @@ function EntryCopy(_props: { p: number; zone: Z }) {
 // scrolls through the hero zone.
 function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone, 0.04);
+  const t = useT();
   const zp = Math.max(0, Math.min(1, (p - zone.start) / (zone.end - zone.start)));
 
   // Three sub-thresholds within the hero zone — compressed so EVERYTHING is
@@ -333,7 +398,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
             className="mt-3 font-mono uppercase tracking-[0.32em] lg:tracking-[0.42em] text-[9px] lg:text-[10px] text-brass-light"
             style={SHADOW_MED}
           >
-            AI Studio · Venture Builder
+            {t.hero.wordmarkTag}
           </span>
         </div>
 
@@ -352,17 +417,13 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
               className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
               style={SHADOW_MED}
             >
-              Founder
+              {t.hero.eyebrow}
             </span>
             <h1
               className="mt-5 lg:mt-6 font-cormorant font-light text-parchment leading-[1.05] text-[clamp(1.6rem,3.6vw,3.8rem)]"
               style={SHADOW_HEAVY}
             >
-              Turn your <span className="italic text-seafoam">idea</span> into
-              <br />
-              a <span className="italic text-brass-light">working product</span> in weeks.
-              <br />
-              Without hiring a full team.
+              <Headline />
             </h1>
             <a
               href="#sanctum"
@@ -373,7 +434,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
               className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
               style={{ ...SHADOW_MED, pointerEvents: o > 0.4 ? "auto" : "none" }}
             >
-              Start with a Product Sprint
+              {t.cta}
               <span aria-hidden>↘</span>
             </a>
           </div>
@@ -387,6 +448,7 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
 /* ---------------------- MANIFESTO — contrast + claim ---------------------- */
 function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
+  const t = useT();
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
       <div className="absolute inset-0 flex items-end justify-start px-6 lg:px-16 py-20 lg:py-32 pointer-events-none">
@@ -395,16 +457,19 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
             className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
             style={SHADOW_MED}
           >
-            Why we exist
+            {t.manifesto.eyebrow}
           </span>
           <p
             className="mt-5 lg:mt-6 font-cormorant text-parchment text-[clamp(1.6rem,3.6vw,3.4rem)] font-light leading-[1.15]"
             style={SHADOW_HEAVY}
           >
-            Veridian helps founders and companies{" "}
-            <span className="italic text-seafoam">build, test and launch</span> new products faster, with{" "}
-            <span className="italic text-brass-light">senior execution</span>{" "}
-            and <span className="italic">AI-powered development</span>.
+            {t.manifesto.a}
+            <span className="italic text-seafoam">{t.manifesto.hl1}</span>
+            {t.manifesto.b}
+            <span className="italic text-brass-light">{t.manifesto.hl2}</span>
+            {t.manifesto.c}
+            <span className="italic">{t.manifesto.hl3}</span>
+            {t.manifesto.d}
           </p>
           <a
             href="#sanctum"
@@ -415,7 +480,7 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
             className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
             style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
-            Start with a Product Sprint
+            {t.cta}
             <span aria-hidden>↘</span>
           </a>
         </div>
@@ -427,6 +492,7 @@ function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
 /* ---------------------- VERIDIAN OS INTRO — preamble to the 4 modules --- */
 function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
+  const t = useT();
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 pointer-events-none">
@@ -434,7 +500,7 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
           className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
           style={SHADOW_MED}
         >
-          How we operate
+          {t.os.eyebrow}
         </span>
         <h2
           className="mt-4 lg:mt-5 font-cormorant font-light text-parchment text-[clamp(2.4rem,7.5vw,7.5rem)] leading-[0.95]"
@@ -446,27 +512,27 @@ function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
           className="mt-3 lg:mt-4 font-cormorant italic text-parchment/90 text-lg lg:text-2xl font-light max-w-xl"
           style={SHADOW_MED}
         >
-          One operating system. Four modules. None of them sleep.
+          {t.os.tagline}
         </p>
 
         <div
           className="mt-8 lg:mt-10 flex flex-wrap justify-center items-center gap-x-4 lg:gap-x-8 gap-y-2 font-cormorant text-parchment/95 text-lg lg:text-2xl font-light"
           style={SHADOW_MED}
         >
-          <span><span className="text-brass-light not-italic">Jarvis</span> <span className="italic">commands</span>.</span>
+          <span><span className="text-brass-light not-italic">Jarvis</span> <span className="italic">{t.os.verbs.jarvis}</span>.</span>
           <span className="text-parchment/30 hidden sm:inline">·</span>
-          <span><span className="text-brass-light not-italic">Fabric</span> <span className="italic">builds</span>.</span>
+          <span><span className="text-brass-light not-italic">Fabric</span> <span className="italic">{t.os.verbs.fabric}</span>.</span>
           <span className="text-parchment/30 hidden sm:inline">·</span>
-          <span><span className="text-brass-light not-italic">Vortex</span> <span className="italic">sells</span>.</span>
+          <span><span className="text-brass-light not-italic">Vortex</span> <span className="italic">{t.os.verbs.vortex}</span>.</span>
           <span className="text-parchment/30 hidden sm:inline">·</span>
-          <span><span className="text-brass-light not-italic">Pulse</span> <span className="italic">watches</span>.</span>
+          <span><span className="text-brass-light not-italic">Pulse</span> <span className="italic">{t.os.verbs.pulse}</span>.</span>
         </div>
 
         <p
           className="mt-8 lg:mt-10 font-cormorant italic text-parchment/80 text-sm lg:text-lg font-light max-w-lg"
           style={SHADOW_MED}
         >
-          Built once. Inherited by every venture, from day zero.
+          {t.os.footnote}
         </p>
       </div>
     </FixedFrame>
@@ -717,6 +783,7 @@ function ResourceCopy({
   prints?: string[];
 }) {
   const o = useZoneOpacity(p, zone);
+  const t = useT();
   const zp = zoneProgress(p, zone.start, zone.end);
   const showLaunch = !!launchUrl;
   const isSoon = launchUrl === "soon";
@@ -734,7 +801,7 @@ function ResourceCopy({
             className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
             style={SHADOW_MED}
           >
-            Module of Veridian OS
+            {t.module.eyebrow}
           </span>
           <h3
             className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(2.5rem,7vw,7rem)] leading-[0.9]"
@@ -756,7 +823,7 @@ function ResourceCopy({
                 className="mt-6 lg:mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-parchment/15 text-parchment/55 font-mono uppercase tracking-[0.22em] text-[10px]"
                 style={SHADOW_SOFT}
               >
-                Coming soon
+                {t.module.soon}
               </span>
             ) : (
               <a
@@ -766,7 +833,7 @@ function ResourceCopy({
                 className="mt-6 lg:mt-8 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
                 style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
               >
-                Launch {name.charAt(0) + name.slice(1).toLowerCase()}
+                {t.module.launch} {name.charAt(0) + name.slice(1).toLowerCase()}
                 <span aria-hidden>↗</span>
               </a>
             ))}
@@ -801,6 +868,7 @@ function ResourceCopy({
 /* ---------------------- METHOD — process + objection handling ----------- */
 function MethodCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
+  const t = useT();
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
       <div className="absolute inset-0 flex flex-col items-center justify-center px-6 lg:px-8 py-12 lg:py-16 pointer-events-none">
@@ -821,25 +889,25 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
             className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
             style={SHADOW_MED}
           >
-            The Process
+            {t.method.eyebrow}
           </span>
           <h2
             className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.4rem,3.2vw,2.8rem)] leading-[1.15] max-w-3xl text-center"
             style={SHADOW_HEAVY}
           >
-            A clear process. A fair contract.
+            {t.method.title1}
             <br />
-            A <span className="text-brass-light">working product</span>.
+            {t.method.title2a}
+            <span className="text-brass-light">{t.method.title2hl}</span>
+            {t.method.title2b}
           </h2>
 
           {/* Milestone timeline */}
           <div className="mt-7 lg:mt-9 w-full max-w-4xl">
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-y-4 gap-x-2 text-center">
-              <Milestone wk="Week 1" title="Discovery" detail="NDA signed. Brief, scope and milestones defined." />
-              <Milestone wk="Week 1" title="Scope locked" detail="Fixed price, fixed deliverables. You approve." />
-              <Milestone wk="Weeks 2–3" title="Build" detail="Senior engineers + AI execute against the spec." />
-              <Milestone wk="Week 3–4" title="Review" detail="You see and test each milestone before payment." />
-              <Milestone wk="Week 4+" title="Ship" detail="Live product. Revenue. Iterate from real data." />
+              {t.method.milestones.map((m) => (
+                <Milestone key={m.title} wk={m.wk} title={m.title} detail={m.detail} />
+              ))}
             </div>
           </div>
 
@@ -848,29 +916,26 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
             className="mt-9 lg:mt-12 font-mono uppercase tracking-[0.28em] text-[10px] lg:text-[11px] text-brass-light"
             style={SHADOW_MED}
           >
-            How we protect you
+            {t.method.safetyTitle}
           </h3>
           <ul
             className="mt-4 lg:mt-5 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2.5 max-w-3xl w-full"
             style={SHADOW_MED}
           >
-            <SafetyItem title="U.S. registered company (4Profit AI LLC)" />
-            <SafetyItem title="NDA signed before discovery" />
-            <SafetyItem title="Fixed scope, clear milestones" />
-            <SafetyItem title="Milestone payments via Stripe" />
-            <SafetyItem title="Senior engineers + AI tools" />
-            <SafetyItem title="IP belongs to you" />
+            {t.method.safety.map((item) => (
+              <SafetyItem key={item} title={item} />
+            ))}
           </ul>
 
           {/* CTA */}
           <a
-            href="https://wa.me/5531971701177?text=I%27d%20like%20to%20start%20a%20Product%20Sprint%20with%20Veridian"
+            href={whatsappUrl(t.whatsappText)}
             target="_blank"
             rel="noreferrer"
             className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] lg:text-[12px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
             style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
-            Start with a Product Sprint
+            {t.cta}
             <span aria-hidden>↗</span>
           </a>
         </div>
@@ -929,15 +994,16 @@ function SafetyItem({ title }: { title: string }) {
 
 /* ---------------------- VENTURES — horizontal marquee gallery ----------- */
 const VENTURES = [
-  { id: "conciera", name: "Conciera",  tag: "hospitality intelligence",   url: "https://conciera.ai" },
-  { id: "knexo",    name: "kNexo",     tag: "connection layer",           url: "https://knexo.io" },
-  { id: "tegplus",  name: "TEG+",      tag: "operations OS",              url: "#" },
-  { id: "lovedopa", name: "LoveDopa",  tag: "Parkinson's platform",       url: "#" },
-  { id: "zettapay", name: "ZettaPay",  tag: "payments infrastructure",    url: "#" },
+  { id: "conciera", name: "Conciera",  url: "https://conciera.ai" },
+  { id: "knexo",    name: "kNexo",     url: "https://knexo.io" },
+  { id: "tegplus",  name: "TEG+",      url: "#" },
+  { id: "lovedopa", name: "LoveDopa",  url: "#" },
+  { id: "zettapay", name: "ZettaPay",  url: "#" },
 ];
 
 function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
+  const t = useT();
   const zp = zoneProgress(p, zone.start, zone.end);
 
   // Scroll-driven horizontal motion: row translates as user scrolls through zone.
@@ -971,19 +1037,19 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
           className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
           style={SHADOW_MED}
         >
-          Portfolio
+          {t.ventures.eyebrow}
         </span>
         <h2
           className="mt-2 lg:mt-3 font-cormorant font-light text-parchment text-[clamp(1.7rem,4.2vw,3.8rem)] leading-[1] max-w-3xl"
           style={SHADOW_HEAVY}
         >
-          Ventures <span className="italic text-seafoam">in motion.</span>
+          {t.ventures.title}<span className="italic text-seafoam">{t.ventures.titleHl}</span>
         </h2>
         <p
           className="mt-2 lg:mt-3 font-cormorant italic text-parchment/80 text-sm lg:text-lg font-light"
           style={SHADOW_MED}
         >
-          Real customers. Real revenue. Growing weekly.
+          {t.ventures.sub}
         </p>
       </div>
 
@@ -998,7 +1064,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
         >
           {/* Triple the list for seamless infinite loop */}
           {[...VENTURES, ...VENTURES, ...VENTURES].map((v, i) => (
-            <PaintingCard key={`${v.id}-${i}`} v={v} active={o > 0.5} />
+            <PaintingCard key={`${v.id}-${i}`} v={{ ...v, tag: t.ventures.tags[v.id] }} active={o > 0.5} />
           ))}
         </div>
       </div>
@@ -1025,7 +1091,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
           className="font-sans text-parchment/85 text-xs lg:text-sm max-w-md mx-auto"
           style={SHADOW_MED}
         >
-          Each running on Jarvis · Fabric · Vortex · Pulse.
+          {t.ventures.footnote}
         </p>
       </div>
     </FixedFrame>
@@ -1113,6 +1179,7 @@ function PaintingCard({
 /* ---------------------- SANCTUM — close ---------------------- */
 function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
+  const t = useT();
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
       <div id="sanctum" className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 py-20 lg:py-24 pointer-events-none">
@@ -1134,33 +1201,29 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
             className="font-mono uppercase tracking-[0.32em] text-[10px] lg:text-[11px] text-brass-light"
             style={SHADOW_MED}
           >
-            Get started
+            {t.sanctum.eyebrow}
           </span>
           <h2
             className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.8rem,4.4vw,3.8rem)] leading-[1.1] max-w-2xl"
             style={SHADOW_HEAVY}
           >
-            Turn your <span className="italic text-seafoam">idea</span> into
-            <br />
-            a <span className="italic text-brass-light">working product</span> in weeks.
-            <br />
-            Without hiring a full team.
+            <Headline />
           </h2>
           <p
             className="mt-4 lg:mt-5 font-cormorant italic text-parchment/90 text-base lg:text-xl font-light max-w-md"
             style={SHADOW_MED}
           >
-            Reviewed personally within 7 days.
+            {t.sanctum.sub}
           </p>
 
           <a
-            href="https://wa.me/5531971701177?text=I%27d%20like%20to%20start%20a%20Product%20Sprint%20with%20Veridian"
+            href={whatsappUrl(t.whatsappText)}
             target="_blank"
             rel="noreferrer"
             className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase tracking-[0.22em] text-[11px] lg:text-[12px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
             style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
-            Start with a Product Sprint
+            {t.cta}
             <span aria-hidden>↗</span>
           </a>
         </div>
@@ -1169,7 +1232,7 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
           className="mt-10 lg:mt-12 font-mono uppercase tracking-[0.2em] lg:tracking-[0.26em] text-[9px] lg:text-[10px] text-parchment/55"
           style={SHADOW_SOFT}
         >
-          © 2026 · Veridian AI Studio · Built by 4Profit.AI
+          {t.sanctum.footer}
         </div>
       </div>
     </FixedFrame>

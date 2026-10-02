@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { DICT, type Locale } from "@/lib/i18n";
 
-export default function LoginClient() {
+export default function LoginClient({ locale = "en" }: { locale?: Locale }) {
+  const t = DICT[locale];
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,9 +20,9 @@ export default function LoginClient() {
     setMounted(true);
     // If already signed in, bounce to /
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) router.replace("/");
+      if (data.session) router.replace(t.home);
     });
-  }, [router]);
+  }, [router, t.home]);
 
   const onSubmitPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,10 +35,10 @@ export default function LoginClient() {
     });
     setSubmitting(false);
     if (error) {
-      setError(error.message || "Sign-in failed.");
+      setError(error.message || t.loginPage.failed);
       return;
     }
-    router.push("/");
+    router.push(t.home);
   };
 
   return (
@@ -71,7 +73,7 @@ export default function LoginClient() {
 
       <header className="relative z-20 flex items-center justify-between px-8 lg:px-14 py-7">
         <Link
-          href="/"
+          href={t.home}
           className="group inline-flex items-center gap-2 font-mono uppercase tracking-[0.28em] text-[10px] text-parchment/75 hover:text-brass-light transition-colors"
           style={{ textShadow: "0 2px 10px rgba(0,0,0,0.7)" }}
         >
@@ -81,13 +83,13 @@ export default function LoginClient() {
           >
             ←
           </span>
-          Back to studio
+          {t.loginPage.back}
         </Link>
         <span
           className="font-mono uppercase tracking-[0.28em] text-[10px] text-parchment/85"
           style={{ textShadow: "0 2px 10px rgba(0,0,0,0.7)" }}
         >
-          Veridian · AI Studio
+          {t.brand}
         </span>
       </header>
 
@@ -127,12 +129,12 @@ export default function LoginClient() {
               className="mt-3 font-mono uppercase tracking-[0.42em] text-[10px] text-brass-light"
               style={{ textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}
             >
-              Enter the studio
+              {t.loginPage.enterStudio}
             </span>
           </div>
 
           <Field
-            label="Email"
+            label={t.loginPage.email}
             type="email"
             value={email}
             onChange={setEmail}
@@ -142,7 +144,7 @@ export default function LoginClient() {
 
           <div className="h-7" />
           <Field
-            label="Password"
+            label={t.loginPage.password}
             type="password"
             value={password}
             onChange={setPassword}
@@ -161,17 +163,17 @@ export default function LoginClient() {
             className="mt-10 w-full inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full bg-brass-deep/85 text-parchment font-mono uppercase tracking-[0.22em] text-[11px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40 disabled:opacity-50"
             style={{ textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}
           >
-            {submitting ? "Entering…" : "Enter"}
+            {submitting ? t.loginPage.submitting : t.loginPage.submit}
             <span aria-hidden>↗</span>
           </button>
 
           <p className="mt-8 text-center font-mono uppercase tracking-[0.22em] text-[9px] text-parchment/45">
-            New here?{" "}
+            {t.loginPage.newHere}{" "}
             <a
               href="mailto:contato@veridian.ai?subject=Veridian%20access"
               className="text-brass-light/85 hover:text-brass-light transition-colors"
             >
-              Request access ↗
+              {t.loginPage.request}
             </a>
           </p>
         </form>
