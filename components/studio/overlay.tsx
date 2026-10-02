@@ -335,6 +335,10 @@ function LocaleSwitch() {
             <a
               href={it.href}
               hrefLang={it.hrefLang}
+              onClick={() => {
+                // Remember the explicit choice so proxy.ts stops auto-detecting.
+                document.cookie = `veridian-locale=${it.code}; path=/; max-age=31536000; samesite=lax`;
+              }}
               className="text-parchment/95 hover:text-brass-light transition-colors duration-500"
             >
               {it.label}
@@ -1055,6 +1059,10 @@ const VENTURES = [
   { id: "zettapay", name: "ZettaPay",  url: "#" },
 ];
 
+// Copies of the list in the marquee row. 4 keeps 3 copies (~4300px on
+// desktop) to the right of the wrap point — enough for ultrawide screens.
+const VENTURE_COPIES = 4;
+
 function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   const t = useT();
@@ -1062,8 +1070,11 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
 
   // Scroll-driven horizontal motion: row translates as user scrolls through zone.
   // Plus a continuous slow drift (auto-marquee) so it feels alive even when idle.
-  // We render the venture list TWICE in the row → seamless loop when translated by -50%.
-  // Scroll consumes ~70% of the loop; the remaining 30% comes from auto-drift.
+  // The list is rendered VENTURE_COPIES times; one copy is exactly
+  // 100/VENTURE_COPIES % of the row (spacing is padding on each item, not flex
+  // gap), so wrapping the offset at that period is seamless and there are
+  // always copies left to fill the viewport, however wide.
+  const period = 100 / VENTURE_COPIES;
   const [autoOffset, setAutoOffset] = useState(0);
 
   useEffect(() => {
@@ -1073,21 +1084,21 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
     const tick = (now: number) => {
       const dt = (now - last) / 1000;
       last = now;
-      setAutoOffset((prev) => (prev + dt * 1.2) % 50); // 50% over ~42s
+      setAutoOffset((prev) => (prev + dt * 0.6) % period); // one copy in ~42s
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [o]);
+  }, [o, period]);
 
-  // Combined translate: zp*35% (scroll) + autoOffset (continuous drift)
-  const translateX = -(zp * 35 + autoOffset);
+  // Combined translate: scroll progress + continuous drift, wrapped to one copy
+  const translateX = -((zp * period * 0.7 + autoOffset) % period);
 
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
       <Scrim background={SCRIM.topBottom} />
       {/* Title — top */}
-      <div className="absolute inset-x-0 top-[8%] lg:top-[10%] flex flex-col items-center text-center pointer-events-none px-6 lg:px-8">
+      <div className="absolute inset-x-0 top-[6%] lg:top-[7%] flex flex-col items-center text-center pointer-events-none px-6 lg:px-8">
         <span
           className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
           style={SHADOW_LABEL}
@@ -1111,16 +1122,19 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
       {/* Marquee row — centered vertically */}
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 overflow-hidden pointer-events-none">
         <div
-          className="flex items-center gap-6 sm:gap-8 lg:gap-14 will-change-transform"
+          className="flex items-center will-change-transform"
           style={{
             transform: `translate3d(${translateX}%, 0, 0)`,
             width: "max-content",
           }}
         >
-          {/* Triple the list for seamless infinite loop */}
-          {[...VENTURES, ...VENTURES, ...VENTURES].map((v, i) => (
-            <PaintingCard key={`${v.id}-${i}`} v={{ ...v, tag: t.ventures.tags[v.id] }} active={o > 0.5} />
-          ))}
+          {Array.from({ length: VENTURE_COPIES }, () => VENTURES)
+            .flat()
+            .map((v, i) => (
+              <div key={`${v.id}-${i}`} className="shrink-0 pr-6 sm:pr-8 lg:pr-14">
+                <PaintingCard v={{ ...v, tag: t.ventures.tags[v.id] }} active={o > 0.5} />
+              </div>
+            ))}
         </div>
       </div>
 
