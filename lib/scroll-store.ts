@@ -25,17 +25,14 @@ export const scrollStore = {
 // Each zone is "a room" in the same Veridian cathedral.
 
 const ZONE_DEFS = [
-  { id: "entry",       weight: 1.0, label: "Entry",       navHidden: false },
-  { id: "hero",        weight: 1.8, label: "Hero",        navHidden: true  }, // progressive reveal of original layout
-  { id: "manifesto",   weight: 1.0, label: "Manifesto",   navHidden: false },
-  { id: "ventures",    weight: 1.2, label: "Ventures",    navHidden: false }, // portfolio proof right after manifesto
-  { id: "method",      weight: 1.0, label: "Method",      navHidden: false }, // process + safety before product showcase
-  { id: "resources",   weight: 0.9, label: "Veridian OS", navHidden: false }, // OS intro
-  { id: "fabric",      weight: 1.3, label: "Fabric",      navHidden: true  },
-  { id: "vortex",      weight: 1.3, label: "Vortex",      navHidden: true  },
-  { id: "pulse",       weight: 1.3, label: "Pulse",       navHidden: true  },
-  { id: "jarvis",      weight: 1.3, label: "Jarvis",      navHidden: true  }, // closing operator
-  { id: "sanctum",     weight: 1.4, label: "Apply",       navHidden: false },
+  { id: "entry",    weight: 1.0, label: "Entry",        navHidden: false },
+  { id: "hero",     weight: 1.6, label: "Hero",         navHidden: true  }, // promise + CTA
+  { id: "deliver",  weight: 1.0, label: "What you get", navHidden: false }, // the offer
+  { id: "method",   weight: 1.0, label: "Process",      navHidden: false }, // process + guarantees
+  { id: "ventures", weight: 1.3, label: "Portfolio",    navHidden: false }, // visual portfolio
+  { id: "engine",   weight: 1.0, label: "How",          navHidden: false }, // Veridian OS, in one screen
+  { id: "faq",      weight: 1.0, label: "FAQ",          navHidden: false }, // objections
+  { id: "sanctum",  weight: 1.4, label: "Start",        navHidden: false }, // lead form + WhatsApp
 ] as const;
 
 const TOTAL_W = ZONE_DEFS.reduce((s, z) => s + z.weight, 0);

@@ -25,27 +25,23 @@ function build(): Zone[] {
     return { start: z.start, end: z.end };
   };
   // Walking script through the cathedral:
-  //  Entry        → approach the shrine     (forward)
-  //  Manifesto    → step back, behold nave  (sideways-left, slow pan)
-  //  Jarvis       → enter throne room       (forward)
-  //  Fabric       → cross to forge          (sideways-right)
-  //  Vortex       → continue to engine      (sideways-left)
-  //  Pulse        → step into observatory   (forward)
-  //  Method       → exit through corridor   (forward, deeper)
-  //  Ventures     → close-up gallery        (still — paintings)
-  //  Sanctum      → return to shrine        (forward)
+  //  Entry     → approach the shrine      (still)
+  //  Hero      → step toward it           (forward)
+  //  Deliver   → step back, behold nave   (sideways-left, slow pan)
+  //  Method    → walk the corridor        (forward)
+  //  Ventures  → gallery                  (sideways-left)
+  //  Engine    → cross to the forge       (sideways-right)
+  //  FAQ       → close-up                 (forward)
+  //  Sanctum   → return to the shrine     (forward)
   return [
-    { id: "entry",      ...map("entry"),       src: "/assets/hero/veridian-cathedral.jpg", dolly: "still" },
-    { id: "hero",       ...map("hero"),        src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
-    { id: "manifesto",  ...map("manifesto"),   src: "/assets/hero/env-wide.jpg",           dolly: "sideways-left" },
-    { id: "resources",  ...map("resources"), src: "/assets/hero/env-mid.jpg",            dolly: "forward" },
-    { id: "jarvis",     ...map("jarvis"),    src: "/assets/hero/jarvis-cathedral.jpg",   dolly: "forward" },
-    { id: "fabric",     ...map("fabric"),    src: "/assets/hero/fabric-cathedral.jpg",   dolly: "sideways-right" },
-    { id: "vortex",     ...map("vortex"),    src: "/assets/hero/vortex-cathedral.jpg",   dolly: "sideways-left" },
-    { id: "pulse",      ...map("pulse"),     src: "/assets/hero/pulse-cathedral.jpg",    dolly: "forward" },
-    { id: "method",     ...map("method"),    src: "/assets/hero/env-mid.jpg",            dolly: "forward" },
-    { id: "ventures",   ...map("ventures"),  src: "/assets/hero/env-mid.jpg",            dolly: "sideways-left" },
-    { id: "sanctum",    ...map("sanctum"),   src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
+    { id: "entry",    ...map("entry"),    src: "/assets/hero/veridian-cathedral.jpg", dolly: "still" },
+    { id: "hero",     ...map("hero"),     src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
+    { id: "deliver",  ...map("deliver"),  src: "/assets/hero/env-wide.jpg",           dolly: "sideways-left" },
+    { id: "method",   ...map("method"),   src: "/assets/hero/env-mid.jpg",            dolly: "forward" },
+    { id: "ventures", ...map("ventures"), src: "/assets/hero/env-mid.jpg",            dolly: "sideways-left" },
+    { id: "engine",   ...map("engine"),   src: "/assets/hero/fabric-cathedral.jpg",   dolly: "sideways-right" },
+    { id: "faq",      ...map("faq"),      src: "/assets/hero/env-close.jpg",          dolly: "forward" },
+    { id: "sanctum",  ...map("sanctum"),  src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
   ];
 }
 

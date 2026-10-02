@@ -11,7 +11,8 @@ import {
   zoneProgress,
 } from "@/lib/scroll-store";
 import { supabase } from "@/lib/supabase";
-import { useLocale, useT } from "@/lib/i18n";
+import { useLocale, useT, whatsappUrl } from "@/lib/i18n";
+import { LeadForm } from "@/components/lead-form";
 
 type Session = { email: string } | null;
 
@@ -154,60 +155,11 @@ export function Overlay() {
 
       <EntryCopy p={p} zone={g("entry")} />
       <HeroProgressiveCopy p={p} zone={g("hero")} />
-      <ManifestoCopy p={p} zone={g("manifesto")} />
-      <ResourcesIntroCopy p={p} zone={g("resources")} />
-      <ResourceCopy p={p} zone={g("fabric")} idx={1} name="FABRIC"
-        tag={t.modules.fabric.tag}
-        promise={t.modules.fabric.promise}
-        line1={t.modules.fabric.line1}
-        line2={t.modules.fabric.line2}
-        launchUrl={session ? "https://fabric.4profitai.com" : null}
-        prints={[
-          "/assets/modules/fabric-01.jpg",
-          "/assets/modules/fabric-02.jpg",
-          "/assets/modules/fabric-00.jpg",
-        ]}
-      />
-      <ResourceCopy p={p} zone={g("vortex")} idx={2} name="VORTEX"
-        tag={t.modules.vortex.tag}
-        promise={t.modules.vortex.promise}
-        line1={t.modules.vortex.line1}
-        line2={t.modules.vortex.line2}
-        launchUrl={session ? "https://vortex.4profitai.com" : null}
-        prints={[
-          "/assets/modules/vortex-01.jpg",
-          "/assets/modules/vortex-02.jpg",
-          "/assets/modules/vortex-03.jpg",
-          "/assets/modules/vortex-00.jpg",
-        ]}
-      />
-      <ResourceCopy p={p} zone={g("pulse")} idx={3} name="PULSE"
-        tag={t.modules.pulse.tag}
-        promise={t.modules.pulse.promise}
-        line1={t.modules.pulse.line1}
-        line2={t.modules.pulse.line2}
-        launchUrl={session ? "soon" : null}
-        prints={[
-          "/assets/modules/pulse-03.jpg",
-          "/assets/modules/pulse-04.jpg",
-          "/assets/modules/pulse-02.jpg",
-        ]}
-      />
-      <ResourceCopy p={p} zone={g("jarvis")} idx={4} name="JARVIS"
-        tag={t.modules.jarvis.tag}
-        promise={t.modules.jarvis.promise}
-        line1={t.modules.jarvis.line1}
-        line2={t.modules.jarvis.line2}
-        launchUrl={session ? "https://jarvis.4profitai.com" : null}
-        prints={[
-          "/assets/modules/jarvis-02.jpg",
-          "/assets/modules/jarvis-03.jpg",
-          "/assets/modules/jarvis-04.jpg",
-          "/assets/modules/jarvis-01.jpg",
-        ]}
-      />
+      <DeliverCopy p={p} zone={g("deliver")} />
       <MethodCopy p={p} zone={g("method")} />
       <VenturesCopy p={p} zone={g("ventures")} />
+      <EngineCopy p={p} zone={g("engine")} loggedIn={!!session} />
+      <FaqCopy p={p} zone={g("faq")} />
       <SanctumCopy p={p} zone={g("sanctum")} />
 
       {/* Entry scroll cue — only visible while in the very first frame */}
@@ -283,10 +235,6 @@ function FixedFrame({
       {children}
     </div>
   );
-}
-
-function whatsappUrl(text: string) {
-  return `https://wa.me/5531971701177?text=${encodeURIComponent(text)}`;
 }
 
 // Shared hero / closing headline — same highlight styling in every locale.
@@ -490,433 +438,59 @@ function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
   );
 }
 
-/* ---------------------- MANIFESTO — contrast + claim ---------------------- */
-function ManifestoCopy({ p, zone }: { p: number; zone: Z }) {
+/* ---------------------- DELIVER — what the visitor gets ---------------- */
+function DeliverCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   const t = useT();
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
       <Scrim background={SCRIM.left} />
-      <div className="absolute inset-0 flex items-end justify-start px-6 lg:px-16 py-20 lg:py-32 pointer-events-none">
-        <div className="max-w-2xl">
+      <div className="absolute inset-0 flex items-end justify-start px-6 lg:px-16 py-20 lg:py-28 pointer-events-none">
+        <div className="max-w-3xl">
           <span
             className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
             style={SHADOW_LABEL}
           >
-            {t.manifesto.eyebrow}
+            {t.deliver.eyebrow}
           </span>
-          <p
-            className="mt-5 lg:mt-6 font-cormorant text-parchment text-[clamp(1.6rem,3.6vw,3.4rem)] font-light leading-[1.15]"
+          <h2
+            className="mt-4 lg:mt-5 font-cormorant text-parchment text-[clamp(1.6rem,3.4vw,3.4rem)] leading-[1.1]"
             style={SHADOW_HEAVY}
           >
-            {t.manifesto.a}
-            <span className="italic text-seafoam">{t.manifesto.hl1}</span>
-            {t.manifesto.b}
-            <span className="italic text-brass-light">{t.manifesto.hl2}</span>
-            {t.manifesto.c}
-            <span className="italic">{t.manifesto.hl3}</span>
-            {t.manifesto.d}
-          </p>
+            {t.deliver.title1}
+            <br />
+            {t.deliver.title2a}
+            <span className="italic text-brass-light">{t.deliver.title2hl}</span>
+            {t.deliver.title2b}
+          </h2>
+          <ul
+            className="mt-6 lg:mt-8 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2.5 lg:gap-y-3"
+            style={SHADOW_MED}
+          >
+            {t.deliver.items.map((item) => (
+              <SafetyItem key={item} title={item} />
+            ))}
+          </ul>
+          {t.deliver.price && (
+            <p
+              className="mt-5 lg:mt-6 font-cormorant italic text-brass-light text-lg lg:text-2xl"
+              style={SHADOW_MED}
+            >
+              {t.deliver.price}
+            </p>
+          )}
           <a
             href="#sanctum"
             onClick={(e) => {
               e.preventDefault();
               scrollToZone("sanctum");
             }}
-            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
+            className="mt-7 lg:mt-9 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
             style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
           >
             {t.cta}
             <span aria-hidden>↘</span>
           </a>
-        </div>
-      </div>
-    </FixedFrame>
-  );
-}
-
-/* ---------------------- VERIDIAN OS INTRO — preamble to the 4 modules --- */
-function ResourcesIntroCopy({ p, zone }: { p: number; zone: Z }) {
-  const o = useZoneOpacity(p, zone);
-  const t = useT();
-  return (
-    <FixedFrame opacity={o} pointer={o > 0.5}>
-      <Scrim background={SCRIM.center} />
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 pointer-events-none">
-        <span
-          className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-          style={SHADOW_LABEL}
-        >
-          {t.os.eyebrow}
-        </span>
-        <h2
-          className="mt-4 lg:mt-5 font-cormorant font-light text-parchment text-[clamp(2.4rem,7.5vw,7.5rem)] leading-[0.95]"
-          style={SHADOW_HEAVY}
-        >
-          Veridian <span className="italic text-seafoam">OS</span>.
-        </h2>
-        <p
-          className="mt-3 lg:mt-4 font-cormorant italic text-parchment/90 text-lg lg:text-2xl font-light max-w-3xl"
-          style={SHADOW_MED}
-        >
-          {t.os.tagline}
-        </p>
-
-        <div
-          className="mt-8 lg:mt-10 flex flex-wrap justify-center items-center gap-x-4 lg:gap-x-8 gap-y-2 font-cormorant text-parchment/95 text-lg lg:text-2xl font-light"
-          style={SHADOW_MED}
-        >
-          <span><span className="text-brass-light not-italic">Jarvis</span> <span className="italic">{t.os.verbs.jarvis}</span>.</span>
-          <span className="text-parchment/30 hidden sm:inline">·</span>
-          <span><span className="text-brass-light not-italic">Fabric</span> <span className="italic">{t.os.verbs.fabric}</span>.</span>
-          <span className="text-parchment/30 hidden sm:inline">·</span>
-          <span><span className="text-brass-light not-italic">Vortex</span> <span className="italic">{t.os.verbs.vortex}</span>.</span>
-          <span className="text-parchment/30 hidden sm:inline">·</span>
-          <span><span className="text-brass-light not-italic">Pulse</span> <span className="italic">{t.os.verbs.pulse}</span>.</span>
-        </div>
-
-        <p
-          className="mt-8 lg:mt-10 font-cormorant italic text-parchment/95 text-sm lg:text-lg font-light max-w-lg"
-          style={SHADOW_MED}
-        >
-          {t.os.footnote}
-        </p>
-      </div>
-    </FixedFrame>
-  );
-}
-
-/* ---------------------- MODULE SHOWCASE — Minority Report scatter ---------
-   Holographic UI panels materialize one at a time, scattered in 3D space:
-   different sizes, different depths, different rotations — like floating
-   glass screens being summoned around the user. Each panel reveals with a
-   clip-path sweep + scale + depth animation so it feels assembled, not
-   pasted.                                                                  */
-function ModuleShowcase({
-  prints,
-  zp,
-  accent,
-}: {
-  prints: string[];
-  zp: number;
-  accent: "seafoam" | "brass";
-}) {
-  const overallOp = smoothstep(0.02, 0.12, zp);
-  const slots = prints.slice(0, 4);
-  const count = slots.length;
-
-  // Cards arrive sequentially — each gets its own slice of the zone progress.
-  // The section-snap parks the camera at REST_FRACTION (0.65) of the zone, so
-  // we MUST finish revealing all cards well before that. We aim for REVEAL_END
-  // = 0.55, which leaves ~0.10 of zone progress where every card sits fully
-  // visible and still — at least a beat of "stable" before the user advances.
-  const REVEAL_START = 0.04;
-  const REVEAL_END = 0.55;
-  const slotWindow = (REVEAL_END - REVEAL_START) / count;
-  const cardDuration = slotWindow * 1.0;
-
-  // Scattered layout in 3D space: different X/Y, different depths (Z),
-  // different sizes (scale), different Y-axis rotations (panels facing
-  // toward the viewer at slightly different angles).
-  //   x, y in % of stage (-50..50)
-  //   z  in px (depth) — negative = back, positive = forward
-  //   rotY in deg — Y-axis rotation (small to suggest 3D facing)
-  //   scale in multiplier of base width
-  const layouts: Record<number, Array<{
-    x: number; y: number; z: number; rotY: number; scale: number; w: number;
-  }>> = {
-    1: [{ x: 0, y: 0, z: 0, rotY: 0, scale: 1, w: 70 }],
-    2: [
-      { x: -22, y: -8,  z:  -30, rotY:   7, scale: 0.97, w: 58 },
-      { x:  22, y:  8,  z:   30, rotY:  -7, scale: 1.04, w: 58 },
-    ],
-    3: [
-      // top-left, back
-      { x: -24, y: -22, z:  -30, rotY:  10, scale: 0.94, w: 56 },
-      // top-right, back
-      { x:  24, y: -22, z:  -30, rotY: -10, scale: 0.94, w: 56 },
-      // bottom-center, foreground (focal)
-      { x:   0, y:  22, z:   40, rotY:   0, scale: 1.06, w: 62 },
-    ],
-    4: [
-      // 2x2 layout — clean, no card hidden behind another
-      // top-left
-      { x: -25, y: -22, z:  -20, rotY:   8, scale: 0.96, w: 52 },
-      // top-right
-      { x:  25, y: -22, z:  -20, rotY:  -8, scale: 0.96, w: 52 },
-      // bottom-left
-      { x: -25, y:  22, z:  -10, rotY:   6, scale: 0.98, w: 52 },
-      // bottom-right, foreground (focal)
-      { x:  25, y:  22, z:   30, rotY:  -6, scale: 1.04, w: 54 },
-    ],
-  };
-  const positions = layouts[count] || layouts[3];
-
-  const borderColor =
-    accent === "seafoam" ? "rgba(133,191,168,0.55)" : "rgba(232,200,138,0.55)";
-  const glowColor =
-    accent === "seafoam" ? "rgba(133,191,168,0.32)" : "rgba(232,200,138,0.28)";
-
-  return (
-    <div
-      aria-hidden
-      className="absolute inset-0 z-[5] pointer-events-none flex items-center justify-center"
-      style={{ opacity: overallOp, transition: "opacity 0.4s linear" }}
-    >
-      {/* Backdrop gradient — frames the holographic stage */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, rgba(10,22,16,0.50) 0%, rgba(10,22,16,0.75) 60%, rgba(10,22,16,0.88) 100%)",
-        }}
-      />
-
-      {/* Stage with perspective so depth offsets read as 3D */}
-      <div
-        className="relative"
-        style={{
-          width: "min(96vw, 1440px)",
-          height: "min(72vh, 760px)",
-          perspective: "1800px",
-          transformStyle: "preserve-3d",
-        }}
-      >
-        {slots.map((src, i) => {
-          const pos = positions[i];
-          const startAt = REVEAL_START + i * slotWindow;
-          const endAt = Math.min(REVEAL_END, startAt + cardDuration);
-          const settle = smoothstep(startAt, endAt, zp);
-          // The "sweep" phase is the first 55% of the card's animation —
-          // clip-path reveals from top to bottom + blur fades out
-          const sweep = smoothstep(startAt, startAt + cardDuration * 0.55, zp);
-          const enterOffset = 1 - settle;
-
-          // Final pose values
-          const finalX = pos.x;
-          const finalY = pos.y;
-          const finalZ = pos.z;
-          const finalRotY = pos.rotY;
-          const finalScale = pos.scale;
-          // Entry: coming from deep z with reduced scale and counter-rotation
-          const enterZ = -260;
-          const enterRotY = pos.rotY > 0 ? pos.rotY + 18 : pos.rotY - 18;
-          const enterScale = 0.55;
-
-          const x = finalX;
-          const y = finalY;
-          const z = enterZ + (finalZ - enterZ) * settle;
-          const rotY = enterRotY + (finalRotY - enterRotY) * settle;
-          const scale = enterScale + (finalScale - enterScale) * settle;
-          // Clip path: starts as inset(100% 0 0 0) (fully hidden, sweep down)
-          const clip = `inset(${(1 - sweep) * 100}% 0 0 0)`;
-          // Slight blur on entry, sharp on settle
-          const blur = (1 - sweep) * 4;
-
-          return (
-            <div
-              key={src}
-              className="absolute left-1/2 top-1/2 rounded-[6px]"
-              style={{
-                width: `${pos.w}%`,
-                aspectRatio: "16 / 7.2",
-                transform: `translate3d(calc(-50% + ${x}%), calc(-50% + ${y}%), ${z}px) rotateY(${rotY}deg) scale(${scale})`,
-                opacity: settle,
-                zIndex: Math.round(20 + finalZ / 10),
-                transformStyle: "preserve-3d",
-                transition: "transform 0.6s var(--ease-organic), opacity 0.55s linear",
-              }}
-            >
-              {/* Card body with clip-path sweep + holographic frame */}
-              <div
-                className="absolute inset-0 overflow-hidden rounded-[6px]"
-                style={{
-                  clipPath: clip,
-                  WebkitClipPath: clip,
-                  border: `1px solid ${borderColor}`,
-                  boxShadow: `0 28px 80px -18px rgba(0,0,0,0.9), 0 0 1px rgba(0,0,0,0.5), 0 0 56px -10px ${glowColor}`,
-                  background: "rgba(10,22,16,0.95)",
-                  filter: `blur(${blur}px)`,
-                  transition: "clip-path 0.55s linear, filter 0.45s linear, -webkit-clip-path 0.55s linear",
-                }}
-              >
-                <img
-                  src={src}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  className="block w-full h-full object-cover"
-                  style={{ filter: "saturate(1.06) contrast(1.03)" }}
-                />
-                {/* Top-edge holographic highlight */}
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 top-0 h-px"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, transparent 0%, rgba(232,200,138,0.7) 50%, transparent 100%)",
-                  }}
-                />
-                {/* Scan line during reveal — moving brass glow */}
-                {sweep > 0.02 && sweep < 0.98 && (
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-0 h-[2px]"
-                    style={{
-                      top: `${sweep * 100}%`,
-                      background:
-                        accent === "seafoam"
-                          ? "linear-gradient(90deg, transparent 0%, rgba(133,191,168,0.95) 50%, transparent 100%)"
-                          : "linear-gradient(90deg, transparent 0%, rgba(232,200,138,0.95) 50%, transparent 100%)",
-                      boxShadow:
-                        accent === "seafoam"
-                          ? "0 0 18px rgba(133,191,168,0.85)"
-                          : "0 0 18px rgba(232,200,138,0.8)",
-                    }}
-                  />
-                )}
-                {/* Bottom vignette so text on top stays readable */}
-                <span
-                  aria-hidden
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(10,22,16,0.5) 100%)",
-                  }}
-                />
-              </div>
-              {/* Outer glow halo that fades after settle (like a materialization aura) */}
-              <span
-                aria-hidden
-                className="absolute -inset-2 rounded-[10px] pointer-events-none"
-                style={{
-                  opacity: enterOffset * 0.7,
-                  boxShadow: `0 0 60px 10px ${glowColor}`,
-                  transition: "opacity 0.5s linear",
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-/* ---------------------- RESOURCE COPY — promise + 2 lines proof ----------
-   launchUrl: when logged in, shows a "Launch ↗" button linking to the
-   module's subdomain. Use "soon" to render a disabled Coming-soon chip. */
-function ResourceCopy({
-  p,
-  zone,
-  idx,
-  name,
-  tag,
-  promise,
-  line1,
-  line2,
-  launchUrl,
-  prints,
-}: {
-  p: number;
-  zone: Z;
-  idx: number;
-  name: string;
-  tag: string;
-  promise: string;
-  line1: string;
-  line2: string;
-  launchUrl?: string | null;
-  prints?: string[];
-}) {
-  const o = useZoneOpacity(p, zone);
-  const t = useT();
-  const zp = zoneProgress(p, zone.start, zone.end);
-  const showLaunch = !!launchUrl;
-  const isSoon = launchUrl === "soon";
-  const hasPrints = !!prints && prints.length > 0;
-  return (
-    <FixedFrame opacity={o} pointer={o > 0.5}>
-      {/* Showcase mosaic — sits behind the text. Cards stack collapsed at first
-          (zp < ~0.25), then fan out into a clean mosaic as the user scrolls. */}
-      {hasPrints && <ModuleShowcase prints={prints!} zp={zp} accent={name === "VORTEX" ? "seafoam" : "brass"} />}
-
-      {/* Bottom scrim — the showcase cards can be bright; this keeps the copy
-          that sits over their lower half readable. */}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 z-[6] h-[62%] pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(0deg, rgba(10,22,16,0.94) 0%, rgba(10,22,16,0.8) 38%, rgba(10,22,16,0) 100%)",
-        }}
-      />
-
-      <div className="absolute inset-0 z-10 flex flex-col justify-end gap-6 px-6 lg:px-16 py-20 lg:py-32 pointer-events-none lg:flex-row lg:items-end lg:justify-between lg:gap-6">
-        {/* Identity block */}
-        <div className="max-w-md">
-          <span
-            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_LABEL}
-          >
-            {t.module.eyebrow}
-          </span>
-          <h3
-            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(2.5rem,7vw,7rem)] leading-[0.9]"
-            style={SHADOW_HEAVY}
-          >
-            {name}
-            <span className="text-brass-light">.</span>
-          </h3>
-          <p
-            className="mt-1 lg:mt-2 font-cormorant italic font-light text-seafoam text-xl lg:text-3xl"
-            style={SHADOW_HEAVY}
-          >
-            {tag}.
-          </p>
-
-          {showLaunch &&
-            (isSoon ? (
-              <span
-                className="mt-6 lg:mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-parchment/15 text-parchment/95 font-mono uppercase tracking-[0.22em] text-[11.5px]"
-                style={SHADOW_SOFT}
-              >
-                {t.module.soon}
-              </span>
-            ) : (
-              <a
-                href={launchUrl as string}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-6 lg:mt-8 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
-                style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
-              >
-                {t.module.launch} {name.charAt(0) + name.slice(1).toLowerCase()}
-                <span aria-hidden>↗</span>
-              </a>
-            ))}
-        </div>
-
-        {/* Pitch block */}
-        <div className="max-w-md lg:max-w-sm lg:text-right lg:self-end flex flex-col gap-2 lg:gap-2.5">
-          <p
-            className="font-cormorant text-parchment text-xl lg:text-3xl font-light leading-snug italic"
-            style={SHADOW_HEAVY}
-          >
-            {promise}
-          </p>
-          <p
-            className="font-cormorant text-brass-light text-base lg:text-xl font-light leading-tight"
-            style={SHADOW_MED}
-          >
-            {line1}
-          </p>
-          <p
-            className="font-sans text-parchment/95 text-[14px] lg:text-base leading-relaxed"
-            style={SHADOW_MED}
-          >
-            {line2}
-          </p>
         </div>
       </div>
     </FixedFrame>
@@ -1051,17 +625,27 @@ function SafetyItem({ title }: { title: string }) {
 }
 
 /* ---------------------- VENTURES — horizontal marquee gallery ----------- */
+// Every system in the studio, shown by a real screen of it. Public products
+// link to their site; internal tools and client systems have no link.
 const VENTURES = [
-  { id: "conciera", name: "Conciera",  url: "https://conciera.ai" },
-  { id: "knexo",    name: "kNexo",     url: "https://knexo.io" },
-  { id: "tegplus",  name: "TEG+",      url: "#" },
-  { id: "lovedopa", name: "LoveDopa",  url: "#" },
-  { id: "zettapay", name: "ZettaPay",  url: "#" },
+  { id: "conciera",   name: "Conciera",   img: "/assets/portfolio/conciera.jpg",    url: "https://conciera.com.br" },
+  { id: "knexo",      name: "kNexo",      img: "/assets/portfolio/knexo.jpg",       url: "https://knexo.io" },
+  { id: "vortex",     name: "Vortex",     img: "/assets/modules/vortex-01.jpg",     url: "#" },
+  { id: "tsign",      name: "Tsign",      img: "/assets/portfolio/tsign.jpg",       url: "https://tsign.4profitai.com" },
+  { id: "zettapay",   name: "ZettaPay",   img: "/assets/portfolio/zettapay.jpg",    url: "https://zettapay.4profitai.com" },
+  { id: "fabric",     name: "Fabric",     img: "/assets/modules/fabric-01.jpg",     url: "#" },
+  { id: "lovedopa",   name: "LoveDopa",   img: "/assets/portfolio/lovedopa.jpg",    url: "https://lovedopa.org" },
+  { id: "sofiaai",    name: "SofiaAI",    img: "/assets/portfolio/sofiaai.jpg",     url: "#" },
+  { id: "pulse",      name: "Pulse",      img: "/assets/modules/pulse-03.jpg",      url: "#" },
+  { id: "knexo-jobs", name: "kNexo Jobs", img: "/assets/portfolio/knexo-jobs.jpg",  url: "https://knexo-jobs.vercel.app" },
+  { id: "fivsense",   name: "FivSense",   img: "/assets/portfolio/fivsense.jpg",    url: "https://fivsense.vercel.app" },
+  { id: "jarvis",     name: "Jarvis",     img: "/assets/modules/jarvis-02.jpg",     url: "#" },
+  { id: "tegplus",    name: "TEG+",       img: "/assets/ventures/painting-tegplus.jpg", url: "#" },
 ];
 
-// Copies of the list in the marquee row. 4 keeps 3 copies (~4300px on
-// desktop) to the right of the wrap point — enough for ultrawide screens.
-const VENTURE_COPIES = 4;
+// Copies of the list in the marquee row. One copy is ~13 cards (~5900px on
+// desktop), so two always fill the viewport after the wrap point.
+const VENTURE_COPIES = 2;
 
 function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
@@ -1084,7 +668,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
     const tick = (now: number) => {
       const dt = (now - last) / 1000;
       last = now;
-      setAutoOffset((prev) => (prev + dt * 0.6) % period); // one copy in ~42s
+      setAutoOffset((prev) => (prev + (dt * period) / 150) % period); // one copy in ~150s
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -1092,7 +676,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
   }, [o, period]);
 
   // Combined translate: scroll progress + continuous drift, wrapped to one copy
-  const translateX = -((zp * period * 0.7 + autoOffset) % period);
+  const translateX = -((zp * period * 0.2 + autoOffset) % period);
 
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
@@ -1110,7 +694,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
           {t.ventures.eyebrow}
         </span>
         <h2
-          className="mt-2 lg:mt-3 font-cormorant font-light text-parchment text-[clamp(1.5rem,min(4.2vw,7vh),3.8rem)] leading-[1] max-w-3xl"
+          className="mt-2 lg:mt-3 font-cormorant font-light text-parchment text-[clamp(1.5rem,min(3.6vw,7vh),3.4rem)] leading-[1.05] max-w-6xl"
           style={SHADOW_HEAVY}
         >
           {t.ventures.title}<span className="italic text-seafoam">{t.ventures.titleHl}</span>
@@ -1136,21 +720,12 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
             .flat()
             .map((v, i) => (
               <div key={`${v.id}-${i}`} className="shrink-0 pr-6 sm:pr-8 lg:pr-14">
-                <PaintingCard v={{ ...v, tag: t.ventures.tags[v.id] }} active={o > 0.5} />
+                <SystemCard v={{ ...v, tag: t.ventures.tags[v.id] }} active={o > 0.5} />
               </div>
             ))}
         </div>
       </div>
 
-      {/* Footnote */}
-      <div className="text-center pointer-events-none px-6 lg:px-8">
-        <p
-          className="font-sans text-parchment/85 text-xs lg:text-sm max-w-md mx-auto"
-          style={SHADOW_MED}
-        >
-          {t.ventures.footnote}
-        </p>
-      </div>
       </div>
 
       {/* Edge fade masks for elegance */}
@@ -1173,32 +748,29 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
   );
 }
 
-function PaintingCard({
+function SystemCard({
   v,
   active,
 }: {
-  v: { id: string; name: string; tag: string; url: string };
+  v: { id: string; name: string; tag: string; url: string; img: string };
   active: boolean;
 }) {
+  const external = v.url.startsWith("http");
   return (
     <a
-      href={v.url}
-      target={v.url.startsWith("http") ? "_blank" : undefined}
+      href={external ? v.url : undefined}
+      target={external ? "_blank" : undefined}
       rel="noreferrer"
       className="group flex flex-col items-center gap-3 lg:gap-4 transition-all duration-500 hover:-translate-y-1.5 shrink-0"
       style={{
         // Width follows the viewport HEIGHT too: ~390px are taken by the title,
-        // plaque, footnote and paddings; the frame (3:4) gets what is left.
-        width: "clamp(110px, min(45vw, calc((100svh - 390px) * 0.75)), 230px)",
-        pointerEvents: active ? "auto" : "none",
+        // plaque and paddings; the frame (16:10) gets what is left.
+        width: "clamp(190px, min(72vw, calc((100svh - 390px) * 1.6)), 400px)",
+        pointerEvents: active && external ? "auto" : "none",
       }}
     >
-      {/* Frame outer container — aspect 3:4 (slightly taller for the gold border) */}
-      <div
-        className="relative w-full"
-        style={{ aspectRatio: "3 / 4" }}
-      >
-        {/* Gold frame background (full area) */}
+      {/* Gold frame around a real screen of the system */}
+      <div className="relative w-full" style={{ aspectRatio: "16 / 10" }}>
         <div
           className="absolute inset-0"
           style={{
@@ -1209,30 +781,24 @@ function PaintingCard({
             borderRadius: "2px",
           }}
         />
-        {/* Inner canvas — painting */}
         <div
-          className="absolute overflow-hidden"
+          className="absolute overflow-hidden bg-[#0a1610]"
           style={{
-            top: 8,
-            left: 8,
-            right: 8,
-            bottom: 8,
+            top: 6,
+            left: 6,
+            right: 6,
+            bottom: 6,
             borderRadius: "1px",
             boxShadow:
               "inset 0 0 0 1px rgba(20,35,29,0.45), 0 0 0 1px rgba(20,35,29,0.4)",
           }}
         >
           <Image
-            src={`/assets/ventures/painting-${v.id}.jpg`}
+            src={v.img}
             alt={v.name}
             fill
-            sizes="230px"
-            className="object-cover transition-all duration-500 group-hover:brightness-110"
-          />
-          {/* Canvas inner depth */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ boxShadow: "inset 0 0 22px rgba(0,0,0,0.55)" }}
+            sizes="400px"
+            className="object-cover object-top transition-all duration-500 group-hover:brightness-110"
           />
         </div>
       </div>
@@ -1256,20 +822,162 @@ function PaintingCard({
   );
 }
 
+/* ---------------------- ENGINE — Veridian OS, in one screen -------------- */
+// The four modules used to take five full screens. For the visitor they are
+// only the reason delivery is fast, so they get one screen and one line each.
+// Signed-in operators still get their launch links here.
+const MODULE_URLS: Record<string, string | null> = {
+  fabric: "https://fabric.4profitai.com",
+  vortex: "https://vortex.4profitai.com",
+  pulse: null,
+  jarvis: "https://jarvis.4profitai.com",
+};
+
+function EngineCopy({
+  p,
+  zone,
+  loggedIn,
+}: {
+  p: number;
+  zone: Z;
+  loggedIn: boolean;
+}) {
+  const o = useZoneOpacity(p, zone);
+  const t = useT();
+  return (
+    <FixedFrame opacity={o} pointer={o > 0.5}>
+      <Scrim background={SCRIM.center} />
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 pointer-events-none">
+        <span
+          className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
+          style={SHADOW_LABEL}
+        >
+          {t.engine.eyebrow}
+        </span>
+        <h2
+          className="mt-3 lg:mt-4 font-cormorant text-parchment text-[clamp(2.2rem,min(6vw,11vh),6rem)] leading-[0.95]"
+          style={SHADOW_HEAVY}
+        >
+          {t.engine.title}
+          <span className="italic text-seafoam">{t.engine.titleHl}</span>.
+        </h2>
+        <p
+          className="mt-3 lg:mt-4 font-cormorant italic text-parchment text-base lg:text-xl max-w-2xl"
+          style={SHADOW_MED}
+        >
+          {t.engine.sub}
+        </p>
+
+        <div className="mt-7 lg:mt-10 grid grid-cols-2 lg:grid-cols-4 gap-x-6 lg:gap-x-10 gap-y-5 max-w-5xl">
+          {t.engine.modules.map((m) => {
+            const url = MODULE_URLS[m.id];
+            return (
+              <div key={m.id} className="flex flex-col items-center gap-1" style={SHADOW_MED}>
+                <span className="font-cormorant text-xl lg:text-2xl text-parchment">
+                  {loggedIn && url ? (
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-brass-light underline underline-offset-4 decoration-brass-light/40 hover:decoration-brass-light"
+                      style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
+                    >
+                      {m.name} ↗
+                    </a>
+                  ) : (
+                    <span className="text-brass-light">{m.name}</span>
+                  )}{" "}
+                  <span className="italic">{m.verb}</span>
+                  {loggedIn && !url && (
+                    <span className="ml-2 font-mono uppercase tracking-[0.18em] text-[10px] text-parchment/70">
+                      {t.engine.soon}
+                    </span>
+                  )}
+                </span>
+                <span className="font-sans text-parchment/90 text-[13px] lg:text-sm leading-snug max-w-[24ch]">
+                  {m.line}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        <p
+          className="mt-7 lg:mt-10 font-cormorant italic text-parchment/90 text-sm lg:text-lg max-w-xl"
+          style={SHADOW_MED}
+        >
+          {t.engine.footnote}
+        </p>
+      </div>
+    </FixedFrame>
+  );
+}
+
+/* ---------------------- FAQ — objections, answered ---------------------- */
+function FaqCopy({ p, zone }: { p: number; zone: Z }) {
+  const o = useZoneOpacity(p, zone);
+  const t = useT();
+  return (
+    <FixedFrame opacity={o} pointer={o > 0.5}>
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-5 lg:px-8 py-[clamp(56px,9vh,96px)] pointer-events-none">
+        <div
+          className="flex flex-col items-center max-w-5xl w-full px-6 lg:px-12 py-[clamp(18px,4vh,44px)] rounded-[3px]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(10,22,16,0.84) 0%, rgba(10,22,16,0.66) 70%, rgba(10,22,16,0.42) 100%)",
+            backdropFilter: "blur(6px)",
+            WebkitBackdropFilter: "blur(6px)",
+            border: "1px solid rgba(232,200,138,0.18)",
+            boxShadow:
+              "0 40px 80px -20px rgba(0,0,0,0.55), inset 0 0 1px rgba(232,200,138,0.2)",
+          }}
+        >
+          <span
+            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
+            style={SHADOW_LABEL}
+          >
+            {t.faq.eyebrow}
+          </span>
+          <h2
+            className="mt-2 lg:mt-3 font-cormorant text-parchment text-[clamp(1.4rem,min(3.2vw,5.5vh),2.8rem)] leading-[1.1] text-center"
+            style={SHADOW_HEAVY}
+          >
+            {t.faq.title}
+            <span className="italic text-seafoam">{t.faq.titleHl}</span>
+          </h2>
+
+          <dl className="mt-[clamp(12px,3vh,32px)] grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-[clamp(8px,2vh,20px)] w-full">
+            {t.faq.items.map((item) => (
+              <div key={item.q} style={SHADOW_MED}>
+                <dt className="font-cormorant text-brass-light text-[17px] lg:text-xl leading-snug">
+                  {item.q}
+                </dt>
+                <dd className="mt-0.5 lg:mt-1 font-sans text-parchment text-[13px] lg:text-[14.5px] leading-snug">
+                  {item.a}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </FixedFrame>
+  );
+}
+
 /* ---------------------- SANCTUM — close ---------------------- */
 function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   const t = useT();
   return (
     <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div id="sanctum" className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 py-20 lg:py-24 pointer-events-none">
+      <div id="sanctum" className="absolute inset-0 flex flex-col items-center justify-center text-center px-5 lg:px-8 py-[clamp(56px,9vh,96px)] pointer-events-none">
         {/* Contrast card behind text — semi-opaque so the cathedral
             still shows through but the copy reads strongly. */}
         <div
-          className="flex flex-col items-center max-w-3xl px-8 lg:px-14 py-10 lg:py-14 rounded-[3px]"
+          className="flex flex-col items-center w-full max-w-3xl px-6 lg:px-14 py-[clamp(18px,4vh,48px)] rounded-[3px]"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(10,22,16,0.78) 0%, rgba(10,22,16,0.55) 70%, rgba(10,22,16,0.25) 100%)",
+              "radial-gradient(ellipse at center, rgba(10,22,16,0.86) 0%, rgba(10,22,16,0.7) 70%, rgba(10,22,16,0.45) 100%)",
             backdropFilter: "blur(6px)",
             WebkitBackdropFilter: "blur(6px)",
             border: "1px solid rgba(232,200,138,0.18)",
@@ -1284,7 +992,7 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
             {t.sanctum.eyebrow}
           </span>
           <h2
-            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.5rem,3vw,2.7rem)] leading-[1.12] max-w-2xl"
+            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.4rem,min(3vw,5.5vh),2.7rem)] leading-[1.12] max-w-2xl"
             style={SHADOW_HEAVY}
           >
             <Headline />
@@ -1296,20 +1004,11 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
             {t.sanctum.sub}
           </p>
 
-          <a
-            href={whatsappUrl(t.whatsappText)}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[12.5px] lg:text-[13px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
-            style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
-          >
-            {t.cta}
-            <span aria-hidden>↗</span>
-          </a>
+          <LeadForm active={o > 0.5} />
         </div>
 
         <div
-          className="mt-10 lg:mt-12 font-mono uppercase tracking-[0.2em] lg:tracking-[0.26em] text-[11px] lg:text-[11.5px] text-parchment/95"
+          className="mt-[clamp(12px,3vh,44px)] font-mono uppercase tracking-[0.2em] lg:tracking-[0.26em] text-[11px] lg:text-[11.5px] text-parchment/95"
           style={SHADOW_SOFT}
         >
           {t.sanctum.footer}

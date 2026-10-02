@@ -8,6 +8,10 @@ export type Locale = "en" | "pt";
  * Site copy, per locale. English lives at "/", Portuguese at "/pt".
  * Headlines are split into parts so each locale keeps the same highlight
  * styling (italic seafoam / brass) around its own words.
+ *
+ * The page is written for the visitor — what they get, how it works, what it
+ * looks like, why trust it — not for the internal tooling. Veridian OS and its
+ * modules appear once, as the reason delivery is fast (`engine`).
  * --------------------------------------------------------------------------- */
 const en = {
   htmlLang: "en",
@@ -16,11 +20,12 @@ const en = {
   brand: "Veridian · AI Studio",
   nav: {
     entry: "Entry",
-    manifesto: "Manifesto",
-    ventures: "Ventures",
-    method: "Method",
-    resources: "Veridian OS",
-    sanctum: "Apply",
+    deliver: "What you get",
+    method: "Process",
+    ventures: "Portfolio",
+    engine: "How",
+    faq: "FAQ",
+    sanctum: "Start",
   } as Record<string, string>,
   logout: "Logout",
   enter: "Enter",
@@ -40,57 +45,22 @@ const en = {
     d: " in weeks.",
     e: "Without hiring a full team.",
   },
-  manifesto: {
-    eyebrow: "Why we exist",
-    a: "Veridian helps founders and companies ",
-    hl1: "build, test and launch",
-    b: " new products faster, with ",
-    hl2: "senior execution",
-    c: " and ",
-    hl3: "AI-powered development",
-    d: ".",
-  },
-  os: {
-    eyebrow: "How we operate",
-    tagline: "One operating system. Four modules. None of them sleep.",
-    verbs: {
-      jarvis: "commands",
-      fabric: "builds",
-      vortex: "sells",
-      pulse: "watches",
-    },
-    footnote: "Built once. Inherited by every venture, from day zero.",
-  },
-  module: {
-    eyebrow: "Module of Veridian OS",
-    launch: "Launch",
-    soon: "Coming soon",
-  },
-  modules: {
-    fabric: {
-      tag: "The Foundry",
-      promise: "Builds while you sleep.",
-      line1: "The product team, automated.",
-      line2: "Designs · codes · deploys — no backlog, no standup.",
-    },
-    vortex: {
-      tag: "The Engine",
-      promise: "Sells while you sleep.",
-      line1: "The sales floor, automated.",
-      line2: "Finds · pitches · closes — across 12 languages, 24/7.",
-    },
-    pulse: {
-      tag: "The Heart Beat",
-      promise: "Watches while you sleep.",
-      line1: "The operations desk, automated.",
-      line2: "Users · infrastructure · agents — heals before you notice.",
-    },
-    jarvis: {
-      tag: "The Command Channel",
-      promise: "One channel. Total command.",
-      line1: "Your single point of command and operation.",
-      line2: "Talk to Jarvis · he orchestrates Fabric, Vortex, Pulse for you.",
-    },
+  deliver: {
+    eyebrow: "What you get",
+    title1: "In 4 weeks, a product live.",
+    title2a: "And it is ",
+    title2hl: "yours",
+    title2b: ".",
+    items: [
+      "A working product, published and open to your customers",
+      "Source code and IP are 100% yours",
+      "Scope and price fixed before we start",
+      "You test and approve each milestone before paying",
+      "Sign-in, database and payments, when the product needs them",
+      "We stay after launch and iterate from real data",
+    ],
+    // Shown under the list when filled in (e.g. "Product Sprints from US$ …").
+    price: "",
   },
   method: {
     eyebrow: "The Process",
@@ -117,22 +87,82 @@ const en = {
   },
   ventures: {
     eyebrow: "Portfolio",
-    title: "Ventures ",
-    titleHl: "in motion.",
-    sub: "Real customers. Real revenue. Growing weekly.",
-    footnote: "Each running on Jarvis · Fabric · Vortex · Pulse.",
+    title: "Systems we ",
+    titleHl: "built and run.",
+    sub: "Real screens from products in our studio.",
     tags: {
-      conciera: "hospitality intelligence",
-      knexo: "connection layer",
-      tegplus: "operations OS",
-      lovedopa: "Parkinson's platform",
-      zettapay: "payments infrastructure",
+      conciera: "AI concierge for clinics",
+      knexo: "personal finance on WhatsApp",
+      "knexo-jobs": "job search on autopilot",
+      zettapay: "non-custodial crypto payments",
+      tsign: "electronic signatures",
+      lovedopa: "Parkinson's care diary",
+      sofiaai: "AI sales agent",
+      fivsense: "behaviour prediction API",
+      tegplus: "operations ERP",
+      vortex: "autonomous CRM and growth",
+      fabric: "autonomous development",
+      pulse: "operations monitoring",
+      jarvis: "command channel",
     } as Record<string, string>,
+  },
+  engine: {
+    eyebrow: "How we deliver this fast",
+    title: "Veridian ",
+    titleHl: "OS",
+    sub: "Our own operating system does the heavy lifting. You never have to learn it.",
+    modules: [
+      { id: "fabric", name: "Fabric", verb: "builds", line: "Designs, codes and deploys your product." },
+      { id: "vortex", name: "Vortex", verb: "sells", line: "Finds, pitches and follows up with customers." },
+      { id: "pulse", name: "Pulse", verb: "watches", line: "Monitors users, infrastructure and agents." },
+      { id: "jarvis", name: "Jarvis", verb: "commands", line: "One channel to orchestrate everything." },
+    ],
+    footnote: "Built once. Inherited by every product we ship, from day zero.",
+    soon: "soon",
+  },
+  faq: {
+    eyebrow: "Before you ask",
+    title: "Straight ",
+    titleHl: "answers.",
+    items: [
+      {
+        q: "Do I need to understand technology?",
+        a: "No. You bring the idea and the knowledge of your market; the engineering is on us.",
+      },
+      {
+        q: "Is the code mine?",
+        a: "Yes. Source code and intellectual property are yours, and an NDA is signed before we start.",
+      },
+      {
+        q: "What if I don't like the result?",
+        a: "You see and test each milestone before paying for it. Scope and price are fixed up front.",
+      },
+      {
+        q: "How much does it cost?",
+        a: "It depends on the scope. The price is fixed in week one, before any payment.",
+      },
+      {
+        q: "What happens after launch?",
+        a: "We keep going with you: the product evolves from real usage data.",
+      },
+    ],
   },
   sanctum: {
     eyebrow: "Get started",
-    sub: "Reviewed personally within 7 days.",
+    sub: "Tell us the idea. Reviewed personally within 7 days.",
     footer: "© 2026 · Veridian AI Studio · Built by 4Profit.AI",
+  },
+  form: {
+    name: "Your name",
+    contact: "E-mail or WhatsApp",
+    idea: "Your idea, in a sentence or two",
+    submit: "Send my idea",
+    sending: "Sending…",
+    or: "or talk on WhatsApp",
+    sentTitle: "Got it.",
+    sent: "Your idea is with us. We will get back to you within 7 days.",
+    fallback: "We could not save it here, so we opened WhatsApp with your message ready to send.",
+    whatsappLead: "Hi! I'm {name} ({contact}). My idea: {idea}",
   },
   audio: {
     mute: "Mute background track",
@@ -173,10 +203,11 @@ const pt: Dict = {
   brand: "Veridian · AI Studio",
   nav: {
     entry: "Entrada",
-    manifesto: "Manifesto",
-    ventures: "Ventures",
-    method: "Método",
-    resources: "Veridian OS",
+    deliver: "O que você recebe",
+    method: "Processo",
+    ventures: "Portfólio",
+    engine: "Como",
+    faq: "Dúvidas",
     sanctum: "Começar",
   },
   logout: "Sair",
@@ -197,57 +228,21 @@ const pt: Dict = {
     d: " em semanas.",
     e: "Sem contratar um time inteiro.",
   },
-  manifesto: {
-    eyebrow: "Por que existimos",
-    a: "A Veridian ajuda empreendedores e empresas a ",
-    hl1: "construir, testar e lançar",
-    b: " novos produtos mais rápido, com ",
-    hl2: "execução sênior",
-    c: " e ",
-    hl3: "desenvolvimento movido a IA",
-    d: ".",
-  },
-  os: {
-    eyebrow: "Como operamos",
-    tagline: "Um sistema operacional. Quatro módulos. Nenhum deles dorme.",
-    verbs: {
-      jarvis: "comanda",
-      fabric: "constrói",
-      vortex: "vende",
-      pulse: "vigia",
-    },
-    footnote: "Construído uma vez. Herdado por cada venture, desde o dia zero.",
-  },
-  module: {
-    eyebrow: "Módulo do Veridian OS",
-    launch: "Abrir",
-    soon: "Em breve",
-  },
-  modules: {
-    fabric: {
-      tag: "A Forja",
-      promise: "Constrói enquanto você dorme.",
-      line1: "O time de produto, automatizado.",
-      line2: "Desenha · programa · publica — sem backlog, sem daily.",
-    },
-    vortex: {
-      tag: "O Motor",
-      promise: "Vende enquanto você dorme.",
-      line1: "O time comercial, automatizado.",
-      line2: "Encontra · apresenta · fecha — em 12 idiomas, 24/7.",
-    },
-    pulse: {
-      tag: "O Batimento",
-      promise: "Vigia enquanto você dorme.",
-      line1: "A mesa de operações, automatizada.",
-      line2: "Usuários · infraestrutura · agentes — corrige antes de você notar.",
-    },
-    jarvis: {
-      tag: "O Canal de Comando",
-      promise: "Um canal. Comando total.",
-      line1: "Seu ponto único de comando e operação.",
-      line2: "Fale com o Jarvis · ele orquestra Fabric, Vortex e Pulse por você.",
-    },
+  deliver: {
+    eyebrow: "O que você recebe",
+    title1: "Em 4 semanas, um produto no ar.",
+    title2a: "E ele é ",
+    title2hl: "seu",
+    title2b: ".",
+    items: [
+      "Produto funcionando, publicado e aberto aos seus clientes",
+      "Código-fonte e propriedade intelectual 100% seus",
+      "Escopo e preço fechados antes de começar",
+      "Você testa e aprova cada marco antes de pagar",
+      "Login, banco de dados e pagamentos, quando o produto pede",
+      "Seguimos depois do lançamento, evoluindo com dados reais",
+    ],
+    price: "",
   },
   method: {
     eyebrow: "O Processo",
@@ -274,22 +269,82 @@ const pt: Dict = {
   },
   ventures: {
     eyebrow: "Portfólio",
-    title: "Ventures ",
-    titleHl: "em movimento.",
-    sub: "Clientes reais. Receita real. Crescendo toda semana.",
-    footnote: "Todas rodando sobre Jarvis · Fabric · Vortex · Pulse.",
+    title: "Sistemas que ",
+    titleHl: "construímos e operamos.",
+    sub: "Telas reais de produtos do nosso estúdio.",
     tags: {
-      conciera: "inteligência em hospitalidade",
-      knexo: "camada de conexão",
-      tegplus: "OS de operações",
-      lovedopa: "plataforma para Parkinson",
-      zettapay: "infraestrutura de pagamentos",
+      conciera: "concierge de IA para clínicas",
+      knexo: "finanças pessoais pelo WhatsApp",
+      "knexo-jobs": "busca de vagas no automático",
+      zettapay: "pagamentos cripto não-custodiais",
+      tsign: "assinatura eletrônica",
+      lovedopa: "diário de cuidado em Parkinson",
+      sofiaai: "agente de vendas com IA",
+      fivsense: "API de predição de comportamento",
+      tegplus: "ERP de operações",
+      vortex: "CRM e growth autônomos",
+      fabric: "desenvolvimento autônomo",
+      pulse: "monitoramento de operações",
+      jarvis: "canal de comando",
     },
+  },
+  engine: {
+    eyebrow: "Como entregamos tão rápido",
+    title: "Veridian ",
+    titleHl: "OS",
+    sub: "Nosso próprio sistema operacional faz o trabalho pesado. Você não precisa aprender nada disso.",
+    modules: [
+      { id: "fabric", name: "Fabric", verb: "constrói", line: "Desenha, programa e publica o seu produto." },
+      { id: "vortex", name: "Vortex", verb: "vende", line: "Encontra, apresenta e acompanha clientes." },
+      { id: "pulse", name: "Pulse", verb: "vigia", line: "Monitora usuários, infraestrutura e agentes." },
+      { id: "jarvis", name: "Jarvis", verb: "comanda", line: "Um canal para orquestrar tudo." },
+    ],
+    footnote: "Construído uma vez. Herdado por cada produto que entregamos, desde o dia zero.",
+    soon: "em breve",
+  },
+  faq: {
+    eyebrow: "Antes de você perguntar",
+    title: "Respostas ",
+    titleHl: "diretas.",
+    items: [
+      {
+        q: "Preciso entender de tecnologia?",
+        a: "Não. Você traz a ideia e o conhecimento do seu mercado; a engenharia é conosco.",
+      },
+      {
+        q: "O código é meu?",
+        a: "Sim. Código-fonte e propriedade intelectual são seus, e há NDA assinado antes de começarmos.",
+      },
+      {
+        q: "E se eu não gostar do resultado?",
+        a: "Você vê e testa cada marco antes de pagar por ele. Escopo e preço são fechados no início.",
+      },
+      {
+        q: "Quanto custa?",
+        a: "Depende do escopo. O preço é fixo e fechado na primeira semana, antes de qualquer pagamento.",
+      },
+      {
+        q: "E depois que o produto está no ar?",
+        a: "Seguimos com você: o produto evolui a partir dos dados reais de uso.",
+      },
+    ],
   },
   sanctum: {
     eyebrow: "Comece agora",
-    sub: "Analisado pessoalmente em até 7 dias.",
+    sub: "Conte a ideia. Analisamos pessoalmente em até 7 dias.",
     footer: "© 2026 · Veridian AI Studio · Feito pela 4Profit.AI",
+  },
+  form: {
+    name: "Seu nome",
+    contact: "E-mail ou WhatsApp",
+    idea: "Sua ideia, em uma ou duas frases",
+    submit: "Enviar minha ideia",
+    sending: "Enviando…",
+    or: "ou fale no WhatsApp",
+    sentTitle: "Recebido.",
+    sent: "Sua ideia está conosco. Respondemos em até 7 dias.",
+    fallback: "Não conseguimos gravar por aqui, então abrimos o WhatsApp com a sua mensagem pronta para enviar.",
+    whatsappLead: "Olá! Sou {name} ({contact}). Minha ideia: {idea}",
   },
   audio: {
     mute: "Silenciar trilha de fundo",
@@ -322,6 +377,12 @@ const pt: Dict = {
 };
 
 export const DICT: Record<Locale, Dict> = { en, pt };
+
+export const WHATSAPP_NUMBER = "5531971701177";
+
+export function whatsappUrl(text: string) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+}
 
 const LocaleContext = createContext<Locale>("en");
 
