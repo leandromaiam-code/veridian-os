@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -249,8 +248,12 @@ function Headline() {
       {h.c}
       <span className="italic text-brass-light">{h.product}</span>
       {h.d}
-      <br />
-      {h.e}
+      {h.e && (
+        <>
+          <br />
+          {h.e}
+        </>
+      )}
     </>
   );
 }
@@ -528,15 +531,19 @@ function MethodCopy({ p, zone }: { p: number; zone: Z }) {
             style={SHADOW_HEAVY}
           >
             {t.method.title1}
-            <br />
-            {t.method.title2a}
-            <span className="text-brass-light">{t.method.title2hl}</span>
-            {t.method.title2b}
+            {t.method.title2hl && (
+              <>
+                <br />
+                {t.method.title2a}
+                <span className="text-brass-light">{t.method.title2hl}</span>
+                {t.method.title2b}
+              </>
+            )}
           </h2>
 
           {/* Milestone timeline */}
           <div className="mt-7 lg:mt-9 w-full max-w-4xl">
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-y-4 gap-x-2 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-5 gap-x-6 text-center">
               {t.method.milestones.map((m) => (
                 <Milestone key={m.title} wk={m.wk} title={m.title} detail={m.detail} />
               ))}
@@ -600,7 +607,7 @@ function Milestone({
         {title}
       </span>
       <span
-        className="font-sans text-parchment/90 text-[12px] lg:text-[13px] leading-tight max-w-[15ch]"
+        className="font-sans text-parchment/90 text-[12px] lg:text-[13px] leading-snug max-w-[30ch]"
         style={SHADOW_SOFT}
       >
         {detail}
@@ -625,25 +632,25 @@ function SafetyItem({ title }: { title: string }) {
 }
 
 /* ---------------------- VENTURES — horizontal marquee gallery ----------- */
-// Every system in the studio, shown by a real screen of it. Public products
-// link to their site; internal tools and client systems have no link.
+// Portfolio by segment, as in the commercial deck. Logos are the canonical
+// ones from the venture registry (veridian_ventures.logo_canonica); each card
+// links to the venture's site_url (no link when it has none yet).
 const VENTURES = [
-  { id: "conciera",   name: "Conciera",   img: "/assets/portfolio/conciera.jpg",    url: "https://conciera.com.br" },
-  { id: "knexo",      name: "kNexo",      img: "/assets/portfolio/knexo.jpg",       url: "https://knexo.io" },
-  { id: "vortex",     name: "Vortex",     img: "/assets/modules/vortex-01.jpg",     url: "#" },
-  { id: "tsign",      name: "Tsign",      img: "/assets/portfolio/tsign.jpg",       url: "https://tsign.4profitai.com" },
-  { id: "zettapay",   name: "ZettaPay",   img: "/assets/portfolio/zettapay.jpg",    url: "https://zettapay.4profitai.com" },
-  { id: "fabric",     name: "Fabric",     img: "/assets/modules/fabric-01.jpg",     url: "#" },
-  { id: "lovedopa",   name: "LoveDopa",   img: "/assets/portfolio/lovedopa.jpg",    url: "https://lovedopa.org" },
-  { id: "sofiaai",    name: "SofiaAI",    img: "/assets/portfolio/sofiaai.jpg",     url: "#" },
-  { id: "pulse",      name: "Pulse",      img: "/assets/modules/pulse-03.jpg",      url: "#" },
-  { id: "knexo-jobs", name: "kNexo Jobs", img: "/assets/portfolio/knexo-jobs.jpg",  url: "https://knexo-jobs.vercel.app" },
-  { id: "fivsense",   name: "FivSense",   img: "/assets/portfolio/fivsense.jpg",    url: "https://fivsense.vercel.app" },
-  { id: "jarvis",     name: "Jarvis",     img: "/assets/modules/jarvis-02.jpg",     url: "#" },
-  { id: "tegplus",    name: "TEG+",       img: "/assets/ventures/painting-tegplus.jpg", url: "#" },
+  { id: "conciera", name: "Conciera", segment: "saude", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/conciera/logo.png", url: "https://conciera.com.br" },
+  { id: "lovedopa", name: "LoveDopa", segment: "saude", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/lovedopa/logo.png", url: "https://lovedopa.org" },
+  { id: "boostdesign", name: "BoostDesign", segment: "saude", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/boostdesign/logo.png?v=1791142954", url: "https://boostdesign.4profitai.com" },
+  { id: "knexo", name: "kNexo", segment: "financas", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/knexo/logo.png", url: "https://knexo.io/us" },
+  { id: "zettapay", name: "ZettaPay", segment: "financas", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/zettapay/logo.png?v=1791212046", url: "https://zettapay.4profitai.com" },
+  { id: "sofiaai", name: "SofiaAI", segment: "vendas", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/sofiaai/logo.png?v=1791212045", url: "https://virtualsofia.com.br" },
+  { id: "fivsense", name: "FivSense", segment: "vendas", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/fivsense/logo.png?v=1791142952", url: "https://fivsense.4profitai.com" },
+  { id: "veridian-helm", name: "Helm", segment: "gestao", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/veridian-helm/logo.png", url: "#" },
+  { id: "veridian-kesh", name: "Kesh", segment: "gestao", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/veridian-kesh/logo.png", url: "#" },
+  { id: "tsign", name: "Tsign", segment: "juridico", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/tsign/logo.png?v=1791136478", url: "https://tsign.4profitai.com" },
+  { id: "knexo-jobs", name: "kNexo Jobs", segment: "carreira", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/knexo-jobs/logo.png?v=1791215781", url: "https://knexo-jobs.4profitai.com" },
+  { id: "superrdo", name: "SuperRDO", segment: "construcao", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/superrdo/logo.png?v=1791135407", url: "https://superrdo.4profitai.com" },
 ];
 
-// Copies of the list in the marquee row. One copy is ~13 cards (~5900px on
+// Copies of the list in the marquee row. One copy is ~12 cards (~5900px on
 // desktop), so two always fill the viewport after the wrap point.
 const VENTURE_COPIES = 2;
 
@@ -697,7 +704,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
           className="mt-2 lg:mt-3 font-cormorant font-light text-parchment text-[clamp(1.5rem,min(3.6vw,7vh),3.4rem)] leading-[1.05] max-w-6xl"
           style={SHADOW_HEAVY}
         >
-          {t.ventures.title}<span className="italic text-seafoam">{t.ventures.titleHl}</span>
+          {t.ventures.title}
         </h2>
         <p
           className="mt-2 lg:mt-3 font-cormorant italic text-parchment/95 text-sm lg:text-lg font-light"
@@ -705,6 +712,14 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
         >
           {t.ventures.sub}
         </p>
+        <div
+          className="mt-3 lg:mt-4 flex items-center gap-5 font-mono uppercase tracking-[0.2em] text-[11px] lg:text-[11.5px]"
+          style={{ ...SHADOW_LABEL, pointerEvents: o > 0.5 ? "auto" : "none" }}
+        >
+          <ExternalLink href={CASES_URL}>{t.ventures.cases}</ExternalLink>
+          <span aria-hidden className="text-parchment/40">·</span>
+          <ExternalLink href={VENTURES_URL}>{t.ventures.invest}</ExternalLink>
+        </div>
       </div>
 
       {/* Marquee row */}
@@ -720,7 +735,7 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
             .flat()
             .map((v, i) => (
               <div key={`${v.id}-${i}`} className="shrink-0 pr-6 sm:pr-8 lg:pr-14">
-                <SystemCard v={{ ...v, tag: t.ventures.tags[v.id] }} active={o > 0.5} />
+                <SystemCard v={{ ...v, tag: t.ventures.tags[v.segment] }} active={o > 0.5} />
               </div>
             ))}
         </div>
@@ -752,7 +767,7 @@ function SystemCard({
   v,
   active,
 }: {
-  v: { id: string; name: string; tag: string; url: string; img: string };
+  v: { id: string; name: string; tag: string; url: string; logo: string };
   active: boolean;
 }) {
   const external = v.url.startsWith("http");
@@ -769,7 +784,7 @@ function SystemCard({
         pointerEvents: active && external ? "auto" : "none",
       }}
     >
-      {/* Gold frame around a real screen of the system */}
+      {/* Gold frame around the venture's registry logo */}
       <div className="relative w-full" style={{ aspectRatio: "16 / 10" }}>
         <div
           className="absolute inset-0"
@@ -793,12 +808,12 @@ function SystemCard({
               "inset 0 0 0 1px rgba(20,35,29,0.45), 0 0 0 1px rgba(20,35,29,0.4)",
           }}
         >
-          <Image
-            src={v.img}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={v.logo}
             alt={v.name}
-            fill
-            sizes="400px"
-            className="object-cover object-top transition-all duration-500 group-hover:brightness-110"
+            loading="lazy"
+            className="absolute inset-0 m-auto h-[62%] w-[62%] object-contain transition-all duration-500 group-hover:scale-[1.04]"
           />
         </div>
       </div>
@@ -943,7 +958,6 @@ function FaqCopy({ p, zone }: { p: number; zone: Z }) {
             style={SHADOW_HEAVY}
           >
             {t.faq.title}
-            <span className="italic text-seafoam">{t.faq.titleHl}</span>
           </h2>
 
           <dl className="mt-[clamp(12px,3vh,32px)] grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-[clamp(8px,2vh,20px)] w-full">
@@ -1012,8 +1026,32 @@ function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
           style={SHADOW_SOFT}
         >
           {t.sanctum.footer}
+          <span className="mx-2 text-parchment/40" aria-hidden>·</span>
+          <span style={{ pointerEvents: o > 0.5 ? "auto" : "none" }} className="inline-flex flex-wrap justify-center gap-x-3 gap-y-1">
+            <ExternalLink href={`mailto:${t.sanctum.email}`}>{t.sanctum.email}</ExternalLink>
+            <ExternalLink href={CASES_URL}>{t.ventures.cases}</ExternalLink>
+            <ExternalLink href={VENTURES_URL}>{t.ventures.invest}</ExternalLink>
+          </span>
         </div>
       </div>
     </FixedFrame>
+  );
+}
+
+const CASES_URL = "https://cases.4profitai.com";
+const VENTURES_URL = "https://ventures.4profitai.com";
+
+function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const mail = href.startsWith("mailto:");
+  return (
+    <a
+      href={href}
+      target={mail ? undefined : "_blank"}
+      rel={mail ? undefined : "noreferrer"}
+      className="text-brass-light underline underline-offset-4 decoration-brass-light/40 hover:decoration-brass-light transition-colors"
+    >
+      {children}
+      {!mail && <span aria-hidden> ↗</span>}
+    </a>
   );
 }

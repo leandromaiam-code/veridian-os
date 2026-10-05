@@ -10,12 +10,12 @@ import { useT } from "@/lib/i18n";
  * pulses in the bottom-right. Clicking expands into a glassmorphic chat
  * panel. Backend is the Vortex SDR widget API (same that powers kNexo).
  *
- *   POST https://vortex-sales.vercel.app/api/widget
+ *   POST https://vortex.4profitai.com/api/widget
  *   { action: "start",   product: "veridian" }
  *   { action: "message", conversation_id, content, product: "veridian" }
  * --------------------------------------------------------------------------- */
 
-const VORTEX_API = "https://vortex-sales.vercel.app/api/widget";
+const VORTEX_API = "https://vortex.4profitai.com/api/widget";
 const PRODUCT_KEY = "veridian";
 const APPEAR_AFTER_MS = 30_000;
 
