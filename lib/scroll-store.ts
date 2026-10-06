@@ -21,18 +21,17 @@ export const scrollStore = {
 /* ------------------------------------------------------------------ */
 /* Weighted zone layout                                                */
 /* ------------------------------------------------------------------ */
-// All zones are now equal-weight image scenes (no more scroll-scrub video).
-// Each zone is "a room" in the same Veridian cathedral.
+// Each zone is one full screen; the order mirrors the commercial deck.
 
 const ZONE_DEFS = [
-  { id: "entry",    weight: 1.0, label: "Entry",        navHidden: false },
-  { id: "hero",     weight: 1.6, label: "Hero",         navHidden: true  }, // promise + CTA
-  { id: "deliver",  weight: 1.0, label: "What you get", navHidden: false }, // the offer
-  { id: "method",   weight: 1.0, label: "Process",      navHidden: false }, // process + guarantees
-  { id: "ventures", weight: 1.3, label: "Portfolio",    navHidden: false }, // visual portfolio
-  { id: "engine",   weight: 1.0, label: "How",          navHidden: false }, // Veridian OS, in one screen
-  { id: "faq",      weight: 1.0, label: "FAQ",          navHidden: false }, // objections
-  { id: "sanctum",  weight: 1.4, label: "Start",        navHidden: false }, // lead form + WhatsApp
+  { id: "entry",     weight: 1.0, label: "Entry",        navHidden: true  }, // intro: scroll to enter
+  { id: "hero",      weight: 1.6, label: "Hero",         navHidden: true  }, // promise + who we are
+  { id: "portfolio", weight: 1.3, label: "Portfolio",    navHidden: false }, // real product screens
+  { id: "audience",  weight: 1.0, label: "Who it's for", navHidden: false }, // clients, partners, investors
+  { id: "how",       weight: 1.0, label: "How it works", navHidden: false }, // modules + phases
+  { id: "edge",      weight: 1.0, label: "Why Veridian", navHidden: false }, // differentiators
+  { id: "plans",     weight: 1.0, label: "Plans",        navHidden: false }, // subscription plans
+  { id: "contact",   weight: 1.4, label: "Contact",      navHidden: false }, // lead form
 ] as const;
 
 const TOTAL_W = ZONE_DEFS.reduce((s, z) => s + z.weight, 0);

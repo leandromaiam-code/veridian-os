@@ -2,185 +2,132 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  scrollStore,
-  smoothstep,
-  zoneById,
-  zoneProgress,
-} from "@/lib/scroll-store";
+import { scrollStore, smoothstep, zoneById } from "@/lib/scroll-store";
 
-type Zone = {
-  id: string;
-  start: number;
-  end: number;
-  src: string;
-  /** Dolly direction in this zone: how the camera "walks" through */
-  dolly: "forward" | "sideways-left" | "sideways-right" | "still";
-  tint?: string;
-};
-
-function build(): Zone[] {
-  const map = (id: string) => {
-    const z = zoneById(id)!;
-    return { start: z.start, end: z.end };
-  };
-  // Walking script through the cathedral:
-  //  Entry     → approach the shrine      (still)
-  //  Hero      → step toward it           (forward)
-  //  Deliver   → step back, behold nave   (sideways-left, slow pan)
-  //  Method    → walk the corridor        (forward)
-  //  Ventures  → gallery                  (sideways-left)
-  //  Engine    → cross to the forge       (sideways-right)
-  //  FAQ       → close-up                 (forward)
-  //  Sanctum   → return to the shrine     (forward)
-  return [
-    { id: "entry",    ...map("entry"),    src: "/assets/hero/veridian-cathedral.jpg", dolly: "still" },
-    { id: "hero",     ...map("hero"),     src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
-    { id: "deliver",  ...map("deliver"),  src: "/assets/hero/env-wide.jpg",           dolly: "sideways-left" },
-    { id: "method",   ...map("method"),   src: "/assets/hero/env-mid.jpg",            dolly: "forward" },
-    { id: "ventures", ...map("ventures"), src: "/assets/hero/env-mid.jpg",            dolly: "sideways-left" },
-    { id: "engine",   ...map("engine"),   src: "/assets/hero/fabric-cathedral.jpg",   dolly: "sideways-right" },
-    { id: "faq",      ...map("faq"),      src: "/assets/hero/env-close.jpg",          dolly: "forward" },
-    { id: "sanctum",  ...map("sanctum"),  src: "/assets/hero/veridian-cathedral.jpg", dolly: "forward" },
-  ];
-}
-
-/** Wider cross-fade for continuous walking feel. */
-function zoneOpacity(p: number, start: number, end: number, fade = 0.05): number {
-  const fadeIn = smoothstep(start - fade, start + fade, p);
-  const fadeOut = 1 - smoothstep(end - fade, end + fade, p);
-  return Math.max(0, Math.min(1, Math.min(fadeIn, fadeOut)));
-}
-
+/* -----------------------------------------------------------------------------
+ * Scroll-driven backdrop.
+ *
+ * Entry: the Veridian shrine (the intro image). Scrolling "enters the studio":
+ * the camera dollies into the shrine while it dissolves into the light studio.
+ *
+ * Studio: off-white space with soft green / gold light, a fine grid and a
+ * perspective floor. Everything moves with scroll progress (the floor rolls
+ * toward the viewer, the lights drift), so each section still feels like a
+ * step forward through the same space.
+ * --------------------------------------------------------------------------- */
 export function EnvironmentBackgrounds() {
   const [p, setP] = useState(0);
+  const [mouse, setMouse] = useState({ x: 60, y: 30 });
 
   useEffect(() => {
     setP(scrollStore.get());
     return scrollStore.subscribe(setP);
   }, []);
 
-  const zones = build();
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      setMouse({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  const entryEnd = zoneById("entry")?.end ?? 0.1;
+  // Entry dissolves as the hero arrives; the camera keeps walking into it.
+  const entryOpacity = 1 - smoothstep(entryEnd - 0.045, entryEnd + 0.03, p);
+  const walk = smoothstep(0, entryEnd + 0.03, p);
+  const entryScale = 1.03 + walk * 0.42;
+
+  // Studio motion — tied to the whole page progress.
+  const floorShift = p * 84 * 40; // px — the floor rolls toward the viewer
+  const drift = p * 100;
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden bg-[#0a1620]">
-      {zones.map((z) => (
-        <BackgroundLayer
-          key={z.id}
-          zone={z}
-          progress={p}
-          opacity={zoneOpacity(p, z.start, z.end)}
+    <div className="fixed inset-0 z-0 overflow-hidden bg-studio">
+      {/* Light studio */}
+      <div aria-hidden className="absolute inset-0">
+        <div
+          className="v-aura a1"
+          style={{ transform: `translate(${-drift * 0.08}vw, ${drift * 0.06}vh) scale(${1 + p * 0.1})` }}
         />
-      ))}
-
-      {/* Permanent vignette */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 50%, rgba(10,22,16,0.40) 100%)",
-        }}
-      />
-
-      <AmbientDust />
-
-      {/* Floor fog band */}
-      <div
-        className="pointer-events-none absolute left-0 right-0 bottom-0 h-1/3"
-        style={{
-          background:
-            "linear-gradient(180deg, transparent 0%, rgba(20,35,29,0.12) 40%, rgba(20,35,29,0.30) 100%)",
-        }}
-      />
-    </div>
-  );
-}
-
-function BackgroundLayer({
-  zone,
-  progress,
-  opacity,
-}: {
-  zone: Zone;
-  progress: number;
-  opacity: number;
-}) {
-  if (opacity < 0.005) return null;
-
-  const zp = zoneProgress(progress, zone.start, zone.end);
-
-  // Dolly motion — feels like camera walking through space
-  let scale = 1.0;
-  let tx = 0;
-  let ty = 0;
-
-  switch (zone.dolly) {
-    case "forward":
-      // Walking INTO the scene: scale up while subtle drop
-      scale = 1.08 + zp * 0.18; // 1.08 → 1.26
-      ty = -zp * 2.5;
-      break;
-    case "sideways-left":
-      // Camera pans right→left (so scene drifts right within frame)
-      scale = 1.12;
-      tx = -3 + zp * 6; // -3% → +3%
-      break;
-    case "sideways-right":
-      scale = 1.12;
-      tx = 3 - zp * 6; // +3% → -3%
-      break;
-    case "still":
-      // Slight breathing scale for life
-      scale = 1.03 + Math.sin(zp * Math.PI) * 0.02;
-      break;
-  }
-
-  return (
-    <div
-      className="absolute inset-0"
-      style={{ opacity, transition: "opacity 0.7s var(--ease-organic)" }}
-    >
-      <div
-        className="absolute inset-0"
-        style={{
-          transform: `scale(${scale}) translate(${tx}%, ${ty}%)`,
-          transformOrigin: "50% 50%",
-          willChange: "transform",
-          transition: "transform 0.18s linear",
-        }}
-      >
-        <Image
-          src={zone.src}
-          alt=""
-          fill
-          priority={zone.id === "entry"}
-          className="object-cover"
-          sizes="100vw"
+        <div
+          className="v-aura a2"
+          style={{ transform: `translate(${drift * 0.06}vw, ${-drift * 0.12}vh)` }}
         />
+        <div
+          className="v-aura a3"
+          style={{
+            left: `${mouse.x}%`,
+            top: `${mouse.y}%`,
+            transform: "translate(-50%, -50%)",
+            transition: "left 1.2s cubic-bezier(.2,.7,.1,1), top 1.2s cubic-bezier(.2,.7,.1,1)",
+          }}
+        />
+        <div
+          className="v-gridlines"
+          style={{ backgroundPosition: `${-drift * 2}px ${-drift * 3}px` }}
+        />
+        <div className="v-floor">
+          <div style={{ backgroundPosition: `0 ${floorShift}px` }} />
+        </div>
+        <div className="v-noise" />
+        <AmbientMotes />
       </div>
-      {zone.tint && (
-        <div className="absolute inset-0" style={{ background: zone.tint }} />
+
+      {/* Entry — the shrine */}
+      {entryOpacity > 0.005 && (
+        <div className="absolute inset-0" style={{ opacity: entryOpacity }}>
+          <div
+            className="absolute inset-0"
+            style={{
+              transform: `scale(${entryScale})`,
+              transformOrigin: "50% 46%",
+              willChange: "transform",
+              transition: "transform 0.18s linear",
+            }}
+          >
+            <Image
+              src="/assets/hero/veridian-cathedral.jpg"
+              alt=""
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
+          {/* Light coming in from the studio ahead */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `radial-gradient(ellipse 34% 40% at 50% 46%, rgba(242,243,240,${0.08 + walk * 0.7}) 0%, rgba(242,243,240,0) 100%)`,
+            }}
+          />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(10,22,16,0) 55%, rgba(10,22,16,0.35) 100%)",
+            }}
+          />
+        </div>
       )}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(20,35,29,0.05) 0%, rgba(20,35,29,0.35) 100%)",
-        }}
-      />
     </div>
   );
 }
 
-function AmbientDust() {
-  const motes = Array.from({ length: 28 }).map((_, i) => {
+/* Small green / gold motes drifting upward — the old brass dust, in light. */
+function AmbientMotes() {
+  const motes = Array.from({ length: 22 }).map((_, i) => {
     const left = (i * 79) % 100;
     const top = (i * 53) % 100;
-    const size = 1.5 + ((i * 7) % 4);
-    const dur = 18 + ((i * 11) % 14);
+    const size = 2 + ((i * 7) % 4);
+    const dur = 20 + ((i * 11) % 14);
     const delay = (i * 3.1) % dur;
-    const opacity = 0.18 + ((i * 0.07) % 0.35);
-    return { left, top, size, dur, delay, opacity, key: i };
+    const gold = i % 3 === 0;
+    return { left, top, size, dur, delay, gold, key: i };
   });
 
   return (
@@ -194,18 +141,16 @@ function AmbientDust() {
             top: `${m.top}%`,
             width: m.size,
             height: m.size,
-            background: "#e8c88a",
-            boxShadow: "0 0 6px #c9a56b",
-            opacity: m.opacity,
-            animation: `ambient-dust-drift ${m.dur}s ${m.delay}s linear infinite`,
+            background: m.gold ? "rgba(184,146,90,0.55)" : "rgba(15,107,79,0.35)",
+            animation: `studio-mote-drift ${m.dur}s ${m.delay}s linear infinite`,
           }}
         />
       ))}
       <style jsx>{`
-        @keyframes ambient-dust-drift {
+        @keyframes studio-mote-drift {
           0% { transform: translate(0, 0) scale(1); opacity: 0; }
           15%, 85% { opacity: 1; }
-          100% { transform: translate(40px, -120vh) scale(1.4); opacity: 0; }
+          100% { transform: translate(40px, -120vh) scale(1.3); opacity: 0; }
         }
       `}</style>
     </div>

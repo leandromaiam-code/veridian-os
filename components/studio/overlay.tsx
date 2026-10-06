@@ -10,10 +10,14 @@ import {
   zoneProgress,
 } from "@/lib/scroll-store";
 import { supabase } from "@/lib/supabase";
-import { useLocale, useT, whatsappUrl } from "@/lib/i18n";
+import { useLocale, useT } from "@/lib/i18n";
 import { LeadForm } from "@/components/lead-form";
 
 type Session = { email: string } | null;
+
+const LOGO_BASE =
+  "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces";
+const VERIDIAN_LOGO = `${LOGO_BASE}/veridian/logo.png`;
 
 export function Overlay() {
   const [p, setP] = useState(0);
@@ -46,120 +50,75 @@ export function Overlay() {
 
   const g = (id: string) => zoneById(id)!;
 
-  // Header fades in once user begins scrolling out of the entry frame
-  const headerOpacity = Math.min(1, Math.max(0, (p - 0.005) / 0.04));
-
-  // Enter button only appears when first hero text appears, NOT in Frame 0.
-  // Tied to the end of the entry zone so it never competes with the
-  // minimalist symbol-only opening.
-  const entryEnd = zoneById("entry")?.end ?? 0.077;
-  const enterOpacity = Math.min(
-    1,
-    Math.max(0, (p - (entryEnd - 0.005)) / 0.04),
-  );
+  // Header arrives as the intro dissolves into the studio.
+  const entryEnd = zoneById("entry")?.end ?? 0.1;
+  const headerOpacity = smoothstep(entryEnd - 0.05, entryEnd - 0.005, p);
 
   return (
-    <>
-      {/* Header — nav + brand name fade in after user scrolls */}
+    <div className="v-root">
+      {/* Header */}
       <header
-        className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-6 lg:px-14 py-5 lg:py-7 transition-opacity duration-700"
+        className="v-top"
         style={{ opacity: headerOpacity, pointerEvents: headerOpacity > 0.4 ? "auto" : "none" }}
       >
-        <span
-          className="font-mono uppercase tracking-[0.24em] lg:tracking-[0.28em] text-[11px] lg:text-[11.5px] text-parchment/85"
-          style={SHADOW_MED}
+        <a
+          href="#hero"
+          className="v-brand"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToZone("hero");
+          }}
         >
-          {t.brand}
-        </span>
-        <nav className="hidden md:flex items-center gap-4 lg:gap-6">
-          {ZONES.filter((z) => !z.navHidden).map((z, i) => {
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={VERIDIAN_LOGO} alt="" width={32} height={32} />
+          <span>
+            <b>{t.brandName}</b>
+            <small>{t.brandTag}</small>
+          </span>
+        </a>
+        <nav className="v-nav" aria-label="Sections">
+          {ZONES.filter((z) => !z.navHidden).map((z) => {
             const active = p >= z.start && p < z.end;
             return (
-              <span
+              <button
                 key={z.id}
-                className={`font-mono uppercase tracking-[0.2em] text-[11px] transition-colors ${
-                  active ? "text-brass-light" : "text-parchment/90"
-                }`}
-                style={SHADOW_MED}
+                type="button"
+                aria-current={active ? "true" : undefined}
+                onClick={() => scrollToZone(z.id)}
               >
-                <span className="mr-1.5 opacity-50">0{i + 1}</span>
                 {t.nav[z.id] ?? z.label}
-              </span>
+              </button>
             );
           })}
         </nav>
-      </header>
-
-      {/* Enter / Session — appears only when first hero text starts to show */}
-      <div
-        className="fixed top-0 right-0 z-40 px-6 lg:px-14 py-5 lg:py-7 pointer-events-none transition-opacity duration-700"
-        style={{
-          opacity: enterOpacity,
-          pointerEvents: enterOpacity > 0.5 ? "auto" : "none",
-        }}
-      >
-        <div className="flex items-center gap-4 pointer-events-auto">
+        <div className="v-right">
           <LocaleSwitch />
           {session ? (
             <>
-              <span
-                className="hidden lg:inline font-mono uppercase tracking-[0.22em] text-[11px] text-parchment/90"
-                style={SHADOW_MED}
-              >
-                {session.email.split("@")[0]}
-              </span>
-              <button
-                type="button"
-                onClick={onLogout}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-parchment/20 hover:border-brass-light/50 font-mono uppercase tracking-[0.22em] text-[11.5px] text-parchment/90 hover:text-brass-light transition-all duration-500"
-                style={{
-                  ...SHADOW_MED,
-                  background: "rgba(10,22,16,0.35)",
-                  backdropFilter: "blur(10px)",
-                  WebkitBackdropFilter: "blur(10px)",
-                }}
-              >
+              <span className="v-user">{session.email.split("@")[0]}</span>
+              <button type="button" onClick={onLogout} className="v-pill ghost">
                 {t.logout}
               </button>
             </>
           ) : (
-            <Link
-              href={t.login}
-              className="group inline-flex items-center gap-2 px-5 py-2 rounded-full border border-brass-light/40 hover:border-brass-light font-mono uppercase tracking-[0.26em] text-[11.5px] text-brass-light hover:gap-3 transition-all duration-500"
-              style={{
-                ...SHADOW_MED,
-                background: "rgba(10,22,16,0.4)",
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-              }}
-            >
-              {t.enter}
-              <span
-                aria-hidden
-                className="transition-transform duration-500 group-hover:translate-x-0.5"
-              >
-                ↗
-              </span>
+            <Link href={t.login} className="v-pill">
+              {t.enter} <span aria-hidden>↗</span>
             </Link>
           )}
         </div>
+      </header>
+
+      <div className="v-progress" aria-hidden>
+        <div style={{ width: `${p * 100}%` }} />
       </div>
 
-      <div className="fixed left-0 right-0 bottom-0 z-30 h-px bg-brass-deep/20">
-        <div
-          className="h-full bg-brass transition-[width] duration-150"
-          style={{ width: `${p * 100}%` }}
-        />
-      </div>
-
-      <EntryCopy p={p} zone={g("entry")} />
-      <HeroProgressiveCopy p={p} zone={g("hero")} />
-      <DeliverCopy p={p} zone={g("deliver")} />
-      <MethodCopy p={p} zone={g("method")} />
-      <VenturesCopy p={p} zone={g("ventures")} />
-      <EngineCopy p={p} zone={g("engine")} loggedIn={!!session} />
-      <FaqCopy p={p} zone={g("faq")} />
-      <SanctumCopy p={p} zone={g("sanctum")} />
+      <HeroCopy p={p} zone={g("hero")} />
+      <PortfolioCopy p={p} zone={g("portfolio")} />
+      <AudienceCopy p={p} zone={g("audience")} />
+      <HowCopy p={p} zone={g("how")} loggedIn={!!session} />
+      <EdgeCopy p={p} zone={g("edge")} />
+      <PlansCopy p={p} zone={g("plans")} />
+      <ContactCopy p={p} zone={g("contact")} />
 
       {/* Entry scroll cue — only visible while in the very first frame */}
       <div
@@ -167,8 +126,11 @@ export function Overlay() {
         style={{ opacity: p > 0.02 ? 0 : 1, pointerEvents: "none" }}
       >
         <span
-          className="font-mono uppercase tracking-[0.42em] text-[11.5px] text-parchment/85"
-          style={SHADOW_MED}
+          className="font-mono uppercase tracking-[0.42em] text-[11.5px] text-parchment/90"
+          style={{
+            textShadow:
+              "0 1px 2px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.8), 0 5px 24px rgba(0,0,0,0.65)",
+          }}
         >
           {t.scrollCue}
         </span>
@@ -189,14 +151,13 @@ export function Overlay() {
           }
         `}</style>
       </div>
-    </>
+    </div>
   );
 }
 
 type Z = { start: number; end: number };
 
-// Overlay (text) fades tighter than backgrounds so adjacent zones with similar
-// layouts (e.g. all 4 modules) don't visually overlap during cross-fade.
+// Text fades tighter than backgrounds so adjacent zones never overlap.
 function useZoneOpacity(p: number, z: Z, pad = 0.015): number {
   // Asymmetric: text fades OUT faster than IN — leaves clean space for next zone
   const fadeIn = smoothstep(z.start - pad * 0.3, z.start + pad * 1.2, p);
@@ -204,35 +165,54 @@ function useZoneOpacity(p: number, z: Z, pad = 0.015): number {
   return Math.max(0, Math.min(1, Math.min(fadeIn, fadeOut)));
 }
 
+// Same resting point the section snap uses (lenis-provider REST_FRACTION), so
+// a click lands where the section is fully revealed.
+const REST_FRACTION = 0.65;
+
 function scrollToZone(zoneId: string) {
   const z = ZONES.find((zone) => zone.id === zoneId);
   if (!z) return;
   const lenis = typeof window !== "undefined" ? window.__lenis : null;
   const total = document.body.scrollHeight - window.innerHeight;
-  const target = total * (z.start + 0.005);
+  const target = total * (z.start + (z.end - z.start) * REST_FRACTION);
   if (lenis) {
-    lenis.scrollTo(target, { duration: 2.5 });
+    lenis.scrollTo(target, { duration: 2.5, force: true });
   } else {
     window.scrollTo({ top: target, behavior: "smooth" });
   }
 }
 
-function FixedFrame({
+function Frame({
+  id,
   opacity,
-  pointer,
   children,
 }: {
+  id: string;
   opacity: number;
-  pointer: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className="fixed inset-0 z-20 flex items-center justify-center transition-opacity duration-500"
-      style={{ opacity, pointerEvents: pointer ? "auto" : "none" }}
+    <section
+      id={id}
+      className={`v-frame${opacity > 0.5 ? " v-in" : ""}`}
+      style={{
+        opacity,
+        pointerEvents: opacity > 0.5 ? "auto" : "none",
+        visibility: opacity < 0.01 ? "hidden" : "visible",
+      }}
+      aria-hidden={opacity < 0.5}
     >
       {children}
-    </div>
+    </section>
+  );
+}
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="v-eyebrow">
+      <span className="dot" aria-hidden />
+      {children}
+    </span>
   );
 }
 
@@ -242,18 +222,12 @@ function Headline() {
   return (
     <>
       {h.a}
-      <span className="italic text-seafoam">{h.idea}</span>
-      {h.b}
-      <br />
+      <em>{h.idea}</em>
+      {h.b}{" "}
+      <br className="max-md:hidden" />
       {h.c}
-      <span className="italic text-brass-light">{h.product}</span>
+      <em className="gold">{h.product}</em>
       {h.d}
-      {h.e && (
-        <>
-          <br />
-          {h.e}
-        </>
-      )}
     </>
   );
 }
@@ -267,21 +241,12 @@ function LocaleSwitch() {
     { code: "pt", label: "PT", href: "/pt", hrefLang: "pt-BR" },
   ];
   return (
-    <span
-      className="inline-flex items-center gap-2 font-mono uppercase tracking-[0.22em] text-[11.5px]"
-      style={SHADOW_MED}
-    >
+    <span className="v-lang">
       {items.map((it, i) => (
-        <span key={it.code} className="inline-flex items-center gap-2">
-          {i > 0 && (
-            <span aria-hidden className="text-parchment/30">
-              ·
-            </span>
-          )}
+        <span key={it.code} className="inline-flex items-center gap-1.5">
+          {i > 0 && <span aria-hidden>·</span>}
           {it.code === locale ? (
-            <span aria-current="true" className="text-brass-light">
-              {it.label}
-            </span>
+            <span aria-current="true">{it.label}</span>
           ) : (
             <a
               href={it.href}
@@ -290,7 +255,6 @@ function LocaleSwitch() {
                 // Remember the explicit choice so proxy.ts stops auto-detecting.
                 document.cookie = `veridian-locale=${it.code}; path=/; max-age=31536000; samesite=lax`;
               }}
-              className="text-parchment/95 hover:text-brass-light transition-colors duration-500"
             >
               {it.label}
             </a>
@@ -301,370 +265,138 @@ function LocaleSwitch() {
   );
 }
 
-// Layered text shadows: a tight dark edge keeps letter shapes crisp, the wide
-// soft layers lift the text off bright parts of the background image.
-const SHADOW_HEAVY = {
-  textShadow:
-    "0 1px 2px rgba(0,0,0,0.9), 0 3px 14px rgba(0,0,0,0.8), 0 8px 40px rgba(0,0,0,0.75)",
-};
-const SHADOW_MED = {
-  textShadow:
-    "0 1px 2px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.8), 0 5px 24px rgba(0,0,0,0.65)",
-};
-// Small brass labels need the densest edge: they are thin, widely tracked and
-// often sit on the brightest part of the image.
-const SHADOW_LABEL = {
-  textShadow:
-    "0 0 2px rgba(0,0,0,1), 0 1px 3px rgba(0,0,0,0.95), 0 2px 12px rgba(0,0,0,0.9), 0 4px 22px rgba(0,0,0,0.7)",
-};
+/* ---------------------- HERO — what the Studio does --------------------- */
+const SHOTS = [
+  "conciera",
+  "knexo",
+  "sofiaai",
+  "lovedopa",
+  "boostdesign",
+  "zettapay",
+  "knexo-jobs",
+  "tsign",
+  "fivsense",
+  "superrdo",
+];
 
-// Scrims darken only the region behind the copy, so the cathedral stays
-// bright everywhere else.
-const SCRIM = {
-  // copy anchored bottom-left (hero, manifesto)
-  left: "linear-gradient(90deg, rgba(6,14,11,0.8) 0%, rgba(6,14,11,0.56) 28%, rgba(6,14,11,0.18) 50%, rgba(6,14,11,0) 66%), linear-gradient(0deg, rgba(6,14,11,0.55) 0%, rgba(6,14,11,0) 45%)",
-  // wordmark at the top-centre of the hero
-  top: "radial-gradient(ellipse 38% 17% at 50% 14%, rgba(6,14,11,0.6) 0%, rgba(6,14,11,0.32) 55%, rgba(6,14,11,0) 100%)",
-  // centred copy (Veridian OS intro)
-  center: "radial-gradient(ellipse 62% 58% at 50% 50%, rgba(6,14,11,0.78) 0%, rgba(6,14,11,0.5) 55%, rgba(6,14,11,0) 100%)",
-  // title on top + footnote at the bottom (ventures)
-  topBottom: "linear-gradient(180deg, rgba(6,14,11,0.8) 0%, rgba(6,14,11,0.45) 22%, rgba(6,14,11,0) 38%), linear-gradient(0deg, rgba(6,14,11,0.78) 0%, rgba(6,14,11,0) 26%)",
-};
-
-function Scrim({ background }: { background: string }) {
-  return (
-    <div
-      aria-hidden
-      className="absolute inset-0 pointer-events-none"
-      style={{ background }}
-    />
-  );
-}
-
-const SHADOW_SOFT = {
-  textShadow: "0 1px 2px rgba(0,0,0,0.85), 0 2px 10px rgba(0,0,0,0.75)",
-};
-
-/* ---------------------- ENTRY — pure symbol + scroll cue --------------- */
-// The entry frame is intentionally text-free.
-// The cathedral background carries the Veridian shield as the sole focal element.
-// The scroll cue lives outside this component (in the global Overlay scope).
-function EntryCopy(_props: { p: number; zone: Z }) {
-  return null;
-}
-
-/* ---------------------- HERO — progressive reveal (original layout) --- */
-// Restores the original entry composition (VERIDIAN top + headline bottom-left
-// + tagline bottom-right) but reveals each block progressively as the user
-// scrolls through the hero zone.
-function HeroProgressiveCopy({ p, zone }: { p: number; zone: Z }) {
+function HeroCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone, 0.04);
   const t = useT();
   const zp = Math.max(0, Math.min(1, (p - zone.start) / (zone.end - zone.start)));
 
-  // Three sub-thresholds within the hero zone — compressed so EVERYTHING is
-  // fully revealed by zp=0.62, which is where section-snap parks the camera.
-  const wordmarkOp = smoothstep(0.0, 0.12, zp);
-  const headlineOp = smoothstep(0.18, 0.40, zp);
-  const taglineOp = smoothstep(0.42, 0.62, zp);
+  // Everything is fully revealed by zp≈0.6, before the section snap parks
+  // the page at REST_FRACTION.
+  const headOp = smoothstep(0.0, 0.28, zp);
+  const leadOp = smoothstep(0.16, 0.42, zp);
+  const wallOp = smoothstep(0.26, 0.58, zp);
+  const drift = (op: number) => (1 - op) * 16;
 
-  // Subtle upward drift for each block as it enters
-  const drift = (op: number) => (1 - op) * 14;
+  const rowA = SHOTS.slice(0, 5);
+  const rowB = SHOTS.slice(5);
 
   return (
-    <FixedFrame opacity={o} pointer={o > 0.4}>
-      <Scrim background={`${SCRIM.top}, ${SCRIM.left}`} />
-      <div className="absolute inset-0 flex flex-col justify-between px-6 lg:px-16 pt-24 lg:pt-28 pb-20 lg:pb-32 pointer-events-none">
-        {/* Top — wordmark */}
-        <div
-          className="flex flex-col items-center text-center"
-          style={{
-            opacity: wordmarkOp,
-            transform: `translateY(${drift(wordmarkOp)}px)`,
-            transition: "transform 0.4s var(--ease-organic)",
-          }}
-        >
-          <span
-            className="font-cormorant font-light text-parchment tracking-[0.28em] lg:tracking-[0.32em] text-[clamp(1.5rem,4.5vw,4rem)] leading-none"
-            style={SHADOW_HEAVY}
-          >
-            VERIDIAN
-          </span>
-          <span
-            className="mt-3 font-mono uppercase tracking-[0.32em] lg:tracking-[0.42em] text-[11px] lg:text-[11.5px] text-brass-light"
-            style={SHADOW_LABEL}
-          >
-            {t.hero.wordmarkTag}
-          </span>
-        </div>
-
-        {/* Bottom — stacked on mobile, 7/5 grid on lg+ */}
-        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:items-end lg:gap-6">
-          {/* Headline + CTA */}
-          <div
-            className="lg:col-span-8"
-            style={{
-              opacity: headlineOp,
-              transform: `translateY(${drift(headlineOp)}px)`,
-              transition: "transform 0.4s var(--ease-organic)",
-            }}
-          >
-            <span
-              className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-              style={SHADOW_LABEL}
-            >
-              {t.hero.eyebrow}
-            </span>
-            <h1
-              className="mt-5 lg:mt-6 font-cormorant font-light text-parchment leading-[1.05] text-[clamp(1.6rem,3.3vw,3.5rem)]"
-              style={SHADOW_HEAVY}
-            >
+    <Frame id="hero" opacity={o}>
+      <div className="v-page" style={{ justifyContent: "flex-start" }}>
+        <div className="v-wrap">
+          <div style={{ opacity: headOp, transform: `translateY(${drift(headOp)}px)` }}>
+            <Eyebrow>{t.hero.eyebrow}</Eyebrow>
+            <h1 className="v-display">
               <Headline />
             </h1>
-            <a
-              href="#sanctum"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToZone("sanctum");
-              }}
-              className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
-              style={{ ...SHADOW_MED, pointerEvents: o > 0.4 ? "auto" : "none" }}
-            >
-              {t.cta}
-              <span aria-hidden>↘</span>
-            </a>
           </div>
-
-        </div>
-      </div>
-    </FixedFrame>
-  );
-}
-
-/* ---------------------- DELIVER — what the visitor gets ---------------- */
-function DeliverCopy({ p, zone }: { p: number; zone: Z }) {
-  const o = useZoneOpacity(p, zone);
-  const t = useT();
-  return (
-    <FixedFrame opacity={o} pointer={o > 0.5}>
-      <Scrim background={SCRIM.left} />
-      <div className="absolute inset-0 flex items-end justify-start px-6 lg:px-16 py-20 lg:py-28 pointer-events-none">
-        <div className="max-w-3xl">
-          <span
-            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_LABEL}
-          >
-            {t.deliver.eyebrow}
-          </span>
-          <h2
-            className="mt-4 lg:mt-5 font-cormorant text-parchment text-[clamp(1.6rem,3.4vw,3.4rem)] leading-[1.1]"
-            style={SHADOW_HEAVY}
-          >
-            {t.deliver.title1}
-            <br />
-            {t.deliver.title2a}
-            <span className="italic text-brass-light">{t.deliver.title2hl}</span>
-            {t.deliver.title2b}
-          </h2>
-          <ul
-            className="mt-6 lg:mt-8 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2.5 lg:gap-y-3"
-            style={SHADOW_MED}
-          >
-            {t.deliver.items.map((item) => (
-              <SafetyItem key={item} title={item} />
-            ))}
-          </ul>
-          {t.deliver.price && (
-            <p
-              className="mt-5 lg:mt-6 font-cormorant italic text-brass-light text-lg lg:text-2xl"
-              style={SHADOW_MED}
-            >
-              {t.deliver.price}
-            </p>
-          )}
-          <a
-            href="#sanctum"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToZone("sanctum");
-            }}
-            className="mt-7 lg:mt-9 inline-flex items-center gap-3 px-6 lg:px-7 py-3 rounded-full bg-brass-deep/80 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[11.5px] lg:text-[12.5px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.55)] border border-brass-light/40"
-            style={{ ...SHADOW_MED, pointerEvents: o > 0.5 ? "auto" : "none" }}
-          >
-            {t.cta}
-            <span aria-hidden>↘</span>
-          </a>
-        </div>
-      </div>
-    </FixedFrame>
-  );
-}
-
-/* ---------------------- METHOD — process + objection handling ----------- */
-function MethodCopy({ p, zone }: { p: number; zone: Z }) {
-  const o = useZoneOpacity(p, zone);
-  const t = useT();
-  return (
-    <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 lg:px-8 py-12 lg:py-16 pointer-events-none">
-        {/* Subtle contrast card so the dense info reads cleanly */}
-        <div
-          className="flex flex-col items-center max-w-5xl w-full px-6 lg:px-12 py-8 lg:py-12 rounded-[3px]"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(10,22,16,0.78) 0%, rgba(10,22,16,0.55) 70%, rgba(10,22,16,0.30) 100%)",
-            backdropFilter: "blur(6px)",
-            WebkitBackdropFilter: "blur(6px)",
-            border: "1px solid rgba(232,200,138,0.18)",
-            boxShadow:
-              "0 40px 80px -20px rgba(0,0,0,0.55), inset 0 0 1px rgba(232,200,138,0.2)",
-          }}
-        >
-          <span
-            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_LABEL}
-          >
-            {t.method.eyebrow}
-          </span>
-          <h2
-            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.4rem,3.2vw,2.8rem)] leading-[1.15] max-w-3xl text-center"
-            style={SHADOW_HEAVY}
-          >
-            {t.method.title1}
-            {t.method.title2hl && (
-              <>
-                <br />
-                {t.method.title2a}
-                <span className="text-brass-light">{t.method.title2hl}</span>
-                {t.method.title2b}
-              </>
-            )}
-          </h2>
-
-          {/* Milestone timeline */}
-          <div className="mt-7 lg:mt-9 w-full max-w-4xl">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-5 gap-x-6 text-center">
-              {t.method.milestones.map((m) => (
-                <Milestone key={m.title} wk={m.wk} title={m.title} detail={m.detail} />
-              ))}
+          <div style={{ opacity: leadOp, transform: `translateY(${drift(leadOp)}px)` }}>
+            <p className="v-lead">{t.hero.lead}</p>
+            <div className="v-ctas">
+              <a
+                href="#contact"
+                className="v-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToZone("contact");
+                }}
+              >
+                {t.cta} <span className="arr" aria-hidden>→</span>
+              </a>
+              <a
+                href="#portfolio"
+                className="v-btn ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToZone("portfolio");
+                }}
+              >
+                {t.ctaPortfolio}
+              </a>
+              <span className="v-fact">{t.hero.fact}</span>
             </div>
           </div>
-
-          {/* Safety block — addresses scam / theft / quality / unknown-company objections */}
-          <h3
-            className="mt-9 lg:mt-12 font-mono uppercase tracking-[0.28em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_LABEL}
+        </div>
+        {/* Real product screens, tilted in perspective */}
+        <div
+          className="v-wall"
+          aria-hidden
+          style={{ opacity: wallOp, transform: `translateY(${drift(wallOp) * 2}px)` }}
+        >
+          <div
+            className="v-wall-tilt"
+            style={{ marginLeft: `${-zp * 6}%` }}
           >
-            {t.method.safetyTitle}
-          </h3>
-          <ul
-            className="mt-4 lg:mt-5 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2.5 max-w-3xl w-full"
-            style={SHADOW_MED}
-          >
-            {t.method.safety.map((item) => (
-              <SafetyItem key={item} title={item} />
+            {[rowA, rowB].map((row, r) => (
+              <div key={r} className={`v-wall-row${r === 1 ? " rev" : ""}`}>
+                {[...row, ...row, ...row, ...row].map((s, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={`${s}-${i}`}
+                    src={`/assets/shots/${s}.webp`}
+                    alt=""
+                    width={1200}
+                    height={750}
+                    decoding="async"
+                  />
+                ))}
+              </div>
             ))}
-          </ul>
-
-          {/* CTA */}
-          <a
-            href={whatsappUrl(t.whatsappText)}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-8 lg:mt-10 inline-flex items-center gap-3 px-7 lg:px-8 py-3 lg:py-3.5 rounded-full bg-brass-deep/85 backdrop-blur-sm text-parchment font-mono uppercase whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em] text-[12.5px] lg:text-[13px] transition-all duration-500 hover:bg-brass hover:gap-4 hover:shadow-[0_30px_60px_-20px_rgba(232,200,138,0.6)] border border-brass-light/40"
-            style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
-          >
-            {t.cta}
-            <span aria-hidden>↗</span>
-          </a>
+          </div>
         </div>
       </div>
-    </FixedFrame>
+    </Frame>
   );
 }
 
-function Milestone({
-  wk,
-  title,
-  detail,
-}: {
-  wk: string;
-  title: string;
-  detail: string;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-1 px-1.5">
-      <span
-        className="font-mono uppercase tracking-[0.22em] text-[10px] lg:text-[11px] text-brass-light"
-        style={SHADOW_LABEL}
-      >
-        {wk}
-      </span>
-      <span
-        className="font-sans text-parchment text-[14px] lg:text-base font-medium tracking-tight"
-        style={SHADOW_MED}
-      >
-        {title}
-      </span>
-      <span
-        className="font-sans text-parchment/90 text-[12px] lg:text-[13px] leading-snug max-w-[30ch]"
-        style={SHADOW_SOFT}
-      >
-        {detail}
-      </span>
-    </div>
-  );
-}
-
-function SafetyItem({ title }: { title: string }) {
-  return (
-    <li className="flex items-center gap-3">
-      <span
-        aria-hidden
-        className="shrink-0 inline-block w-1.5 h-1.5 rounded-full bg-brass-light"
-        style={{ boxShadow: "0 0 8px rgba(232,200,138,0.7)" }}
-      />
-      <span className="font-sans text-parchment text-[14.5px] lg:text-[15px] font-normal leading-tight">
-        {title}
-      </span>
-    </li>
-  );
-}
-
-/* ---------------------- VENTURES — horizontal marquee gallery ----------- */
+/* ---------------------- PORTFOLIO — the 12 startups ---------------------- */
 // Portfolio by segment, as in the commercial deck. Logos are the canonical
 // ones from the venture registry (veridian_ventures.logo_canonica); each card
-// links to the venture's site_url (no link when it has none yet).
+// links to the venture's site_url (no link when it has none yet) and shows
+// the real product screen when there is one.
 const VENTURES = [
-  { id: "conciera", name: "Conciera", segment: "saude", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/conciera/logo.png", url: "https://conciera.com.br" },
-  { id: "lovedopa", name: "LoveDopa", segment: "saude", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/lovedopa/logo.png", url: "https://lovedopa.org" },
-  { id: "boostdesign", name: "BoostDesign", segment: "saude", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/boostdesign/logo.png?v=1791142954", url: "https://boostdesign.4profitai.com" },
-  { id: "knexo", name: "kNexo", segment: "financas", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/knexo/logo.png", url: "https://knexo.io/us" },
-  { id: "zettapay", name: "ZettaPay", segment: "financas", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/zettapay/logo.png?v=1791212046", url: "https://zettapay.4profitai.com" },
-  { id: "sofiaai", name: "SofiaAI", segment: "vendas", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/sofiaai/logo.png?v=1791212045", url: "https://virtualsofia.com.br" },
-  { id: "fivsense", name: "FivSense", segment: "vendas", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/fivsense/logo.png?v=1791142952", url: "https://fivsense.4profitai.com" },
-  { id: "veridian-helm", name: "Helm", segment: "gestao", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/veridian-helm/logo.png", url: "#" },
-  { id: "veridian-kesh", name: "Kesh", segment: "gestao", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/veridian-kesh/logo.png", url: "#" },
-  { id: "tsign", name: "Tsign", segment: "juridico", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/tsign/logo.png?v=1791136478", url: "https://tsign.4profitai.com" },
-  { id: "knexo-jobs", name: "kNexo Jobs", segment: "carreira", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/knexo-jobs/logo.png?v=1791215781", url: "https://knexo-jobs.4profitai.com" },
-  { id: "superrdo", name: "SuperRDO", segment: "construcao", logo: "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/superrdo/logo.png?v=1791135407", url: "https://superrdo.4profitai.com" },
+  { id: "conciera", name: "Conciera", segment: "saude", logo: `${LOGO_BASE}/conciera/logo.png`, url: "https://conciera.com.br", shot: "conciera" },
+  { id: "lovedopa", name: "LoveDopa", segment: "saude", logo: `${LOGO_BASE}/lovedopa/logo.png`, url: "https://lovedopa.org", shot: "lovedopa" },
+  { id: "boostdesign", name: "BoostDesign", segment: "saude", logo: `${LOGO_BASE}/boostdesign/logo.png?v=1791142954`, url: "https://boostdesign.4profitai.com", shot: "boostdesign" },
+  { id: "knexo", name: "kNexo", segment: "financas", logo: `${LOGO_BASE}/knexo/logo.png`, url: "https://knexo.io/us", shot: "knexo" },
+  { id: "zettapay", name: "ZettaPay", segment: "financas", logo: `${LOGO_BASE}/zettapay/logo.png?v=1791212046`, url: "https://zettapay.4profitai.com", shot: "zettapay" },
+  { id: "sofiaai", name: "SofiaAI", segment: "vendas", logo: `${LOGO_BASE}/sofiaai/logo.png?v=1791212045`, url: "https://virtualsofia.com.br", shot: "sofiaai" },
+  { id: "fivsense", name: "FivSense", segment: "vendas", logo: `${LOGO_BASE}/fivsense/logo.png?v=1791142952`, url: "https://fivsense.4profitai.com", shot: "fivsense" },
+  { id: "veridian-helm", name: "Helm", segment: "gestao", logo: `${LOGO_BASE}/veridian-helm/logo.png`, url: "#", shot: null },
+  { id: "veridian-kesh", name: "Kesh", segment: "gestao", logo: `${LOGO_BASE}/veridian-kesh/logo.png`, url: "#", shot: null },
+  { id: "tsign", name: "Tsign", segment: "juridico", logo: `${LOGO_BASE}/tsign/logo.png?v=1791136478`, url: "https://tsign.4profitai.com", shot: "tsign" },
+  { id: "knexo-jobs", name: "kNexo Jobs", segment: "carreira", logo: `${LOGO_BASE}/knexo-jobs/logo.png?v=1791215781`, url: "https://knexo-jobs.4profitai.com", shot: "knexo-jobs" },
+  { id: "superrdo", name: "SuperRDO", segment: "construcao", logo: `${LOGO_BASE}/superrdo/logo.png?v=1791135407`, url: "https://superrdo.4profitai.com", shot: "superrdo" },
 ];
 
-// Copies of the list in the marquee row. One copy is ~12 cards (~5900px on
-// desktop), so two always fill the viewport after the wrap point.
+type Venture = (typeof VENTURES)[number];
+
+// Copies of the list in the marquee row; two always fill the viewport after
+// the wrap point.
 const VENTURE_COPIES = 2;
 
-function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
+function PortfolioCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   const t = useT();
   const zp = zoneProgress(p, zone.start, zone.end);
 
-  // Scroll-driven horizontal motion: row translates as user scrolls through zone.
-  // Plus a continuous slow drift (auto-marquee) so it feels alive even when idle.
-  // The list is rendered VENTURE_COPIES times; one copy is exactly
-  // 100/VENTURE_COPIES % of the row (spacing is padding on each item, not flex
-  // gap), so wrapping the offset at that period is seamless and there are
-  // always copies left to fill the viewport, however wide.
+  // Scroll-driven horizontal motion plus a continuous slow drift. One copy is
+  // exactly 100/VENTURE_COPIES % of the row (spacing is padding on each item),
+  // so wrapping the offset at that period is seamless.
   const period = 100 / VENTURE_COPIES;
   const [autoOffset, setAutoOffset] = useState(0);
 
@@ -675,180 +407,172 @@ function VenturesCopy({ p, zone }: { p: number; zone: Z }) {
     const tick = (now: number) => {
       const dt = (now - last) / 1000;
       last = now;
-      setAutoOffset((prev) => (prev + (dt * period) / 150) % period); // one copy in ~150s
+      setAutoOffset((prev) => (prev + (dt * period) / 160) % period); // one copy in ~160s
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [o, period]);
 
-  // Combined translate: scroll progress + continuous drift, wrapped to one copy
   const translateX = -((zp * period * 0.2 + autoOffset) % period);
 
   return (
-    <FixedFrame opacity={o} pointer={o > 0.5}>
-      <Scrim background={SCRIM.topBottom} />
-      {/* Title, marquee and footnote are stacked in one column (not absolutely
-          positioned) so they can never overlap; the cards shrink with the
-          viewport height instead — see PaintingCard width. */}
-      <div className="absolute inset-0 flex flex-col justify-center gap-[clamp(10px,3vh,36px)] pt-[clamp(64px,10vh,96px)] pb-[clamp(20px,5vh,56px)] pointer-events-none">
-      {/* Title — top */}
-      <div className="flex flex-col items-center text-center pointer-events-none px-6 lg:px-8">
-        <span
-          className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-          style={SHADOW_LABEL}
-        >
-          {t.ventures.eyebrow}
-        </span>
-        <h2
-          className="mt-2 lg:mt-3 font-cormorant font-light text-parchment text-[clamp(1.5rem,min(3.6vw,7vh),3.4rem)] leading-[1.05] max-w-6xl"
-          style={SHADOW_HEAVY}
-        >
-          {t.ventures.title}
-        </h2>
-        <p
-          className="mt-2 lg:mt-3 font-cormorant italic text-parchment/95 text-sm lg:text-lg font-light"
-          style={SHADOW_MED}
-        >
-          {t.ventures.sub}
-        </p>
-        <div
-          className="mt-3 lg:mt-4 flex items-center gap-5 font-mono uppercase tracking-[0.2em] text-[11px] lg:text-[11.5px]"
-          style={{ ...SHADOW_LABEL, pointerEvents: o > 0.5 ? "auto" : "none" }}
-        >
-          <ExternalLink href={CASES_URL}>{t.ventures.cases}</ExternalLink>
-          <span aria-hidden className="text-parchment/40">·</span>
-          <ExternalLink href={VENTURES_URL}>{t.ventures.invest}</ExternalLink>
+    <Frame id="portfolio" opacity={o}>
+      <div className="v-page">
+        <div className="v-wrap">
+          <div className="v-head">
+            <div className="v-rise">
+              <Eyebrow>01 · {t.nav.portfolio}</Eyebrow>
+              <h2 className="v-h2">{t.portfolio.title}</h2>
+              <p className="v-sub">{t.portfolio.sub}</p>
+            </div>
+            <div className="v-links v-rise" style={{ ["--i" as string]: 2 }}>
+              <ExternalLink href={CASES_URL}>{t.portfolio.cases}</ExternalLink>
+              <ExternalLink href={VENTURES_URL}>{t.portfolio.invest}</ExternalLink>
+            </div>
+          </div>
+        </div>
+        <div className="v-marquee">
+          <div
+            className="flex items-start will-change-transform"
+            style={{ transform: `translate3d(${translateX}%, 0, 0)`, width: "max-content" }}
+          >
+            {Array.from({ length: VENTURE_COPIES }, () => VENTURES)
+              .flat()
+              .map((v, i) => (
+                <div key={`${v.id}-${i}`} className="shrink-0 pr-4 sm:pr-6 lg:pr-8">
+                  <CaseCard
+                    v={v}
+                    tag={t.portfolio.tags[v.segment]}
+                    line={t.portfolio.lines[v.id]}
+                    hidden={i >= VENTURES.length}
+                  />
+                </div>
+              ))}
+          </div>
         </div>
       </div>
-
-      {/* Marquee row */}
-      <div className="overflow-hidden pointer-events-none py-2">
-        <div
-          className="flex items-center will-change-transform"
-          style={{
-            transform: `translate3d(${translateX}%, 0, 0)`,
-            width: "max-content",
-          }}
-        >
-          {Array.from({ length: VENTURE_COPIES }, () => VENTURES)
-            .flat()
-            .map((v, i) => (
-              <div key={`${v.id}-${i}`} className="shrink-0 pr-6 sm:pr-8 lg:pr-14">
-                <SystemCard v={{ ...v, tag: t.ventures.tags[v.segment] }} active={o > 0.5} />
-              </div>
-            ))}
-        </div>
-      </div>
-
-      </div>
-
-      {/* Edge fade masks for elegance */}
-      <div
-        className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 lg:w-48 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(20,35,29,0.85) 0%, rgba(20,35,29,0) 100%)",
-        }}
-      />
-      <div
-        className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 lg:w-48 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(270deg, rgba(20,35,29,0.85) 0%, rgba(20,35,29,0) 100%)",
-        }}
-      />
-
-    </FixedFrame>
+    </Frame>
   );
 }
 
-function SystemCard({
+function CaseCard({
   v,
-  active,
+  tag,
+  line,
+  hidden,
 }: {
-  v: { id: string; name: string; tag: string; url: string; logo: string };
-  active: boolean;
+  v: Venture;
+  tag: string;
+  line: string;
+  hidden: boolean;
 }) {
   const external = v.url.startsWith("http");
+  const host = external ? new URL(v.url).host : "";
   return (
     <a
       href={external ? v.url : undefined}
       target={external ? "_blank" : undefined}
       rel="noreferrer"
-      className="group flex flex-col items-center gap-3 lg:gap-4 transition-all duration-500 hover:-translate-y-1.5 shrink-0"
-      style={{
-        // Width follows the viewport HEIGHT too: ~390px are taken by the title,
-        // plaque and paddings; the frame (16:10) gets what is left.
-        width: "clamp(190px, min(72vw, calc((100svh - 390px) * 1.6)), 400px)",
-        pointerEvents: active && external ? "auto" : "none",
-      }}
+      className="v-case"
+      tabIndex={hidden || !external ? -1 : undefined}
+      aria-hidden={hidden || undefined}
     >
-      {/* Gold frame around the venture's registry logo */}
-      <div className="relative w-full" style={{ aspectRatio: "16 / 10" }}>
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(135deg, #f0d49a 0%, #c9a56b 35%, #9b7f4e 60%, #c9a56b 85%, #f0d49a 100%)",
-            boxShadow:
-              "0 30px 60px -20px rgba(0,0,0,0.75), 0 8px 20px -5px rgba(0,0,0,0.5), inset 0 0 1px rgba(232,200,138,1)",
-            borderRadius: "2px",
-          }}
-        />
-        <div
-          className="absolute overflow-hidden bg-[#0a1610]"
-          style={{
-            top: 6,
-            left: 6,
-            right: 6,
-            bottom: 6,
-            borderRadius: "1px",
-            boxShadow:
-              "inset 0 0 0 1px rgba(20,35,29,0.45), 0 0 0 1px rgba(20,35,29,0.4)",
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={v.logo}
-            alt={v.name}
-            loading="lazy"
-            className="absolute inset-0 m-auto h-[62%] w-[62%] object-contain transition-all duration-500 group-hover:scale-[1.04]"
-          />
-        </div>
-      </div>
-
-      {/* Plaque */}
-      <div className="text-center">
-        <div
-          className="font-cormorant text-parchment text-lg lg:text-xl leading-none"
-          style={SHADOW_HEAVY}
-        >
-          {v.name}
-        </div>
-        <div
-          className="mt-1.5 font-mono uppercase tracking-[0.18em] text-[11px] text-brass-light leading-tight"
-          style={SHADOW_LABEL}
-        >
-          {v.tag}
-        </div>
-      </div>
+      <span className="v-browser">
+        <span className="v-browser-bar">
+          <i />
+          <i />
+          <i />
+          {host && <span>{host}</span>}
+        </span>
+        {v.shot ? (
+          <span className="v-shot">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="full"
+              src={`/assets/shots/${v.shot}.webp`}
+              alt={v.name}
+              width={1200}
+              height={750}
+              decoding="async"
+            />
+          </span>
+        ) : (
+          <span className="v-shot logo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={v.logo} alt={v.name} loading="lazy" />
+          </span>
+        )}
+      </span>
+      <span className="v-case-meta">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="v-case-logo" src={v.logo} alt="" loading="lazy" />
+        <b>{v.name}</b>
+        <span className="v-tag">{tag}</span>
+      </span>
+      <span className="v-case-line">{line}</span>
     </a>
   );
 }
 
-/* ---------------------- ENGINE — Veridian OS, in one screen -------------- */
-// The four modules used to take five full screens. For the visitor they are
-// only the reason delivery is fast, so they get one screen and one line each.
-// Signed-in operators still get their launch links here.
+/* ---------------------- AUDIENCE — who it's for + model ------------------ */
+function AudienceCopy({ p, zone }: { p: number; zone: Z }) {
+  const o = useZoneOpacity(p, zone);
+  const t = useT();
+  return (
+    <Frame id="audience" opacity={o}>
+      <div className="v-page">
+        <div className="v-wrap">
+          <div className="v-head v-rise">
+            <div>
+              <Eyebrow>02 · {t.nav.audience}</Eyebrow>
+              <h2 className="v-h2">{t.audience.title}</h2>
+            </div>
+          </div>
+          <ul className="v-grid3">
+            {t.audience.items.map((it, i) => (
+              <li key={it.n} className="v-card v-rise" style={{ ["--i" as string]: i + 1 }}>
+                <div className="v-card-top">
+                  <span className="v-idx">{it.n}</span>
+                  <h3>{it.title}</h3>
+                </div>
+                <p>{it.text}</p>
+                <div className="v-meta">
+                  <span className="who">
+                    <small>{t.audience.forLabel}</small>
+                    {it.who}
+                  </span>
+                  <span className="model">
+                    <small>{t.audience.modelLabel}</small>
+                    {it.model}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Frame>
+  );
+}
+
+/* ---------------------- HOW — modules + maturity phases ------------------ */
+// Signed-in operators get launch links on the modules that have a console.
 const MODULE_URLS: Record<string, string | null> = {
   fabric: "https://fabric.4profitai.com",
   vortex: "https://vortex.4profitai.com",
   pulse: null,
   jarvis: "https://jarvis.4profitai.com",
+  helm: null,
+  kesh: null,
 };
 
-function EngineCopy({
+const PHASE_COLORS = [
+  ["#0f6b4f", "#0f6b4f", "#0f6b4f", "#0f6b4f"],
+  ["#2f8a68", "#6ca386", "#a59a68", "#b8925a"],
+];
+
+function HowCopy({
   p,
   zone,
   loggedIn,
@@ -860,181 +584,187 @@ function EngineCopy({
   const o = useZoneOpacity(p, zone);
   const t = useT();
   return (
-    <FixedFrame opacity={o} pointer={o > 0.5}>
-      <Scrim background={SCRIM.center} />
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 lg:px-8 pointer-events-none">
-        <span
-          className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-          style={SHADOW_LABEL}
-        >
-          {t.engine.eyebrow}
-        </span>
-        <h2
-          className="mt-3 lg:mt-4 font-cormorant text-parchment text-[clamp(2.2rem,min(6vw,11vh),6rem)] leading-[0.95]"
-          style={SHADOW_HEAVY}
-        >
-          {t.engine.title}
-          <span className="italic text-seafoam">{t.engine.titleHl}</span>.
-        </h2>
-        <p
-          className="mt-3 lg:mt-4 font-cormorant italic text-parchment text-base lg:text-xl max-w-2xl"
-          style={SHADOW_MED}
-        >
-          {t.engine.sub}
-        </p>
-
-        <div className="mt-7 lg:mt-10 grid grid-cols-2 lg:grid-cols-4 gap-x-6 lg:gap-x-10 gap-y-5 max-w-5xl">
-          {t.engine.modules.map((m) => {
-            const url = MODULE_URLS[m.id];
-            return (
-              <div key={m.id} className="flex flex-col items-center gap-1" style={SHADOW_MED}>
-                <span className="font-cormorant text-xl lg:text-2xl text-parchment">
-                  {loggedIn && url ? (
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-brass-light underline underline-offset-4 decoration-brass-light/40 hover:decoration-brass-light"
-                      style={{ pointerEvents: o > 0.5 ? "auto" : "none" }}
-                    >
-                      {m.name} ↗
-                    </a>
-                  ) : (
-                    <span className="text-brass-light">{m.name}</span>
-                  )}{" "}
-                  <span className="italic">{m.verb}</span>
-                  {loggedIn && !url && (
-                    <span className="ml-2 font-mono uppercase tracking-[0.18em] text-[10px] text-parchment/70">
-                      {t.engine.soon}
+    <Frame id="how" opacity={o}>
+      <div className="v-page">
+        <div className="v-wrap v-how">
+          <div className="v-rise">
+            <Eyebrow>03 · {t.nav.how}</Eyebrow>
+            <h2 className="v-h2">{t.how.title}</h2>
+            <p className="v-sub">{t.how.sub}</p>
+            <div className="v-mods">
+              {t.how.modules.map((m, i) => {
+                const url = MODULE_URLS[m.id];
+                return (
+                  <div key={m.id} className={`v-mod${i === 0 ? " core" : ""}`}>
+                    <b>
+                      {loggedIn && url ? (
+                        <a href={url} target="_blank" rel="noreferrer">
+                          {m.name} ↗
+                        </a>
+                      ) : (
+                        m.name
+                      )}
+                    </b>
+                    <span>
+                      {m.role}
+                      {loggedIn && !url ? ` · ${t.soon}` : ""}
                     </span>
-                  )}
-                </span>
-                <span className="font-sans text-parchment/90 text-[13px] lg:text-sm leading-snug max-w-[24ch]">
-                  {m.line}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        <p
-          className="mt-7 lg:mt-10 font-cormorant italic text-parchment/90 text-sm lg:text-lg max-w-xl"
-          style={SHADOW_MED}
-        >
-          {t.engine.footnote}
-        </p>
-      </div>
-    </FixedFrame>
-  );
-}
-
-/* ---------------------- FAQ — objections, answered ---------------------- */
-function FaqCopy({ p, zone }: { p: number; zone: Z }) {
-  const o = useZoneOpacity(p, zone);
-  const t = useT();
-  return (
-    <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-5 lg:px-8 py-[clamp(56px,9vh,96px)] pointer-events-none">
-        <div
-          className="flex flex-col items-center max-w-5xl w-full px-6 lg:px-12 py-[clamp(18px,4vh,44px)] rounded-[3px]"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(10,22,16,0.84) 0%, rgba(10,22,16,0.66) 70%, rgba(10,22,16,0.42) 100%)",
-            backdropFilter: "blur(6px)",
-            WebkitBackdropFilter: "blur(6px)",
-            border: "1px solid rgba(232,200,138,0.18)",
-            boxShadow:
-              "0 40px 80px -20px rgba(0,0,0,0.55), inset 0 0 1px rgba(232,200,138,0.2)",
-          }}
-        >
-          <span
-            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_LABEL}
-          >
-            {t.faq.eyebrow}
-          </span>
-          <h2
-            className="mt-2 lg:mt-3 font-cormorant text-parchment text-[clamp(1.4rem,min(3.2vw,5.5vh),2.8rem)] leading-[1.1] text-center"
-            style={SHADOW_HEAVY}
-          >
-            {t.faq.title}
-          </h2>
-
-          <dl className="mt-[clamp(12px,3vh,32px)] grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-[clamp(8px,2vh,20px)] w-full">
-            {t.faq.items.map((item) => (
-              <div key={item.q} style={SHADOW_MED}>
-                <dt className="font-cormorant text-brass-light text-[17px] lg:text-xl leading-snug">
-                  {item.q}
-                </dt>
-                <dd className="mt-0.5 lg:mt-1 font-sans text-parchment text-[13px] lg:text-[14.5px] leading-snug">
-                  {item.a}
-                </dd>
-              </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div>
+            {t.how.phases.map((ph, pi) => (
+              <article key={ph.label} className="v-phase v-rise" style={{ ["--i" as string]: pi + 2 }}>
+                <small>{ph.label}</small>
+                <ol className="v-steps">
+                  {ph.steps.map((s, si) => (
+                    <li
+                      key={s.title}
+                      style={{
+                        ["--c" as string]: PHASE_COLORS[pi][si],
+                        ["--i" as string]: pi * 4 + si,
+                      }}
+                    >
+                      <b>{s.title}</b>
+                      <p>{s.text}</p>
+                    </li>
+                  ))}
+                </ol>
+              </article>
             ))}
-          </dl>
+          </div>
         </div>
       </div>
-    </FixedFrame>
+    </Frame>
   );
 }
 
-/* ---------------------- SANCTUM — close ---------------------- */
-function SanctumCopy({ p, zone }: { p: number; zone: Z }) {
+/* ---------------------- EDGE — why Veridian ------------------------------ */
+function EdgeCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   const t = useT();
   return (
-    <FixedFrame opacity={o} pointer={o > 0.5}>
-      <div id="sanctum" className="absolute inset-0 flex flex-col items-center justify-center text-center px-5 lg:px-8 py-[clamp(56px,9vh,96px)] pointer-events-none">
-        {/* Contrast card behind text — semi-opaque so the cathedral
-            still shows through but the copy reads strongly. */}
-        <div
-          className="flex flex-col items-center w-full max-w-3xl px-6 lg:px-14 py-[clamp(18px,4vh,48px)] rounded-[3px]"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(10,22,16,0.86) 0%, rgba(10,22,16,0.7) 70%, rgba(10,22,16,0.45) 100%)",
-            backdropFilter: "blur(6px)",
-            WebkitBackdropFilter: "blur(6px)",
-            border: "1px solid rgba(232,200,138,0.18)",
-            boxShadow:
-              "0 40px 80px -20px rgba(0,0,0,0.6), inset 0 0 1px rgba(232,200,138,0.2)",
-          }}
-        >
-          <span
-            className="font-mono uppercase tracking-[0.32em] text-[11.5px] lg:text-[12.5px] text-brass-light"
-            style={SHADOW_LABEL}
-          >
-            {t.sanctum.eyebrow}
-          </span>
-          <h2
-            className="mt-3 lg:mt-4 font-cormorant font-light text-parchment text-[clamp(1.4rem,min(3vw,5.5vh),2.7rem)] leading-[1.12] max-w-2xl"
-            style={SHADOW_HEAVY}
-          >
-            <Headline />
-          </h2>
-          <p
-            className="mt-4 lg:mt-5 font-cormorant italic text-parchment/90 text-base lg:text-xl font-light max-w-md"
-            style={SHADOW_MED}
-          >
-            {t.sanctum.sub}
-          </p>
-
-          <LeadForm active={o > 0.5} />
+    <Frame id="edge" opacity={o}>
+      <div className="v-page">
+        <div className="v-wrap">
+          <div className="v-head v-rise">
+            <div>
+              <Eyebrow>04 · {t.nav.edge}</Eyebrow>
+              <h2 className="v-h2">{t.edge.title}</h2>
+            </div>
+          </div>
+          <ul className="v-grid4">
+            {t.edge.items.map((it, i) => (
+              <li key={it.title} className="v-card v-rise" style={{ ["--i" as string]: i + 1 }}>
+                <span className="v-num">{i + 1}</span>
+                <h3>{it.title}</h3>
+                <p>{it.text}</p>
+              </li>
+            ))}
+          </ul>
         </div>
+      </div>
+    </Frame>
+  );
+}
 
-        <div
-          className="mt-[clamp(12px,3vh,44px)] font-mono uppercase tracking-[0.2em] lg:tracking-[0.26em] text-[11px] lg:text-[11.5px] text-parchment/95"
-          style={SHADOW_SOFT}
-        >
-          {t.sanctum.footer}
-          <span className="mx-2 text-parchment/40" aria-hidden>·</span>
-          <span style={{ pointerEvents: o > 0.5 ? "auto" : "none" }} className="inline-flex flex-wrap justify-center gap-x-3 gap-y-1">
-            <ExternalLink href={`mailto:${t.sanctum.email}`}>{t.sanctum.email}</ExternalLink>
-            <ExternalLink href={CASES_URL}>{t.ventures.cases}</ExternalLink>
-            <ExternalLink href={VENTURES_URL}>{t.ventures.invest}</ExternalLink>
+/* ---------------------- PLANS — subscription plans ----------------------- */
+function PlansCopy({ p, zone }: { p: number; zone: Z }) {
+  const o = useZoneOpacity(p, zone);
+  const t = useT();
+  return (
+    <Frame id="plans" opacity={o}>
+      <div className="v-page">
+        <div className="v-wrap">
+          <div className="v-head v-rise">
+            <div>
+              <Eyebrow>05 · {t.nav.plans}</Eyebrow>
+              <h2 className="v-h2">{t.plans.title}</h2>
+            </div>
+          </div>
+          <ul className="v-grid4">
+            {t.plans.items.map((pl, i) => (
+              <li
+                key={pl.name}
+                className={`v-card v-plan v-rise${pl.highlight ? " hi" : ""}`}
+                style={{ ["--i" as string]: i + 1 }}
+              >
+                <span className="name">{pl.name}</span>
+                <div className="price">
+                  <b>{pl.price}</b>
+                  {pl.monthly && <span>{t.plans.perMonth}</span>}
+                </div>
+                <span className="stage">{pl.stage}</span>
+                <ul>
+                  {pl.features.map((f) => (
+                    <li key={f.text} className={f.no ? "no" : undefined}>
+                      {f.text}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+          <p className="v-note v-rise" style={{ ["--i" as string]: 5 }}>
+            {t.plans.note}
+          </p>
+        </div>
+      </div>
+    </Frame>
+  );
+}
+
+/* ---------------------- CONTACT — lead form ------------------------------ */
+function ContactCopy({ p, zone }: { p: number; zone: Z }) {
+  const o = useZoneOpacity(p, zone);
+  const t = useT();
+  return (
+    <Frame id="contact" opacity={o}>
+      <div className="v-page">
+        <div className="v-wrap v-contact">
+          <div className="v-rise">
+            <Eyebrow>06 · {t.nav.contact}</Eyebrow>
+            <h2 className="v-display">
+              <Headline />
+            </h2>
+            <p className="v-sub">{t.contact.sub}</p>
+            <div className="v-contact-list">
+              <div>
+                <small>{t.contact.emailLabel}</small>
+                <a href={`mailto:${t.contact.email}`}>{t.contact.email}</a>
+              </div>
+              <div>
+                <small>{t.contact.siteLabel}</small>
+                <span>veridian.4profitai.com</span>
+              </div>
+              <div>
+                <small>{t.contact.groupLabel}</small>
+                <a href="https://4profitai.com" target="_blank" rel="noreferrer">
+                  4profitai.com
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="v-formcard v-rise" style={{ ["--i" as string]: 2 }}>
+            <p>{t.cta}</p>
+            <LeadForm active={o > 0.5} />
+          </div>
+        </div>
+        <div className="v-foot">
+          <a className="v-link v-foot-mail" href={`mailto:${t.contact.email}`}>
+            {t.contact.email}
+          </a>
+          <span className="v-foot-group">{t.contact.group}</span>
+          <span>{t.contact.footer}</span>
+          <span className="inline-flex gap-3">
+            <ExternalLink href={CASES_URL}>{t.portfolio.cases}</ExternalLink>
+            <ExternalLink href={VENTURES_URL}>{t.portfolio.invest}</ExternalLink>
           </span>
         </div>
       </div>
-    </FixedFrame>
+    </Frame>
   );
 }
 
@@ -1042,16 +772,10 @@ const CASES_URL = "https://cases.4profitai.com";
 const VENTURES_URL = "https://ventures.4profitai.com";
 
 function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const mail = href.startsWith("mailto:");
   return (
-    <a
-      href={href}
-      target={mail ? undefined : "_blank"}
-      rel={mail ? undefined : "noreferrer"}
-      className="text-brass-light underline underline-offset-4 decoration-brass-light/40 hover:decoration-brass-light transition-colors"
-    >
+    <a href={href} target="_blank" rel="noreferrer" className="v-link">
       {children}
-      {!mail && <span aria-hidden> ↗</span>}
+      <span aria-hidden> ↗</span>
     </a>
   );
 }

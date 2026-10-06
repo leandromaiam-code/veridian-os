@@ -223,7 +223,7 @@ export function VortexAgent() {
         <div
           className="fixed inset-x-3 bottom-3 sm:inset-x-auto sm:right-5 sm:bottom-5 lg:right-7 lg:bottom-7 z-50 sm:w-[400px] lg:w-[420px] max-w-[calc(100vw-24px)] h-[min(72vh,640px)] rounded-[4px] flex flex-col overflow-hidden pointer-events-auto"
           style={{
-            background: "rgba(10,22,16,0.72)",
+            background: "rgba(10,30,23,0.94)",
             backdropFilter: "blur(22px) saturate(140%)",
             WebkitBackdropFilter: "blur(22px) saturate(140%)",
             border: "1px solid rgba(232,200,138,0.28)",

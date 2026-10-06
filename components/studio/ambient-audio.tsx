@@ -88,12 +88,12 @@ export function AmbientAudio() {
         onClick={toggle}
         aria-label={enabled ? t.audio.mute : t.audio.play}
         title={enabled ? t.audio.mute : t.audio.play}
-        className="fixed bottom-5 left-4 lg:bottom-6 lg:left-6 z-40 inline-flex items-center justify-center w-9 h-9 lg:w-10 lg:h-10 rounded-full border border-brass-light/30 hover:border-brass-light/70 text-parchment/75 hover:text-brass-light transition-all duration-500"
+        className="fixed bottom-5 left-4 lg:bottom-6 lg:left-6 z-40 inline-flex items-center justify-center w-9 h-9 lg:w-10 lg:h-10 rounded-full border border-line-2 hover:border-green text-green-2 hover:text-green transition-all duration-500"
         style={{
-          background: "rgba(10,22,16,0.55)",
+          background: "rgba(255,255,255,0.85)",
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
-          boxShadow: "0 6px 18px -4px rgba(0,0,0,0.55)",
+          boxShadow: "0 8px 20px -10px rgba(20,24,26,0.35)",
           opacity: mounted ? 1 : 0,
           transition:
             "opacity 1.5s var(--ease-organic), border-color 0.5s, color 0.5s",
