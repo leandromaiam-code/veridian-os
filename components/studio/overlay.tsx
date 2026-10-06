@@ -707,7 +707,7 @@ function EdgeCopy({ p, zone }: { p: number; zone: Z }) {
               <p className="v-sub">{t.edge.sub}</p>
             </div>
           </div>
-          <ul className="v-grid3">
+          <ul className="v-grid4">
             {t.edge.items.map((it, i) => (
               <li key={it.title} className="v-card v-edge v-rise" style={{ ["--i" as string]: i + 1 }}>
                 <span className="v-num">{String(i + 1).padStart(2, "0")}</span>

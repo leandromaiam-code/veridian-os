@@ -145,12 +145,10 @@ const en = {
     title: "Why Veridian",
     sub: "What changes for you.",
     items: [
-      { title: "A live product, not a prototype", text: "You get the product running on your domain, with sign-up and payments, ready for the first customer." },
-      { title: "A whole team, no hiring", text: "Product, marketing, operations and finance work for you from day one. No recruiting, no payroll, no months of setup." },
-      { title: "It improves every day", text: "The product keeps evolving from real usage. No waiting for a sprint, no support tickets." },
-      { title: "You only make the business calls", text: "Sourced research, numbers and next steps arrive ready in one dashboard. You approve; the platform executes." },
-      { title: "Spending guided by evidence", text: "Each stage only moves forward with proof from the market and from usage. You don't pay for scale before validating." },
-      { title: "A partner, not a vendor", text: "We can take equity in the company: we win when you win." },
+      { title: "Development speed", text: "The development modules write, test and ship code every night, from 10 pm to 6 am. The product evolves in daily cycles." },
+      { title: "Full support, from tech to marketing", text: "Development, monitored operations, support, content, campaigns and prospecting in the same contract." },
+      { title: "Visibility and Client Portal", text: "In the portal, the client follows the company's stage, how its maturity evolves, the deliveries and the next step." },
+      { title: "Competitive investment", text: "The monthly fee follows the company's stage and only goes up after the first paying customer. An app with a management dashboard costs R$ 70k to R$ 150k at a software house (Comunidade Sebrae, 2025)." },
     ],
   },
   contact: {
@@ -339,12 +337,10 @@ const pt: Dict = {
     title: "Diferenciais",
     sub: "O que muda para você.",
     items: [
-      { title: "Produto no ar, não protótipo", text: "Você recebe o produto funcionando no seu domínio, com cadastro e pagamento, pronto para o primeiro cliente." },
-      { title: "Um time inteiro, sem contratar", text: "Produto, marketing, operação e finanças trabalham para você desde o primeiro dia. Sem recrutar, sem folha, sem meses de montagem." },
-      { title: "Evolução todos os dias", text: "O produto melhora continuamente a partir do uso real. Sem esperar sprint, sem abrir chamado." },
-      { title: "Você só decide o que é de negócio", text: "Pesquisa com fontes, números e próximos passos chegam prontos num painel. Você aprova; a plataforma executa." },
-      { title: "Investimento guiado por evidência", text: "Cada etapa só avança com prova de mercado e de uso. Você não paga por escala antes de validar." },
-      { title: "Sócio, não fornecedor", text: "Podemos entrar com participação na empresa: ganhamos quando você ganha." },
+      { title: "Velocidade de desenvolvimento", text: "Os módulos de desenvolvimento escrevem, testam e publicam código todas as noites, das 22h às 6h. O produto evolui em ciclos diários." },
+      { title: "Suporte completo, do tech ao marketing", text: "Desenvolvimento, operação monitorada, suporte, conteúdo, campanhas e prospecção no mesmo contrato." },
+      { title: "Visibilidade e Portal do Cliente", text: "O cliente acompanha no portal a fase da empresa, a evolução da maturidade, as entregas e o próximo passo." },
+      { title: "Investimento competitivo", text: "A mensalidade acompanha a fase da empresa e só aumenta depois do primeiro cliente pagante. Um aplicativo com painel de gestão custa de R$ 70 mil a R$ 150 mil numa software house (Comunidade Sebrae, 2025)." },
     ],
   },
   contact: {
