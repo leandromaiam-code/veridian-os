@@ -11,17 +11,8 @@ export type Locale = "en" | "pt";
  *
  * Content and order follow the commercial deck (Veridian - Comercial):
  * who we are (hero) → portfolio → who it's for (+ business model) → how it
- * works (modules + phases) → why Veridian → plans → contact.
+ * works (stages) → the platform (modules) → why Veridian → contact.
  * --------------------------------------------------------------------------- */
-
-type Plan = {
-  name: string;
-  price: string;
-  monthly: boolean;
-  stage: string;
-  highlight: boolean;
-  features: { text: string; no?: boolean }[];
-};
 
 const en = {
   htmlLang: "en",
@@ -35,7 +26,7 @@ const en = {
     audience: "Who it's for",
     how: "How it works",
     edge: "Why Veridian",
-    plans: "Plans",
+    platform: "Platform",
     contact: "Contact",
   } as Record<string, string>,
   logout: "Logout",
@@ -116,15 +107,7 @@ const en = {
   },
   how: {
     title: "How it works",
-    sub: "The human team decides; the modules execute.",
-    modules: [
-      { id: "jarvis", name: "Veris", role: "Orchestrator" },
-      { id: "helm", name: "Helm", role: "CEO" },
-      { id: "vortex", name: "Vortex", role: "CMO" },
-      { id: "fabric", name: "Fabric", role: "CTO" },
-      { id: "pulse", name: "Pulse", role: "COO" },
-      { id: "kesh", name: "Kesh", role: "CFO" },
-    ],
+    sub: "Eight stages, from idea to business. Each one only moves forward with real evidence.",
     phases: [
       {
         label: "Phase 1 · Idea → Product",
@@ -146,75 +129,29 @@ const en = {
       },
     ],
   },
-  edge: {
-    title: "Why Veridian",
-    items: [
-      { title: "A real product, not a prototype", text: "We deliver the product live, with sign-up, payments and real usage." },
-      { title: "A full team from day one", text: "Product, marketing, operations and management already run on the platform. No need to build a team to start." },
-      { title: "Less risk at every stage", text: "Market and value proposition are validated before investing in product and scale." },
-      { title: "A partner, not a vendor", text: "We can take equity in the company: we grow when you grow." },
+  platform: {
+    title: "The platform",
+    sub: "The human team decides; the modules execute.",
+    modules: [
+      { id: "jarvis", name: "Veris", role: "Orchestrator", text: "Coordinates the modules and brings you only what needs a decision." },
+      { id: "helm", name: "Helm", role: "CEO", text: "Goals, OKRs and action plans." },
+      { id: "vortex", name: "Vortex", role: "CMO", text: "Market research, brand, website, content and campaigns." },
+      { id: "fabric", name: "Fabric", role: "CTO", text: "Builds and evolves the product, from code to release." },
+      { id: "pulse", name: "Pulse", role: "COO", text: "Monitors operations, usage and the maturity of each stage." },
+      { id: "kesh", name: "Kesh", role: "CFO", text: "Cash, P&L and margin with no manual entries." },
     ],
   },
-  plans: {
-    title: "Subscription plans",
-    perMonth: "/month",
+  edge: {
+    title: "Why Veridian",
+    sub: "What changes for you.",
     items: [
-      {
-        name: "Start",
-        price: "R$ 3,000",
-        monthly: true,
-        stage: "Ideation",
-        highlight: false,
-        features: [
-          { text: "Market research and positioning" },
-          { text: "Brand, landing page and blog" },
-          { text: "Product live, with sign-up and payments" },
-          { text: "Usage and maturity tracking" },
-          { text: "Products of higher technical complexity", no: true },
-        ],
-      },
-      {
-        name: "Growth",
-        price: "R$ 5,500",
-        monthly: true,
-        stage: "Validation and Traction",
-        highlight: false,
-        features: [
-          { text: "Everything in Start" },
-          { text: "Products of higher technical complexity" },
-          { text: "Acquisition: content, campaigns and prospecting" },
-          { text: "Continuous product evolution from usage" },
-          { text: "Monitored operations: stability and support" },
-        ],
-      },
-      {
-        name: "Scale",
-        price: "R$ 15,000",
-        monthly: true,
-        stage: "Scale and Maturity",
-        highlight: true,
-        features: [
-          { text: "Everything in Growth" },
-          { text: "Goals, OKRs and action plans" },
-          { text: "Financial management: cash, P&L and margin" },
-          { text: "Management reports for the partners" },
-        ],
-      },
-      {
-        name: "Enterprise",
-        price: "On request",
-        monthly: false,
-        stage: "Partnerships and tailored projects",
-        highlight: false,
-        features: [
-          { text: "Tailored scope" },
-          { text: "Distribution of the platform to your clients" },
-          { text: "Integration with your systems" },
-          { text: "Fees and equity defined case by case" },
-        ],
-      },
-    ] as Plan[],
-    note: "Monthly fees. Products of higher technical complexity are not supported on Start. Plans can be combined with equity, assessed according to the stage and the strategic thesis.",
+      { title: "A live product, not a prototype", text: "You get the product running on your domain, with sign-up and payments, ready for the first customer." },
+      { title: "A whole team, no hiring", text: "Product, marketing, operations and finance work for you from day one. No recruiting, no payroll, no months of setup." },
+      { title: "It improves every day", text: "The product keeps evolving from real usage. No waiting for a sprint, no support tickets." },
+      { title: "You only make the business calls", text: "Sourced research, numbers and next steps arrive ready in one dashboard. You approve; the platform executes." },
+      { title: "Spending guided by evidence", text: "Each stage only moves forward with proof from the market and from usage. You don't pay for scale before validating." },
+      { title: "A partner, not a vendor", text: "We can take equity in the company: we win when you win." },
+    ],
   },
   contact: {
     title: "Contact",
@@ -283,7 +220,7 @@ const pt: Dict = {
     audience: "Para quem é",
     how: "Como funciona",
     edge: "Diferenciais",
-    plans: "Planos",
+    platform: "Plataforma",
     contact: "Contato",
   },
   logout: "Sair",
@@ -364,15 +301,7 @@ const pt: Dict = {
   },
   how: {
     title: "Como funciona",
-    sub: "A equipe humana decide; os módulos executam.",
-    modules: [
-      { id: "jarvis", name: "Veris", role: "Orquestrador" },
-      { id: "helm", name: "Helm", role: "CEO" },
-      { id: "vortex", name: "Vortex", role: "CMO" },
-      { id: "fabric", name: "Fabric", role: "CTO" },
-      { id: "pulse", name: "Pulse", role: "COO" },
-      { id: "kesh", name: "Kesh", role: "CFO" },
-    ],
+    sub: "Oito etapas, da ideia ao negócio. Cada uma só avança com evidência real.",
     phases: [
       {
         label: "Fase 1 · Ideia → Produto",
@@ -394,75 +323,29 @@ const pt: Dict = {
       },
     ],
   },
-  edge: {
-    title: "Diferenciais",
-    items: [
-      { title: "Produto real, não protótipo", text: "Entregamos o produto no ar, com cadastro, pagamento e uso de verdade." },
-      { title: "Time completo desde o primeiro dia", text: "Produto, marketing, operação e gestão já rodam na plataforma. Não é preciso montar um time para começar." },
-      { title: "Menos risco em cada etapa", text: "Mercado e proposta de valor são validados antes de investir em produto e escala." },
-      { title: "Sócio, não fornecedor", text: "Podemos entrar com participação na empresa: crescemos quando você cresce." },
+  platform: {
+    title: "A plataforma",
+    sub: "A equipe humana decide; os módulos executam.",
+    modules: [
+      { id: "jarvis", name: "Veris", role: "Orquestrador", text: "Coordena os módulos e traz para você só o que pede decisão." },
+      { id: "helm", name: "Helm", role: "CEO", text: "Metas, OKRs e planos de ação." },
+      { id: "vortex", name: "Vortex", role: "CMO", text: "Pesquisa de mercado, marca, site, conteúdo e campanhas." },
+      { id: "fabric", name: "Fabric", role: "CTO", text: "Constrói e evolui o produto, do código à publicação." },
+      { id: "pulse", name: "Pulse", role: "COO", text: "Monitora operação, uso e a maturidade de cada etapa." },
+      { id: "kesh", name: "Kesh", role: "CFO", text: "Caixa, DRE e margem sem lançamento manual." },
     ],
   },
-  plans: {
-    title: "Planos de assinatura",
-    perMonth: "/mês",
+  edge: {
+    title: "Diferenciais",
+    sub: "O que muda para você.",
     items: [
-      {
-        name: "Start",
-        price: "R$ 3.000",
-        monthly: true,
-        stage: "Ideação",
-        highlight: false,
-        features: [
-          { text: "Pesquisa de mercado e posicionamento" },
-          { text: "Marca, landing page e blog" },
-          { text: "Produto no ar, com cadastro e pagamento" },
-          { text: "Acompanhamento de uso e maturidade" },
-          { text: "Produtos de maior complexidade técnica", no: true },
-        ],
-      },
-      {
-        name: "Growth",
-        price: "R$ 5.500",
-        monthly: true,
-        stage: "Validação e Tração",
-        highlight: false,
-        features: [
-          { text: "Tudo do Start" },
-          { text: "Produtos de maior complexidade técnica" },
-          { text: "Aquisição: conteúdo, campanhas e prospecção" },
-          { text: "Evolução contínua do produto pelo uso" },
-          { text: "Operação monitorada: estabilidade e suporte" },
-        ],
-      },
-      {
-        name: "Scale",
-        price: "R$ 15.000",
-        monthly: true,
-        stage: "Escala e Maturidade",
-        highlight: true,
-        features: [
-          { text: "Tudo do Growth" },
-          { text: "Metas, OKRs e planos de ação" },
-          { text: "Gestão financeira: caixa, DRE e margem" },
-          { text: "Relatórios de gestão para os sócios" },
-        ],
-      },
-      {
-        name: "Enterprise",
-        price: "Sob consulta",
-        monthly: false,
-        stage: "Parcerias e projetos sob medida",
-        highlight: false,
-        features: [
-          { text: "Escopo sob medida" },
-          { text: "Distribuição da plataforma aos seus clientes" },
-          { text: "Integração com os seus sistemas" },
-          { text: "Valores e equity definidos caso a caso" },
-        ],
-      },
+      { title: "Produto no ar, não protótipo", text: "Você recebe o produto funcionando no seu domínio, com cadastro e pagamento, pronto para o primeiro cliente." },
+      { title: "Um time inteiro, sem contratar", text: "Produto, marketing, operação e finanças trabalham para você desde o primeiro dia. Sem recrutar, sem folha, sem meses de montagem." },
+      { title: "Evolução todos os dias", text: "O produto melhora continuamente a partir do uso real. Sem esperar sprint, sem abrir chamado." },
+      { title: "Você só decide o que é de negócio", text: "Pesquisa com fontes, números e próximos passos chegam prontos num painel. Você aprova; a plataforma executa." },
+      { title: "Investimento guiado por evidência", text: "Cada etapa só avança com prova de mercado e de uso. Você não paga por escala antes de validar." },
+      { title: "Sócio, não fornecedor", text: "Podemos entrar com participação na empresa: ganhamos quando você ganha." },
     ],
-    note: "Valores mensais. Produtos de maior complexidade técnica não são suportados no Start. Os planos podem ser combinados com equity, avaliado conforme o estágio e a tese estratégica.",
   },
   contact: {
     title: "Contato",

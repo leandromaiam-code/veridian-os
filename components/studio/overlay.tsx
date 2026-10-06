@@ -115,9 +115,9 @@ export function Overlay() {
       <HeroCopy p={p} zone={g("hero")} />
       <PortfolioCopy p={p} zone={g("portfolio")} />
       <AudienceCopy p={p} zone={g("audience")} />
-      <HowCopy p={p} zone={g("how")} loggedIn={!!session} />
+      <HowCopy p={p} zone={g("how")} />
+      <PlatformCopy p={p} zone={g("platform")} loggedIn={!!session} />
       <EdgeCopy p={p} zone={g("edge")} />
-      <PlansCopy p={p} zone={g("plans")} />
       <ContactCopy p={p} zone={g("contact")} />
 
       {/* Entry scroll cue — only visible while in the very first frame */}
@@ -576,7 +576,53 @@ function AudienceCopy({ p, zone }: { p: number; zone: Z }) {
   );
 }
 
-/* ---------------------- HOW — modules + maturity phases ------------------ */
+/* ---------------------- HOW — maturity stages --------------------------- */
+const PHASE_COLORS = [
+  ["#0f6b4f", "#0f6b4f", "#0f6b4f", "#0f6b4f"],
+  ["#2f8a68", "#6ca386", "#a59a68", "#b8925a"],
+];
+
+function HowCopy({ p, zone }: { p: number; zone: Z }) {
+  const o = useZoneOpacity(p, zone);
+  const t = useT();
+  return (
+    <Frame id="how" opacity={o}>
+      <div className="v-page">
+        <div className="v-wrap">
+          <div className="v-head v-rise">
+            <div>
+              <Eyebrow>03 · {t.nav.how}</Eyebrow>
+              <h2 className="v-h2">{t.how.title}</h2>
+              <p className="v-sub">{t.how.sub}</p>
+            </div>
+          </div>
+          {t.how.phases.map((ph, pi) => (
+            <article key={ph.label} className="v-phase v-rise" style={{ ["--i" as string]: pi + 2 }}>
+              <small>{ph.label}</small>
+              <ol className="v-stages">
+                {ph.steps.map((s, si) => (
+                  <li
+                    key={s.title}
+                    style={{
+                      ["--c" as string]: PHASE_COLORS[pi][si],
+                      ["--i" as string]: pi * 4 + si,
+                    }}
+                  >
+                    <span className="v-stage-n">{String(pi * 4 + si + 1).padStart(2, "0")}</span>
+                    <b>{s.title}</b>
+                    <p>{s.text}</p>
+                  </li>
+                ))}
+              </ol>
+            </article>
+          ))}
+        </div>
+      </div>
+    </Frame>
+  );
+}
+
+/* ---------------------- PLATFORM — the modules -------------------------- */
 // Signed-in operators get launch links on the modules that have a console.
 const MODULE_URLS: Record<string, string | null> = {
   fabric: "https://fabric.4profitai.com",
@@ -587,12 +633,7 @@ const MODULE_URLS: Record<string, string | null> = {
   kesh: null,
 };
 
-const PHASE_COLORS = [
-  ["#0f6b4f", "#0f6b4f", "#0f6b4f", "#0f6b4f"],
-  ["#2f8a68", "#6ca386", "#a59a68", "#b8925a"],
-];
-
-function HowCopy({
+function PlatformCopy({
   p,
   zone,
   loggedIn,
@@ -604,56 +645,46 @@ function HowCopy({
   const o = useZoneOpacity(p, zone);
   const t = useT();
   return (
-    <Frame id="how" opacity={o}>
+    <Frame id="platform" opacity={o}>
       <div className="v-page">
-        <div className="v-wrap v-how">
+        <div className="v-wrap v-platform">
           <div className="v-rise">
-            <Eyebrow>03 · {t.nav.how}</Eyebrow>
-            <h2 className="v-h2">{t.how.title}</h2>
-            <p className="v-sub">{t.how.sub}</p>
-            <div className="v-mods">
-              {t.how.modules.map((m, i) => {
+            <Eyebrow>04 · {t.nav.platform}</Eyebrow>
+            <h2 className="v-h2">{t.platform.title}</h2>
+            <p className="v-sub">{t.platform.sub}</p>
+            <ul className="v-modlist">
+              {t.platform.modules.map((m, i) => {
                 const url = MODULE_URLS[m.id];
                 return (
-                  <div key={m.id} className={`v-mod${i === 0 ? " core" : ""}`}>
-                    <b>
-                      {loggedIn && url ? (
-                        <a href={url} target="_blank" rel="noreferrer">
-                          {m.name} ↗
-                        </a>
-                      ) : (
-                        m.name
-                      )}
-                    </b>
-                    <span>
-                      {m.role}
-                      {loggedIn && !url ? ` · ${t.soon}` : ""}
-                    </span>
-                  </div>
+                  <li
+                    key={m.id}
+                    className={`v-rise${i === 0 ? " core" : ""}`}
+                    style={{ ["--i" as string]: i + 1 }}
+                  >
+                    <div className="v-modlist-name">
+                      <b>
+                        {loggedIn && url ? (
+                          <a href={url} target="_blank" rel="noreferrer">
+                            {m.name} ↗
+                          </a>
+                        ) : (
+                          m.name
+                        )}
+                      </b>
+                      <span>
+                        {m.role}
+                        {loggedIn && !url ? ` · ${t.soon}` : ""}
+                      </span>
+                    </div>
+                    <p>{m.text}</p>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           </div>
-          <div>
-            {t.how.phases.map((ph, pi) => (
-              <article key={ph.label} className="v-phase v-rise" style={{ ["--i" as string]: pi + 2 }}>
-                <small>{ph.label}</small>
-                <ol className="v-steps">
-                  {ph.steps.map((s, si) => (
-                    <li
-                      key={s.title}
-                      style={{
-                        ["--c" as string]: PHASE_COLORS[pi][si],
-                        ["--i" as string]: pi * 4 + si,
-                      }}
-                    >
-                      <b>{s.title}</b>
-                      <p>{s.text}</p>
-                    </li>
-                  ))}
-                </ol>
-              </article>
-            ))}
+          <div className="v-platform-art v-rise" style={{ ["--i" as string]: 3 }} aria-hidden>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/modules/platform.webp" alt="" width={1408} height={768} />
           </div>
         </div>
       </div>
@@ -671,65 +702,20 @@ function EdgeCopy({ p, zone }: { p: number; zone: Z }) {
         <div className="v-wrap">
           <div className="v-head v-rise">
             <div>
-              <Eyebrow>04 · {t.nav.edge}</Eyebrow>
+              <Eyebrow>05 · {t.nav.edge}</Eyebrow>
               <h2 className="v-h2">{t.edge.title}</h2>
+              <p className="v-sub">{t.edge.sub}</p>
             </div>
           </div>
-          <ul className="v-grid4">
+          <ul className="v-grid3">
             {t.edge.items.map((it, i) => (
-              <li key={it.title} className="v-card v-rise" style={{ ["--i" as string]: i + 1 }}>
-                <span className="v-num">{i + 1}</span>
+              <li key={it.title} className="v-card v-edge v-rise" style={{ ["--i" as string]: i + 1 }}>
+                <span className="v-num">{String(i + 1).padStart(2, "0")}</span>
                 <h3>{it.title}</h3>
                 <p>{it.text}</p>
               </li>
             ))}
           </ul>
-        </div>
-      </div>
-    </Frame>
-  );
-}
-
-/* ---------------------- PLANS — subscription plans ----------------------- */
-function PlansCopy({ p, zone }: { p: number; zone: Z }) {
-  const o = useZoneOpacity(p, zone);
-  const t = useT();
-  return (
-    <Frame id="plans" opacity={o}>
-      <div className="v-page">
-        <div className="v-wrap">
-          <div className="v-head v-rise">
-            <div>
-              <Eyebrow>05 · {t.nav.plans}</Eyebrow>
-              <h2 className="v-h2">{t.plans.title}</h2>
-            </div>
-          </div>
-          <ul className="v-grid4">
-            {t.plans.items.map((pl, i) => (
-              <li
-                key={pl.name}
-                className={`v-card v-plan v-rise${pl.highlight ? " hi" : ""}`}
-                style={{ ["--i" as string]: i + 1 }}
-              >
-                <span className="name">{pl.name}</span>
-                <div className="price">
-                  <b>{pl.price}</b>
-                  {pl.monthly && <span>{t.plans.perMonth}</span>}
-                </div>
-                <span className="stage">{pl.stage}</span>
-                <ul>
-                  {pl.features.map((f) => (
-                    <li key={f.text} className={f.no ? "no" : undefined}>
-                      {f.text}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-          <p className="v-note v-rise" style={{ ["--i" as string]: 5 }}>
-            {t.plans.note}
-          </p>
         </div>
       </div>
     </Frame>

@@ -28,9 +28,9 @@ const ZONE_DEFS = [
   { id: "hero",      weight: 1.6, label: "Hero",         navHidden: true  }, // promise + who we are
   { id: "portfolio", weight: 1.3, label: "Portfolio",    navHidden: false }, // real product screens
   { id: "audience",  weight: 1.0, label: "Who it's for", navHidden: false }, // clients, partners, investors
-  { id: "how",       weight: 1.0, label: "How it works", navHidden: false }, // modules + phases
+  { id: "how",       weight: 1.0, label: "How it works", navHidden: false }, // maturity stages
+  { id: "platform",  weight: 1.0, label: "Platform",     navHidden: false }, // modules
   { id: "edge",      weight: 1.0, label: "Why Veridian", navHidden: false }, // differentiators
-  { id: "plans",     weight: 1.0, label: "Plans",        navHidden: false }, // subscription plans
   { id: "contact",   weight: 1.4, label: "Contact",      navHidden: false }, // lead form
 ] as const;
 
