@@ -288,7 +288,23 @@ function HeroCopy({ p, zone }: { p: number; zone: Z }) {
   // the page at REST_FRACTION.
   const headOp = smoothstep(0.0, 0.28, zp);
   const leadOp = smoothstep(0.16, 0.42, zp);
-  const wallOp = smoothstep(0.26, 0.58, zp);
+  // The wall waits for every screen to be decoded, so the tilted frames
+  // never paint as empty white cards on a first visit.
+  const [shotsReady, setShotsReady] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    Promise.all(
+      SHOTS.map((s) => {
+        const img = new Image();
+        img.src = `/assets/shots/${s}.webp`;
+        return img.decode().catch(() => undefined);
+      }),
+    ).then(() => alive && setShotsReady(true));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  const wallOp = shotsReady ? smoothstep(0.26, 0.58, zp) : 0;
   const drift = (op: number) => (1 - op) * 16;
 
   const rowA = SHOTS.slice(0, 5);
@@ -335,7 +351,11 @@ function HeroCopy({ p, zone }: { p: number; zone: Z }) {
         <div
           className="v-wall"
           aria-hidden
-          style={{ opacity: wallOp, transform: `translateY(${drift(wallOp) * 2}px)` }}
+          style={{
+            opacity: wallOp,
+            transform: `translateY(${drift(wallOp) * 2}px)`,
+            transition: "opacity .6s ease",
+          }}
         >
           <div
             className="v-wall-tilt"
