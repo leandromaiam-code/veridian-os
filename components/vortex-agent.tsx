@@ -6,7 +6,7 @@ import { useT } from "@/lib/i18n";
 /* -----------------------------------------------------------------------------
  * VERIS — Veridian Intelligence agent
  *
- * Ethereal materialization: at +30s of session a small brass-seafoam orb
+ * Ethereal materialization: at +3s of session a small brass-seafoam orb
  * pulses in the bottom-right. Clicking expands into a glassmorphic chat
  * panel. Backend is the Vortex SDR widget API (same that powers kNexo).
  *
@@ -17,7 +17,7 @@ import { useT } from "@/lib/i18n";
 
 const VORTEX_API = "https://vortex.4profitai.com/api/widget";
 const PRODUCT_KEY = "veridian";
-const APPEAR_AFTER_MS = 30_000;
+const APPEAR_AFTER_MS = 3_000;
 
 type Msg = { role: "agent" | "user"; text: string };
 
