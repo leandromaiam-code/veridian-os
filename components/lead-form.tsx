@@ -16,6 +16,11 @@ export function LeadForm({ active }: { active: boolean }) {
   const [idea, setIdea] = useState("");
   const [website, setWebsite] = useState(""); // honeypot
   const [status, setStatus] = useState<Status>("idle");
+  // WhatsApp: full name and phone are required before the chat opens.
+  const [wa, setWa] = useState(false);
+  const [waName, setWaName] = useState("");
+  const [waPhone, setWaPhone] = useState("");
+  const [waError, setWaError] = useState("");
 
   const leadMessage = () =>
     t.form.whatsappLead
@@ -39,6 +44,41 @@ export function LeadForm({ active }: { active: boolean }) {
       window.open(whatsappUrl(leadMessage()), "_blank", "noopener");
       setStatus("fallback");
     }
+  };
+
+  const openWhatsapp = () => {
+    const fullName = waName.trim().replace(/\s+/g, " ");
+    const digits = waPhone.replace(/\D/g, "");
+    if (fullName.split(" ").filter((w) => w.length > 1).length < 2) {
+      setWaError(t.form.waNameError);
+      return;
+    }
+    if (digits.length < 10 || digits.length > 15) {
+      setWaError(t.form.waPhoneError);
+      return;
+    }
+    setWaError("");
+    const phone = waPhone.trim();
+    // Open first (same click, so the browser does not block it), then store the lead.
+    window.open(
+      whatsappUrl(t.form.waMessage.replace("{name}", fullName).replace("{phone}", phone)),
+      "_blank",
+      "noopener",
+    );
+    fetch("/api/lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: fullName,
+        contact: phone,
+        idea: idea.trim() || t.whatsappText,
+        website,
+        locale,
+        channel: "whatsapp",
+      }),
+      keepalive: true,
+    }).catch(() => null);
+    setWa(false);
   };
 
   if (status === "sent" || status === "fallback") {
@@ -118,15 +158,63 @@ export function LeadForm({ active }: { active: boolean }) {
           {status === "sending" ? t.form.sending : t.form.submit}
           <span aria-hidden>↗</span>
         </button>
-        <a
-          href={whatsappUrl(t.whatsappText)}
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
+          onClick={() => {
+            setWa((v) => !v);
+            setWaError("");
+            if (!waName && name) setWaName(name);
+          }}
+          aria-expanded={wa}
           className="font-mono uppercase tracking-[0.18em] text-[11.5px] text-brass-light underline underline-offset-4 decoration-brass-light/40 hover:decoration-brass-light transition-colors"
         >
           {t.form.or}
-        </a>
+        </button>
       </div>
+
+      {wa && (
+        <div className="mt-3 flex flex-col gap-2.5 rounded-[3px] border border-brass-light/30 bg-[rgba(6,14,11,0.55)] p-3.5">
+          <p className="font-sans text-[13px] text-parchment">{t.form.waTitle}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <input
+              className={field}
+              type="text"
+              maxLength={120}
+              autoComplete="name"
+              placeholder={t.form.waName}
+              aria-label={t.form.waName}
+              value={waName}
+              onChange={(e) => setWaName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), openWhatsapp())}
+            />
+            <input
+              className={field}
+              type="tel"
+              inputMode="tel"
+              maxLength={25}
+              autoComplete="tel"
+              placeholder={t.form.waPhone}
+              aria-label={t.form.waPhone}
+              value={waPhone}
+              onChange={(e) => setWaPhone(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), openWhatsapp())}
+            />
+          </div>
+          {waError && (
+            <p role="alert" className="font-sans text-[13px] text-brass-light">
+              {waError}
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={openWhatsapp}
+            className="self-center inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-brass-deep/85 text-parchment font-mono uppercase tracking-[0.18em] text-[12px] border border-brass-light/40 transition-all hover:bg-brass"
+          >
+            {t.form.waOpen}
+            <span aria-hidden>↗</span>
+          </button>
+        </div>
+      )}
     </form>
   );
 }

@@ -37,6 +37,7 @@ export async function POST(request: Request) {
   const contact = clean(body.contact, MAX.contact);
   const idea = clean(body.idea, MAX.idea);
   const locale = body.locale === "pt" ? "pt" : "en";
+  const channel = body.channel === "whatsapp" ? "whatsapp" : "form";
   if (!name || contact.length < 5 || !idea) {
     return NextResponse.json({ ok: false, error: "missing_fields" }, { status: 400 });
   }
@@ -59,7 +60,7 @@ export async function POST(request: Request) {
       name,
       // The column is called `email`, but the form accepts e-mail or WhatsApp.
       email: contact,
-      company: `veridian-site (${locale})`,
+      company: channel === "whatsapp" ? `veridian-site whatsapp (${locale})` : `veridian-site (${locale})`,
       project_description: idea,
     }),
   }).catch(() => null);
