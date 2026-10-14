@@ -1,3 +1,4 @@
+import { VortexVisitas } from "@/components/vortex-visitas";
 import type { Metadata } from "next";
 import "../globals.css";
 import { LenisProvider } from "@/components/lenis-provider";
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="en" className={fontVariables}>
       <body className="bg-parchment text-ink">
         <LenisProvider>{children}</LenisProvider>
+        <VortexVisitas />
       </body>
     </html>
   );
