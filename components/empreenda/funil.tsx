@@ -572,7 +572,7 @@ function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
   const pf = PERFIS[perfil(e.r)];
   const [fase, setFase] = useState<"perfil" | "acao">(d === "avaliar" ? "acao" : "perfil");
   const primeiro = (e.nome || "").split(" ")[0];
-  const msg = `Olá, Leandro! Sou ${e.nome || ""} e acabei de fazer o Empreenda com IA. Meu perfil: ${pf.nome}. Minha meta é ${reais(meta(e.r))} por mês daqui a 12 meses.`;
+  const msg = `Olá! Sou ${e.nome || ""} e acabei de fazer o Empreenda com IA. Meu perfil: ${pf.nome}. Minha meta é ${reais(meta(e.r))} por mês daqui a 12 meses.`;
   const resumo = [
     `Meta de ${reais(meta(e.r))} por mês em 12 meses`,
     e.r.ideia === "definida" ? "Com uma ideia definida" : e.r.ideia === "algumas" ? "Com algumas possibilidades de ideia" : "Pronto para um novo projeto",
@@ -598,14 +598,14 @@ function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
               ))}
             </ul>
           </div></Em>
-          {d === "whatsapp" && <Em i={6}><p className="mt-6 text-center text-[15px] leading-relaxed text-text">Você foi pré-selecionado. O Leandro, fundador da Veridian, vai falar com você pessoalmente.</p></Em>}
+          {d === "whatsapp" && <Em i={6}><p className="mt-6 text-center text-[15px] leading-relaxed text-text">Você foi pré-selecionado. O fundador da Veridian vai falar com você pessoalmente.</p></Em>}
           {d === "agenda" && <Em i={6}><p className="mt-6 text-center text-[15px] leading-relaxed text-text">O próximo passo é uma conversa de 30 minutos para desenhar o seu caminho com a Veridian.</p></Em>}
         </main>
         <Rodape>
           {d === "whatsapp"
             ? <a href={whatsappUrl(msg)} target="_blank" rel="noopener" onClick={() => registrar("whatsapp", e.utm)} className={`${btn} flex items-center justify-center gap-2.5`}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Z" /></svg>
-                Falar com o Leandro no WhatsApp
+                Falar com o fundador no WhatsApp
               </a>
             : <button type="button" className={btn} onClick={() => { registrar("perfil-visto", e.utm); setFase("acao"); window.scrollTo({ top: 0 }); }}>Agendar minha conversa</button>}
         </Rodape>
@@ -628,8 +628,8 @@ function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
 
         {d === "whatsapp" && (
           <div className="pt-6 text-center">
-            <Titulo sub="O Leandro, fundador da Veridian, vai falar com você pessoalmente.">Você foi pré-selecionado</Titulo>
-            <Em i={2}><a href={whatsappUrl(msg)} target="_blank" rel="noopener" onClick={() => registrar("whatsapp", e.utm)} className={`${btn} mt-8 flex items-center justify-center`}>Falar com o Leandro no WhatsApp</a></Em>
+            <Titulo sub="O fundador da Veridian vai falar com você pessoalmente.">Você foi pré-selecionado</Titulo>
+            <Em i={2}><a href={whatsappUrl(msg)} target="_blank" rel="noopener" onClick={() => registrar("whatsapp", e.utm)} className={`${btn} mt-8 flex items-center justify-center`}>Falar com o fundador no WhatsApp</a></Em>
           </div>
         )}
 

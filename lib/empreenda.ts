@@ -51,7 +51,7 @@ export const PORTFOLIO = [
 export const ENTREGAS = [
   { icone: "pesquisa", titulo: "Pesquisa e validação", texto: "Mercado, dor e concorrência com dados e fontes, antes de investir." },
   { icone: "marca", titulo: "Marca, site e conteúdo", texto: "Posicionamento, identidade, página da oferta e presença nas redes." },
-  { icone: "produto", titulo: "Produto com IA", texto: "Apps e sistemas construídos, publicados e evoluídos todo dia." },
+  { icone: "produto", titulo: "Produto com IA", texto: "Apps e sistemas construídos, publicados e evoluídos com você." },
   { icone: "vendas", titulo: "Vendas", texto: "CRM e agentes que atendem, qualificam e acompanham cada cliente." },
   { icone: "operacao", titulo: "Operação e suporte", texto: "Infraestrutura monitorada, estabilidade e atendimento." },
   { icone: "gestao", titulo: "Finanças e gestão", texto: "Caixa, resultado, metas e plano de ação sem planilha." },
@@ -81,7 +81,6 @@ export const DADOS: Record<"milionarios" | "demanda", Dado[]> = {
   milionarios: [
     { destaque: "9.215", texto: "novos milionários em dólar no Brasil em 2025. O país chegou a 386 mil, o maior número da América Latina.", fonte: "UBS Global Wealth Report 2026, via InfoMoney · jun/2026", url: "https://www.infomoney.com.br/?p=3393301" },
     { destaque: "2.600", texto: "pessoas por dia viraram milionárias no mundo em 2025, quase 1 milhão no ano.", fonte: "UBS Global Wealth Report 2026 · jun/2026", url: "https://www.ubs.com/jp/ja/about/newsdisplay-ndp/en-20260630-gwr-2026.html" },
-    { destaque: "45", texto: "novos bilionários da IA entraram na lista da Forbes em 12 meses. São pelo menos 86 no total.", fonte: "Forbes · mar/2026", url: "https://www.forbes.com/sites/phoebeliu/2026/03/10/meet-the-45-ai-newcomers-to-forbes-2026-billionaires-list/" },
     { destaque: "2×", texto: "mais startups chegaram a US$ 10 milhões de receita anual em só 3 meses em 2025.", fonte: "Carta anual da Stripe, via TechCrunch · fev/2026", url: "https://techcrunch.com/2026/02/24/more-startups-are-hitting-10m-arr-in-3-months-than-ever-before" },
   ],
   demanda: [
@@ -331,22 +330,22 @@ export function destino(r: Respostas): Destino {
   return "avaliar";
 }
 
-// Enquadramento mostrado no fechamento: AI Founder investe tempo e dinheiro;
-// Business Partner leva o negócio ao mercado com a rede e a experiência.
+// Enquadramento mostrado no fechamento (Leandro, 07/11/2026): AI Founder pode investir
+// e dedicar tempo; AI Business Partner não pode investir ou não pode dedicar tempo.
 export type Perfil = "ai-founder" | "business-partner";
 export function perfil(r: Respostas): Perfil {
-  const tempo = r.horas === "10-20" || r.horas === "20-40" || r.horas === "40+";
-  const dinheiro = r.investimento === "3-10k" || r.investimento === "10k+";
+  const tempo = !!r.horas && r.horas !== "ate-5";
+  const dinheiro = !!r.investimento && r.investimento !== "zero";
   return tempo && dinheiro ? "ai-founder" : "business-partner";
 }
 export const PERFIS: Record<Perfil, { nome: string; texto: string; voce: string[] }> = {
   "ai-founder": {
     nome: "AI Founder",
-    texto: "Você tem tempo e capital para liderar um negócio novo com IA. A Veridian entra com produto, marketing, operação e gestão.",
-    voce: ["Lidera o negócio e as decisões", "Investe tempo e capital", "Tem a Veridian como time completo"],
+    texto: "Você pode investir e dedicar tempo para liderar um negócio novo com IA. A Veridian entra com produto, marketing, operação e gestão.",
+    voce: ["Lidera o negócio e as decisões", "Investe e dedica tempo ao projeto", "Tem a Veridian como time completo"],
   },
   "business-partner": {
-    nome: "Business Partner",
+    nome: "AI Business Partner",
     texto: "Você leva o negócio ao mercado com a sua rede e a sua experiência. A Veridian entra com o produto e toda a estrutura.",
     voce: ["Abre portas e traz clientes", "Usa a sua rede e o seu conhecimento", "Conta com o produto e a estrutura da Veridian"],
   },
