@@ -21,7 +21,7 @@ export type Etapa = Base &
     | { tipo: "info"; titulo: string | ((r: Respostas) => string); texto?: string | ((r: Respostas) => string); visual?: Visual }
     | { tipo: "contato" }
   );
-export type Visual = "milionarios" | "demanda" | "area" | "portfolio" | "modulos" | "fases" | "validacao" | "parceiros" | "projetos";
+export type Visual = "milionarios" | "demanda" | "area" | "mandala" | "entregas" | "fases" | "validacao" | "comparar" | "parceiros";
 
 export const BLOCOS = ["Sua meta", "Sua área", "Seu ponto de partida", "Ecossistema Veridian", "Seu plano"];
 
@@ -47,6 +47,24 @@ export const PORTFOLIO = [
   { id: "superrdo", nome: "SuperRDO", setor: "construcao", linha: "Relatório diário de obra integrado ao MS Project.", logo: `${LOGO_BASE}/superrdo/logo.png?v=1791135407` },
 ] as const;
 
+// O que a Veridian entrega (tela "o que fazemos").
+export const ENTREGAS = [
+  { icone: "pesquisa", titulo: "Pesquisa e validação", texto: "Mercado, dor e concorrência com dados e fontes, antes de investir." },
+  { icone: "marca", titulo: "Marca, site e conteúdo", texto: "Posicionamento, identidade, página da oferta e presença nas redes." },
+  { icone: "produto", titulo: "Produto com IA", texto: "Apps e sistemas construídos, publicados e evoluídos todo dia." },
+  { icone: "vendas", titulo: "Vendas", texto: "CRM e agentes que atendem, qualificam e acompanham cada cliente." },
+  { icone: "operacao", titulo: "Operação e suporte", texto: "Infraestrutura monitorada, estabilidade e atendimento." },
+  { icone: "gestao", titulo: "Finanças e gestão", texto: "Caixa, resultado, metas e plano de ação sem planilha." },
+];
+
+// Áreas de uma empresa na mandala do ecossistema; "aberta" = oportunidade de parceria.
+export const MANDALA = [
+  { t: "Marketing", aberta: false }, { t: "Vendas", aberta: true }, { t: "Atendimento", aberta: false },
+  { t: "Operações", aberta: false }, { t: "Supply chain", aberta: true }, { t: "Finanças", aberta: false },
+  { t: "RH", aberta: false }, { t: "Jurídico", aberta: true }, { t: "TI", aberta: false },
+  { t: "Projetos", aberta: false }, { t: "Estratégia", aberta: false }, { t: "Produto", aberta: true },
+];
+
 export const MODULOS = [
   { nome: "Veris", papel: "Orquestrador", texto: "Coordena os módulos e traz para você só o que pede decisão." },
   { nome: "Vortex", papel: "CMO", texto: "Pesquisa de mercado, marca, site, conteúdo e campanhas." },
@@ -62,7 +80,7 @@ export type Dado = { destaque: string; texto: string; fonte: string; url: string
 export const DADOS: Record<"milionarios" | "demanda", Dado[]> = {
   milionarios: [
     { destaque: "9.215", texto: "novos milionários em dólar no Brasil em 2025. O país chegou a 386 mil, o maior número da América Latina.", fonte: "UBS Global Wealth Report 2026, via InfoMoney · jun/2026", url: "https://www.infomoney.com.br/?p=3393301" },
-    { destaque: "2.600 por dia", texto: "Quase 1 milhão de pessoas viraram milionárias no mundo em 2025.", fonte: "UBS Global Wealth Report 2026 · jun/2026", url: "https://www.ubs.com/jp/ja/about/newsdisplay-ndp/en-20260630-gwr-2026.html" },
+    { destaque: "2.600", texto: "pessoas por dia viraram milionárias no mundo em 2025, quase 1 milhão no ano.", fonte: "UBS Global Wealth Report 2026 · jun/2026", url: "https://www.ubs.com/jp/ja/about/newsdisplay-ndp/en-20260630-gwr-2026.html" },
     { destaque: "45", texto: "novos bilionários da IA entraram na lista da Forbes em 12 meses. São pelo menos 86 no total.", fonte: "Forbes · mar/2026", url: "https://www.forbes.com/sites/phoebeliu/2026/03/10/meet-the-45-ai-newcomers-to-forbes-2026-billionaires-list/" },
     { destaque: "2×", texto: "mais startups chegaram a US$ 10 milhões de receita anual em só 3 meses em 2025.", fonte: "Carta anual da Stripe, via TechCrunch · fev/2026", url: "https://techcrunch.com/2026/02/24/more-startups-are-hitting-10m-arr-in-3-months-than-ever-before" },
   ],
@@ -237,12 +255,12 @@ export const ETAPAS: Etapa[] = [
     id: "ideia-estagio", bloco: 2, tipo: "unica", campo: "ideia_estagio", se: temIdeia, pergunta: "Em que ponto ela está?",
     opcoes: [{ v: "papel", t: "Só no papel" }, { v: "conversas", t: "Já conversei com possíveis clientes" }, { v: "prototipo", t: "Tenho um protótipo" }, { v: "vendendo", t: "Já vendo, mas preciso crescer" }],
   },
-  { id: "f-validar", bloco: 2, tipo: "frase", campo: "frase_validar", se: (r) => temIdeia(r) || temAlgumas(r), frase: "Tenho medo de investir e ninguém comprar." },
-  { id: "i-validar", bloco: 2, tipo: "info", visual: "validacao", se: (r) => (temIdeia(r) || temAlgumas(r)) && r.frase_validar === "sim", titulo: "Primeiro validar, depois construir", texto: "Antes de qualquer código, a Veridian pesquisa o mercado, define público e proposta de valor e coloca a oferta no ar." },
+  { id: "f-validar", bloco: 2, tipo: "frase", campo: "frase_validar", se: temIdeia, frase: "Tenho medo de investir e ninguém comprar." },
+  { id: "i-validar", bloco: 2, tipo: "info", visual: "validacao", se: (r) => temIdeia(r) && r.frase_validar === "sim", titulo: "Primeiro validar, depois construir", texto: "Antes de qualquer código, a Veridian pesquisa o mercado, define público e proposta de valor e coloca a oferta no ar." },
   // algumas possibilidades
   { id: "ideias-texto", bloco: 2, tipo: "texto", campo: "ideia_frase", se: temAlgumas, pergunta: "Quais ideias você está considerando?", ajuda: "Uma por linha, do jeito que vier.", placeholder: "Ex.: sistema de cobrança para clínicas\nagente de vendas para imobiliárias" },
   { id: "f-qual", bloco: 2, tipo: "frase", campo: "frase_qual", se: temAlgumas, frase: "Tenho ideias, mas não sei qual tem mais chance de dar certo." },
-  { id: "i-qual", bloco: 2, tipo: "info", visual: "validacao", se: (r) => temAlgumas(r) && r.frase_qual === "sim", titulo: "A pesquisa escolhe a mais promissora", texto: "A Veridian pesquisa o mercado de cada ideia, com dados e fontes, e mostra qual tem dor real e cliente disposto a pagar." },
+  { id: "i-qual", bloco: 2, tipo: "info", visual: "comparar", se: (r) => temAlgumas(r) && r.frase_qual === "sim", titulo: "A pesquisa escolhe a mais promissora", texto: "A Veridian pesquisa o mercado de cada ideia, com dados e fontes, e mostra qual tem dor real e cliente disposto a pagar." },
   // sem ideia
   {
     id: "rede", bloco: 2, tipo: "unica", campo: "rede", se: semIdeia, pergunta: "Você tem uma boa rede de contatos profissionais?",
@@ -253,18 +271,18 @@ export const ETAPAS: Etapa[] = [
     pergunta: "Em que áreas estão os seus contatos?", ajuda: "Marque quantas quiser.", opcoes: AREAS.filter((a) => a.v !== "outra"), outro: "rede_outro",
   },
   { id: "f-ideia", bloco: 2, tipo: "frase", campo: "frase_ideia", se: semIdeia, frase: "Quero empreender, mas falta a ideia certa." },
-  { id: "i-ideia", bloco: 2, tipo: "info", visual: "projetos", se: (r) => semIdeia(r) && r.frase_ideia === "sim", titulo: "Você não precisa começar do zero", texto: "A Veridian seleciona parceiros para liderar projetos que já passaram pela pesquisa de mercado. Você leva o negócio ao mercado; a Veridian entra com o produto e a estrutura." },
+  { id: "i-ideia", bloco: 2, tipo: "info", se: (r) => semIdeia(r) && r.frase_ideia === "sim", titulo: "Você não precisa começar do zero", texto: "A Veridian seleciona parceiros para liderar projetos que já passaram pela pesquisa de mercado. Você leva o negócio ao mercado; a Veridian entra com o produto e a estrutura." },
   // dores comuns
   { id: "f-programar", bloco: 2, tipo: "frase", campo: "frase_programar", frase: "Não sei programar, e isso me trava." },
-  { id: "i-programar", bloco: 2, tipo: "info", visual: "modulos", se: sim("frase_programar"), titulo: "Você não precisa programar", texto: "Os módulos da Veridian constroem e operam o produto. Você decide o que ele precisa fazer e aprova o que é entregue." },
+  { id: "i-programar", bloco: 2, tipo: "info", visual: "entregas", se: sim("frase_programar"), titulo: "Você não precisa programar", texto: "A Veridian faz o trabalho de ponta a ponta. Você decide o que o negócio precisa e aprova o que é entregue." },
   { id: "f-sozinho", bloco: 2, tipo: "frase", campo: "frase_sozinho", frase: "Não quero empreender sozinho." },
   { id: "i-sozinho", bloco: 2, tipo: "info", visual: "fases", se: sim("frase_sozinho"), titulo: "Um time completo desde o primeiro dia", texto: "Produto, marketing, operação e finanças no mesmo lugar, em cada fase, da ideia ao primeiro cliente pagante e além." },
 
   // 4 — Ecossistema
   {
-    id: "i-ecossistema", bloco: 3, tipo: "info", visual: "portfolio",
-    titulo: "O ecossistema Veridian",
-    texto: (r) => `Startups criadas e operadas na mesma plataforma, com o mesmo método. É a estrutura para você chegar aos ${reais(meta(r))} por mês.`,
+    id: "i-ecossistema", bloco: 3, tipo: "info", visual: "mandala",
+    titulo: "Soluções com IA para todas as áreas de uma empresa",
+    texto: (r) => `É nesse ecossistema que você constrói o caminho até ${reais(meta(r))} por mês.`,
   },
   {
     id: "i-parceiros", bloco: 3, tipo: "info", visual: "parceiros",
