@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  AGENDA_URL, BLOCOS, DADOS, DADOS_AREA, DEGRAUS_FATURAMENTO, ENTREGAS, ETAPAS, MANDALA, SOLUCOES,
-  destino, etapasVisiveis, meta, reais, textoDe, type Dado, type Etapa, type Respostas,
+  AGENDA_URL, BLOCOS, DADOS, DADOS_AREA, DEGRAUS_FATURAMENTO, ENTREGAS, ETAPAS, MANDALA, PERFIS, SOLUCOES,
+  destino, etapasVisiveis, meta, perfil, reais, textoDe, type Dado, type Etapa, type Respostas,
 } from "@/lib/empreenda";
 import { whatsappUrl } from "@/lib/i18n";
 
@@ -329,6 +329,8 @@ function Moldura({ children }: { children: React.ReactNode }) {
         .emp-giro{animation:emp-giro 90s linear infinite}
         .emp-pulso{animation:emp-no .5s ease both, emp-pulso 2.8s ease-in-out 2s infinite}
         .emp-num{animation:emp-num .35s cubic-bezier(.22,1,.36,1)}
+        .emp-revela{animation:emp-revela 1.1s cubic-bezier(.22,1,.36,1) .45s both}
+        @keyframes emp-revela{from{opacity:0;letter-spacing:.18em;filter:blur(10px)}to{opacity:1;letter-spacing:-0.02em;filter:none}}
         @keyframes emp-fwd{from{opacity:0;transform:translateX(28px);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
         @keyframes emp-back{from{opacity:0;transform:translateX(-28px);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
         @keyframes emp-em{from{opacity:0;transform:translateY(14px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
@@ -567,39 +569,68 @@ function Contato({ e, dir, onSalvo }: { e: Estado; dir: "fwd" | "back"; onSalvo:
 
 function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
   const d = destino(e.r);
+  const pf = PERFIS[perfil(e.r)];
+  const [fase, setFase] = useState<"perfil" | "acao">(d === "avaliar" ? "acao" : "perfil");
   const primeiro = (e.nome || "").split(" ")[0];
-  const msg = `Olá, Leandro! Sou ${e.nome || ""} e acabei de fazer o Empreenda com IA. Minha meta é ${reais(meta(e.r))} por mês daqui a 12 meses.`;
+  const msg = `Olá, Leandro! Sou ${e.nome || ""} e acabei de fazer o Empreenda com IA. Meu perfil: ${pf.nome}. Minha meta é ${reais(meta(e.r))} por mês daqui a 12 meses.`;
   const resumo = [
     `Meta de ${reais(meta(e.r))} por mês em 12 meses`,
     e.r.ideia === "definida" ? "Com uma ideia definida" : e.r.ideia === "algumas" ? "Com algumas possibilidades de ideia" : "Pronto para um novo projeto",
   ];
+
+  if (fase === "perfil") {
+    return (
+      <Moldura>
+        <main className="emp-tela-fwd mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-5 pb-16 pt-6">
+          <Em i={0}><p className="text-center font-cormorant text-[18px] italic text-muted">{primeiro ? `${primeiro}, este é o seu perfil na Veridian` : "Este é o seu perfil na Veridian"}</p></Em>
+          <Em i={1}><div className="relative mt-6 overflow-hidden rounded-[30px] bg-green-3 px-7 pb-8 pt-10 text-center text-white shadow-[0_60px_100px_-50px_rgba(11,74,55,.95)]">
+            <div aria-hidden className="absolute inset-[10px] rounded-[22px] border border-gold/40" />
+            <div aria-hidden className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(184,146,90,.45),transparent_65%)]" />
+            <div aria-hidden className="absolute -bottom-28 -left-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(169,201,184,.25),transparent_65%)]" />
+            <p className="relative text-[12.5px] tracking-[0.04em] text-gold-soft">Você foi enquadrado como</p>
+            <h1 className="emp-revela relative mt-3 font-cormorant text-[54px] leading-none tracking-[-0.02em] sm:text-[64px]">{pf.nome}</h1>
+            <p className="relative mx-auto mt-5 max-w-[34ch] text-[15.5px] leading-relaxed text-white/85">{pf.texto}</p>
+            <ul className="relative mx-auto mt-6 max-w-[30ch] space-y-2.5 text-left">
+              {pf.voce.map((t, i) => (
+                <li key={t} className="emp-em flex gap-3 text-[14.5px] text-white/90" style={{ animationDelay: `${900 + i * 140}ms` }}>
+                  <span className="mt-[3px] flex h-[18px] w-[18px] flex-none items-center justify-center rounded-full border border-gold/60 text-gold-soft"><Check size={9} /></span>{t}
+                </li>
+              ))}
+            </ul>
+          </div></Em>
+          {d === "whatsapp" && <Em i={6}><p className="mt-6 text-center text-[15px] leading-relaxed text-text">Você foi pré-selecionado. O Leandro, fundador da Veridian, vai falar com você pessoalmente.</p></Em>}
+          {d === "agenda" && <Em i={6}><p className="mt-6 text-center text-[15px] leading-relaxed text-text">O próximo passo é uma conversa de 30 minutos para desenhar o seu caminho com a Veridian.</p></Em>}
+        </main>
+        <Rodape>
+          {d === "whatsapp"
+            ? <a href={whatsappUrl(msg)} target="_blank" rel="noopener" onClick={() => registrar("whatsapp", e.utm)} className={`${btn} flex items-center justify-center gap-2.5`}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Z" /></svg>
+                Falar com o Leandro no WhatsApp
+              </a>
+            : <button type="button" className={btn} onClick={() => { registrar("perfil-visto", e.utm); setFase("acao"); window.scrollTo({ top: 0 }); }}>Agendar minha conversa</button>}
+        </Rodape>
+      </Moldura>
+    );
+  }
+
   return (
     <Moldura>
       <main className="emp-tela-fwd mx-auto w-full max-w-xl flex-1 px-5 pb-16 pt-8">
-        {d === "whatsapp" && (
-          <>
-            <Em i={0}><div className="relative overflow-hidden rounded-[28px] bg-green-3 p-8 text-white shadow-[0_50px_90px_-45px_rgba(11,74,55,.95)]">
-              <div aria-hidden className="absolute inset-[10px] rounded-[20px] border border-gold/35" />
-              <div aria-hidden className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(184,146,90,.4),transparent_65%)]" />
-              <p className="relative font-cormorant text-[16px] italic text-gold-soft">{primeiro ? `${primeiro}, parabéns` : "Parabéns"}</p>
-              <h1 className="relative mt-2 font-cormorant text-[44px] leading-[1.02] tracking-[-0.015em]">Você foi pré-selecionado</h1>
-              <p className="relative mt-4 text-[15.5px] leading-relaxed text-white/85">O seu perfil combina com o que a Veridian procura em um parceiro estratégico. O Leandro, fundador da Veridian, vai falar com você pessoalmente.</p>
-            </div></Em>
-            <Em i={2}><a href={whatsappUrl(msg)} target="_blank" rel="noopener" onClick={() => registrar("whatsapp", e.utm)} className={`${btn} mt-6 flex items-center justify-center gap-2.5`}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Z" /></svg>
-              Falar com o Leandro no WhatsApp
-            </a></Em>
-          </>
-        )}
-
         {d === "agenda" && (
           <>
-            <Titulo sub="Escolha um horário. A conversa é por vídeo, leva 30 minutos e o link chega no seu e-mail.">{primeiro ? `${primeiro}, vamos conversar sobre o seu plano` : "Vamos conversar sobre o seu plano"}</Titulo>
+            <Titulo sub="Escolha um horário. A conversa é por vídeo, leva 30 minutos e o link chega no seu e-mail.">{`Vamos desenhar o seu caminho como ${pf.nome}`}</Titulo>
             <Em i={2}><div className="mt-8 overflow-hidden rounded-[22px] border border-line bg-white shadow-[0_30px_60px_-40px_rgba(20,24,26,.45)]">
               <iframe src={`${AGENDA_URL}?gv=true`} title="Agendar conversa com a Veridian" className="h-[680px] w-full border-0" />
             </div></Em>
             <a href={AGENDA_URL} target="_blank" rel="noopener" onClick={() => registrar("agenda-aberta", e.utm)} className="mt-4 block text-center text-[13px] text-green underline decoration-line-2 underline-offset-4">Abrir a agenda em outra aba</a>
           </>
+        )}
+
+        {d === "whatsapp" && (
+          <div className="pt-6 text-center">
+            <Titulo sub="O Leandro, fundador da Veridian, vai falar com você pessoalmente.">Você foi pré-selecionado</Titulo>
+            <Em i={2}><a href={whatsappUrl(msg)} target="_blank" rel="noopener" onClick={() => registrar("whatsapp", e.utm)} className={`${btn} mt-8 flex items-center justify-center`}>Falar com o Leandro no WhatsApp</a></Em>
+          </div>
         )}
 
         {d === "avaliar" && (
@@ -615,6 +646,7 @@ function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
         </ul></Em>
 
         <Em i={5}><div className="mt-6 flex items-center justify-center gap-6 text-[13px]">
+          {d !== "avaliar" && <button type="button" onClick={() => setFase("perfil")} className="text-green underline decoration-line-2 underline-offset-4">Ver meu perfil</button>}
           <a href="/pt" className="text-green underline decoration-line-2 underline-offset-4">Conhecer a Veridian</a>
           <button type="button" onClick={onRefazer} className="text-muted underline decoration-line-2 underline-offset-4">Refazer</button>
         </div></Em>

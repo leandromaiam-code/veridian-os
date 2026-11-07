@@ -212,6 +212,8 @@ export const reais = (n: number) =>
 export const meta = (r: Respostas) => Number(r.faturamento_12m) || 0;
 
 const temIdeia = (r: Respostas) => r.ideia === "definida";
+const investePouco = (r: Respostas) => r.investimento === "ate-3k" || r.investimento === "zero";
+const vendeMuito1 = (r: Respostas) => r.vendas_mes1 === "6-10" || r.vendas_mes1 === "10+";
 const temAlgumas = (r: Respostas) => r.ideia === "algumas";
 const semIdeia = (r: Respostas) => r.ideia === "nao";
 const sim = (campo: string) => (r: Respostas) => r[campo] === "sim";
@@ -305,12 +307,17 @@ export const ETAPAS: Etapa[] = [
   },
   {
     id: "investimento", bloco: 4, tipo: "unica", campo: "investimento", pergunta: "Quanto você pode investir por mês no novo negócio?",
-    opcoes: [{ v: "ate-3k", t: "Até R$ 3 mil por mês" }, { v: "3-10k", t: "De R$ 3 mil a R$ 10 mil por mês" }, { v: "10k+", t: "Acima de R$ 10 mil por mês" }],
+    opcoes: [{ v: "zero", t: "Não consigo investir no momento" }, { v: "ate-3k", t: "Até R$ 3 mil por mês" }, { v: "3-10k", t: "De R$ 3 mil a R$ 10 mil por mês" }, { v: "10k+", t: "Acima de R$ 10 mil por mês" }],
   },
   {
-    id: "vendas", bloco: 4, tipo: "unica", campo: "vendas_mes1", se: (r) => r.investimento === "ate-3k",
+    id: "vendas", bloco: 4, tipo: "unica", campo: "vendas_mes1", se: (r) => investePouco(r),
     pergunta: "Quantas vendas você acredita que faria na sua rede de contatos já no primeiro mês?",
     opcoes: [{ v: "0", t: "Nenhuma, ainda" }, { v: "1-2", t: "1 ou 2" }, { v: "3-5", t: "3 a 5" }, { v: "6-10", t: "6 a 10" }, { v: "10+", t: "Mais de 10" }],
+  },
+  {
+    id: "vendas-3m", bloco: 4, tipo: "unica", campo: "vendas_3m", se: (r) => investePouco(r) && !!r.vendas_mes1 && !vendeMuito1(r),
+    pergunta: "E em 3 meses, quantas vendas você acredita que faria na sua rede?",
+    opcoes: [{ v: "0", t: "Nenhuma, ainda" }, { v: "1-5", t: "1 a 5" }, { v: "6-15", t: "6 a 15" }, { v: "16-30", t: "16 a 30" }, { v: "30+", t: "Mais de 30" }],
   },
 ];
 
@@ -320,9 +327,30 @@ export type Destino = "whatsapp" | "agenda" | "avaliar";
 export function destino(r: Respostas): Destino {
   if (r.investimento === "10k+") return "whatsapp";
   if (r.investimento === "3-10k") return "agenda";
-  if (r.vendas_mes1 === "6-10" || r.vendas_mes1 === "10+") return "agenda";
+  if (vendeMuito1(r) || r.vendas_3m === "16-30" || r.vendas_3m === "30+") return "agenda";
   return "avaliar";
 }
+
+// Enquadramento mostrado no fechamento: AI Founder investe tempo e dinheiro;
+// Business Partner leva o negócio ao mercado com a rede e a experiência.
+export type Perfil = "ai-founder" | "business-partner";
+export function perfil(r: Respostas): Perfil {
+  const tempo = r.horas === "10-20" || r.horas === "20-40" || r.horas === "40+";
+  const dinheiro = r.investimento === "3-10k" || r.investimento === "10k+";
+  return tempo && dinheiro ? "ai-founder" : "business-partner";
+}
+export const PERFIS: Record<Perfil, { nome: string; texto: string; voce: string[] }> = {
+  "ai-founder": {
+    nome: "AI Founder",
+    texto: "Você tem tempo e capital para liderar um negócio novo com IA. A Veridian entra com produto, marketing, operação e gestão.",
+    voce: ["Lidera o negócio e as decisões", "Investe tempo e capital", "Tem a Veridian como time completo"],
+  },
+  "business-partner": {
+    nome: "Business Partner",
+    texto: "Você leva o negócio ao mercado com a sua rede e a sua experiência. A Veridian entra com o produto e toda a estrutura.",
+    voce: ["Abre portas e traz clientes", "Usa a sua rede e o seu conhecimento", "Conta com o produto e a estrutura da Veridian"],
+  },
+};
 
 const rotulo = (lista: Opcao[], v: string) => lista.find((o) => o.v === v)?.t ?? v;
 const todasSolucoes = Object.values(SOLUCOES).flat();

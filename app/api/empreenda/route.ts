@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { AREAS, ETAPAS, destino as calcularDestino, meta, perguntaDe, reais, rotuloDe, type Respostas } from "@/lib/empreenda";
+import { AREAS, ETAPAS, PERFIS, destino as calcularDestino, meta, perfil, perguntaDe, reais, rotuloDe, type Respostas } from "@/lib/empreenda";
 
 /* -----------------------------------------------------------------------------
  * POST /api/empreenda — funil "Empreenda com IA".
@@ -47,6 +47,7 @@ function nota(r: Respostas): number {
   if (r.ideia === "definida") n += 6;
   if (r.rede === "grande") n += 6;
   if (r.vendas_mes1 === "10+" || r.vendas_mes1 === "6-10") n += 6;
+  if (r.vendas_3m === "16-30" || r.vendas_3m === "30+") n += 4;
   return Math.max(0, Math.min(100, n));
 }
 
@@ -106,17 +107,18 @@ export async function POST(request: Request) {
     visitante: visitante || null,
     etapa,
     destino: dest,
+    perfil: dest ? perfil(r) : null,
     meta_mensal: meta(r) || null,
     respostas: r,
     atualizado_em: new Date().toISOString(),
   };
-  const tags = ["empreenda-com-ia", r.ideia === "nao" ? "sem-ideia" : r.ideia ? "com-ideia" : null, dest ? "destino-" + dest : null, teste ? "teste" : null].filter(Boolean) as string[];
-  const notes = `Empreenda com IA · ${dest ? DESTINO_TXT[dest] : "parou depois do contato"}\nMeta: ${meta(r) ? reais(meta(r)) + " por mês em 12 meses" : "—"}\n\n${resumo(r)}`;
+  const tags = ["empreenda-com-ia", r.ideia === "nao" ? "sem-ideia" : r.ideia ? "com-ideia" : null, dest ? "destino-" + dest : null, dest ? "perfil-" + perfil(r) : null, teste ? "teste" : null].filter(Boolean) as string[];
+  const notes = `Empreenda com IA · ${dest ? DESTINO_TXT[dest] + " · " + PERFIS[perfil(r)].nome : "parou depois do contato"}\nMeta: ${meta(r) ? reais(meta(r)) + " por mês em 12 meses" : "—"}\n\n${resumo(r)}`;
 
   let ok = false;
   if (existente) {
     const metadata = { ...(existente.metadata || {}), empreenda };
-    const patch: Record<string, unknown> = { notes, metadata, tags: Array.from(new Set([...(existente.tags || []).filter((t) => !t.startsWith("destino-") && t !== "sem-ideia" && t !== "com-ideia"), ...tags])), score: nota(r), segment: area };
+    const patch: Record<string, unknown> = { notes, metadata, tags: Array.from(new Set([...(existente.tags || []).filter((t) => !t.startsWith("destino-") && !t.startsWith("perfil-") && t !== "sem-ideia" && t !== "com-ideia"), ...tags])), score: nota(r), segment: area };
     if (nome) patch.name = nome;
     if (email) patch.email = email;
     if (phone) patch.phone = phone;
