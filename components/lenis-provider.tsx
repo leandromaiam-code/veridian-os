@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { scrollStore, ZONES } from "@/lib/scroll-store";
 
@@ -10,8 +11,14 @@ declare global {
   }
 }
 
+// Páginas com rolagem normal (sem o slideshow por zonas): o funil Empreenda com IA.
+const SEM_SNAP = /\/empreenda(\/|$)/;
+
 export function LenisProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const semSnap = SEM_SNAP.test(pathname || "");
   useEffect(() => {
+    if (semSnap) return;
     const lenis = new Lenis({
       // Longer duration → each wheel tick produces visible, sustained motion
       duration: 2.6,
@@ -162,7 +169,7 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       delete window.__lenis;
       lenis.destroy();
     };
-  }, []);
+  }, [semSnap]);
 
   return <>{children}</>;
 }
