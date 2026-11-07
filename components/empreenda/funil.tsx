@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BLOCOS, ETAPAS, MODULOS, PORTFOLIO, etapasVisiveis, montarPerfil, type Etapa, type Respostas } from "@/lib/empreenda";
+import { BLOCOS, DEGRAUS_FATURAMENTO, ETAPAS, MODULOS, PORTFOLIO, etapasVisiveis, montarPerfil, reais, type Etapa, type Respostas } from "@/lib/empreenda";
 import { whatsappUrl } from "@/lib/i18n";
 
 /* Funil "Empreenda com IA": uma pergunta por tela, telas de reforço com o que a
@@ -259,8 +259,15 @@ export function FunilEmpreenda() {
   let corpo: React.ReactNode = null;
   let rodape: React.ReactNode = null;
 
-  if (etapa.tipo === "abertura") {
-    return <Abertura onComecar={() => { registrar("comecar", e.utm); avancar(); }} />;
+  if (etapa.tipo === "faturamento") {
+    const valor = Number(e.r[etapa.campo]) || 50000;
+    corpo = (
+      <>
+        <Titulo>{etapa.pergunta}</Titulo>
+        <div className="mt-8"><Faturamento valor={valor} onChange={(n) => mudar({ r: { ...e.r, [etapa.campo]: String(n) } })} /></div>
+      </>
+    );
+    rodape = <button type="button" className={btn} onClick={() => avancar({ ...e.r, [etapa.campo]: String(valor) })}>Continuar</button>;
   } else if (etapa.tipo === "unica") {
     corpo = (
       <>
@@ -376,27 +383,28 @@ function Moldura({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Abertura({ onComecar }: { onComecar: () => void }) {
-  const fatos = [`${PORTFOLIO.length} startups no portfólio`, `${MODULOS.length} módulos de IA`, "3 minutos"];
+function Faturamento({ valor, onChange }: { valor: number; onChange: (n: number) => void }) {
+  const [anual, setAnual] = useState(false);
+  const idx = Math.max(0, DEGRAUS_FATURAMENTO.findIndex((d) => d >= valor));
+  const exibido = anual ? valor * 12 : valor;
   return (
-    <Moldura>
-      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-5 pb-10 pt-6">
-        <Revela><p className="text-center font-mono text-[11px] uppercase tracking-[0.24em] text-gold">Veridian AI Studio &amp; Ventures</p></Revela>
-        <Revela i={1}><h1 className="mt-4 text-center font-cormorant text-[44px] leading-[1.02] text-graphite sm:text-[58px]">Empreenda <em className="text-green">com IA</em></h1></Revela>
-        <Revela i={2}><p className="mx-auto mt-5 max-w-md text-center text-[16px] leading-relaxed text-text">Com a sua ideia ou com um projeto da Veridian. Responda algumas perguntas e descubra o seu perfil de founder e o caminho para começar.</p></Revela>
-        <Revela i={3} className="mt-7 flex -space-x-2.5 self-center">
-          {PORTFOLIO.slice(0, 7).map((p) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={p.id} src={p.logo} alt="" className="h-10 w-10 rounded-full border-2 border-studio bg-surface object-contain p-1 shadow-sm" />
-          ))}
-        </Revela>
-        <Revela i={4}><ul className="mt-6 flex flex-wrap justify-center gap-2">
-          {fatos.map((f) => <li key={f} className="rounded-full border border-line bg-surface px-3 py-1.5 text-[12.5px] text-text">{f}</li>)}
-        </ul></Revela>
-        <Revela i={5}><button type="button" onClick={onComecar} className={`${btn} mt-9`}>Descobrir meu perfil de founder</button></Revela>
-        <Revela i={6}><p className="mt-3 text-center text-[12px] text-muted">Sem custo e sem compromisso.</p></Revela>
-      </main>
-    </Moldura>
+    <div className="space-y-7">
+      <div className="mx-auto flex w-fit rounded-full border border-line bg-surface p-1 text-sm font-medium">
+        {(["Por mês", "Por ano"] as const).map((t, i) => (
+          <button key={t} type="button" onClick={() => setAnual(i === 1)}
+            className={`rounded-full px-5 py-2 transition-colors ${anual === (i === 1) ? "bg-green text-white" : "text-muted hover:text-graphite"}`}>{t}</button>
+        ))}
+      </div>
+      <div className="text-center">
+        <div className="font-cormorant text-[52px] leading-none text-graphite">{reais(exibido)}{valor === DEGRAUS_FATURAMENTO[DEGRAUS_FATURAMENTO.length - 1] && !anual ? "+" : ""}</div>
+        <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">{anual ? "de faturamento por ano" : "de faturamento por mês"}</div>
+      </div>
+      <input type="range" min={0} max={DEGRAUS_FATURAMENTO.length - 1} step={1} value={idx}
+        onChange={(ev) => onChange(DEGRAUS_FATURAMENTO[Number(ev.target.value)])}
+        className="w-full accent-[var(--color-green)]" aria-label="Faturamento por mês daqui a 12 meses" />
+      <div className="flex justify-between font-mono text-[11px] text-muted"><span>R$ 5 mil</span><span>R$ 1 milhão+</span></div>
+      <p className="text-center text-[13px] text-muted">Por mês, daqui a 12 meses. Arraste para ajustar.</p>
+    </div>
   );
 }
 
@@ -508,6 +516,9 @@ function Resultado({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
           <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-gold">Caminho indicado</p>
           <h2 className="mt-1.5 font-cormorant text-[26px] leading-tight text-graphite">{p.caminhoTitulo}</h2>
           <p className="mt-2 text-[15px] leading-relaxed text-text">{p.caminhoTexto}</p>
+          {Number(e.r.faturamento_12m) > 0 && (
+            <p className="mt-4 rounded-xl bg-mint/60 px-4 py-3 text-[14px] text-green-3">Sua meta: <strong>{reais(Number(e.r.faturamento_12m))} por mês</strong> daqui a 12 meses.</p>
+          )}
           {typeof e.r.ideia_frase === "string" && e.r.ideia_frase && (
             <blockquote className="mt-4 rounded-xl bg-soft px-4 py-3 text-[14px] italic text-text">“{e.r.ideia_frase}”</blockquote>
           )}

@@ -10,7 +10,7 @@ export type Opcao = { v: string; t: string; d?: string };
 type Base = { id: string; bloco: number; se?: (r: Respostas) => boolean };
 export type Etapa = Base &
   (
-    | { tipo: "abertura" }
+    | { tipo: "faturamento"; campo: string; pergunta: string }
     | { tipo: "unica"; campo: string; pergunta: string; ajuda?: string; opcoes: Opcao[] }
     | { tipo: "multipla"; campo: string; pergunta: string; ajuda?: string; opcoes: Opcao[]; max?: number }
     | { tipo: "texto"; campo: string; pergunta: string; ajuda?: string; placeholder: string; opcional?: boolean }
@@ -66,7 +66,7 @@ const temIdeia = (r: Respostas) => r.ideia === "definida" || r.ideia === "alguma
 const sim = (campo: string) => (r: Respostas) => r[campo] === "sim";
 
 export const ETAPAS: Etapa[] = [
-  { id: "abertura", bloco: 0, tipo: "abertura" },
+  { id: "faturamento", bloco: 0, tipo: "faturamento", campo: "faturamento_12m", pergunta: "Quanto você quer estar faturando daqui a 12 meses?" },
 
   // 1 — Ponto de partida
   {
@@ -234,8 +234,14 @@ export const ETAPAS: Etapa[] = [
 
 export const etapasVisiveis = (r: Respostas) => ETAPAS.filter((e) => !e.se || e.se(r));
 
+// Régua de faturamento mensal (R$), em degraus.
+export const DEGRAUS_FATURAMENTO = [5000, 10000, 20000, 30000, 50000, 75000, 100000, 150000, 200000, 300000, 500000, 1000000];
+export const reais = (n: number) =>
+  n >= 1000000 ? `R$ ${(n / 1000000).toLocaleString("pt-BR")} milhão` : `R$ ${(n / 1000).toLocaleString("pt-BR")} mil`;
+
 const rotulo = (lista: Opcao[], v: string) => lista.find((o) => o.v === v)?.t ?? v;
 export function rotuloDe(campo: string, v: string): string {
+  if (campo === "faturamento_12m") return Number(v) ? reais(Number(v)) + " por mês" : v;
   const e = ETAPAS.find((x) => "campo" in x && x.campo === campo);
   return e && "opcoes" in e ? rotulo(e.opcoes, v) : v;
 }
