@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Empreenda com IA — Veriddan",
     description: "Descubra o seu perfil de founder e o caminho para começar a sua startup com a Veriddan.",
-    url: "https://veridian.4profitai.com/pt/empreenda",
+    url: "https://studio.veriddan.com/pt/empreenda",
     locale: "pt_BR",
   },
 };

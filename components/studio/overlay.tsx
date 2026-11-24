@@ -743,7 +743,7 @@ function ContactCopy({ p, zone }: { p: number; zone: Z }) {
               </div>
               <div>
                 <small>{t.contact.siteLabel}</small>
-                <span>veridian.4profitai.com</span>
+                <span>studio.veriddan.com</span>
               </div>
               <div>
                 <small>{t.contact.groupLabel}</small>

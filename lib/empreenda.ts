@@ -1,4 +1,4 @@
-// Funil "Empreenda com IA" (veridian.4profitai.com/pt/empreenda).
+// Funil "Empreenda com IA" (studio.veriddan.com/pt/empreenda).
 // Ordem (Leandro, 07/11/2026): meta de faturamento → dados (milionários ou demanda)
 // → área → dados da área → contato (salva o lead) → tem ideia? → dores e desejos
 // (caminho próprio para cada resposta) → ecossistema Veriddan e parceiros

@@ -133,7 +133,7 @@ export async function POST(request: Request) {
         source: "website", bucket: "captacao", score: nota(r), tags, notes,
         metadata: {
           origem: "empreenda-com-ia",
-          landing_page: "https://veridian.4profitai.com/pt/empreenda",
+          landing_page: "https://studio.veriddan.com/pt/empreenda",
           utm_source: limpa(utm.utm_source, 120) || null,
           utm_medium: limpa(utm.utm_medium, 120) || null,
           utm_campaign: limpa(utm.utm_campaign, 120) || null,

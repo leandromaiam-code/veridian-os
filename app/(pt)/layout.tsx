@@ -5,7 +5,7 @@ import { LenisProvider } from "@/components/lenis-provider";
 import { fontVariables } from "@/lib/fonts";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://veridian.4profitai.com"),
+  metadataBase: new URL("https://studio.veriddan.com"),
   title: "Veriddan — AI Studio & Venture",
   description:
     "Criamos startups autônomas. Da ideia ao impacto real. Construídas e escaladas por IA.",
