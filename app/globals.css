@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Veridian Light Parchment palette (kept for the login pages + widgets) */
+  /* Veriddan Light Parchment palette (kept for the login pages + widgets) */
   --color-parchment: #efece0;
   --color-linen: #ddd8c9;
   --color-ink: #14231d;

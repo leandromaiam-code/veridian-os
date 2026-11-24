@@ -692,7 +692,7 @@ function PlatformCopy({
   );
 }
 
-/* ---------------------- EDGE — why Veridian ------------------------------ */
+/* ---------------------- EDGE — why Veriddan ------------------------------ */
 function EdgeCopy({ p, zone }: { p: number; zone: Z }) {
   const o = useZoneOpacity(p, zone);
   const t = useT();

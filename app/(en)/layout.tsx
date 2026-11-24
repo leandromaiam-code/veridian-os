@@ -6,7 +6,7 @@ import { fontVariables } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://veridian.4profitai.com"),
-  title: "Veridian — AI Studio & Venture",
+  title: "Veriddan — AI Studio & Venture",
   description:
     "We grow autonomous startups. From idea to real-world impact. Built and scaled by AI.",
   alternates: {

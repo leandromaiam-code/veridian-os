@@ -4,7 +4,7 @@ import { AREAS, ETAPAS, PERFIS, destino as calcularDestino, meta, perfil, pergun
 /* -----------------------------------------------------------------------------
  * POST /api/empreenda — funil "Empreenda com IA".
  *
- * etapa "contato": cria (ou atualiza) o lead do Growth Project "Veridian AI
+ * etapa "contato": cria (ou atualiza) o lead do Growth Project "Veriddan AI
  * Studio" no Vortex (`vortex_leads`) com nome, WhatsApp, e-mail e as respostas
  * até ali. etapa "final": acha o mesmo lead (pelo visitante, e-mail ou WhatsApp)
  * e grava as respostas completas e o destino (whatsapp, agenda ou avaliar).

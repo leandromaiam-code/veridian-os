@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useT } from "@/lib/i18n";
 
 /* -----------------------------------------------------------------------------
- * VERIS — Veridian Intelligence agent
+ * VERIS — Veriddan Intelligence agent
  *
  * Ethereal materialization: at +3s of session a small brass-seafoam orb
  * pulses in the bottom-right. Clicking expands into a glassmorphic chat
@@ -258,7 +258,7 @@ export function VortexAgent() {
                   className="font-mono uppercase tracking-[0.28em] text-[8.5px] text-brass-light/85"
                   style={{ textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}
                 >
-                  Veridian Intelligence
+                  Veriddan Intelligence
                 </span>
               </div>
             </div>

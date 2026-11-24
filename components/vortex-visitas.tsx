@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-// Conta a visita no Vortex (Growth Project Veridian AI Studio): página e origem, sem dado pessoal.
+// Conta a visita no Vortex (Growth Project Veriddan AI Studio): página e origem, sem dado pessoal.
 export function VortexVisitas() {
   const pathname = usePathname();
   useEffect(() => {

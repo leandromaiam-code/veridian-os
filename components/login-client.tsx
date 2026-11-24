@@ -113,7 +113,7 @@ export default function LoginClient({ locale = "en" }: { locale?: Locale }) {
           <div className="flex flex-col items-center text-center mb-12">
             <Image
               src="/assets/logos/veridian-symbol.png"
-              alt="Veridian"
+              alt="Veriddan"
               width={56}
               height={56}
               priority
@@ -123,7 +123,7 @@ export default function LoginClient({ locale = "en" }: { locale?: Locale }) {
               className="font-cormorant font-light text-parchment tracking-[0.32em] text-[clamp(1.8rem,2.6vw,2.6rem)] leading-none"
               style={{ textShadow: "0 2px 14px rgba(0,0,0,0.6)" }}
             >
-              VERIDIAN
+              VERIDDAN
             </span>
             <span
               className="mt-3 font-mono uppercase tracking-[0.42em] text-[10px] text-brass-light"
@@ -170,7 +170,7 @@ export default function LoginClient({ locale = "en" }: { locale?: Locale }) {
           <p className="mt-8 text-center font-mono uppercase tracking-[0.22em] text-[9px] text-parchment/45">
             {t.loginPage.newHere}{" "}
             <a
-              href="mailto:contato@veridian.ai?subject=Veridian%20access"
+              href="mailto:contato@veridian.ai?subject=Veriddan%20access"
               className="text-brass-light/85 hover:text-brass-light transition-colors"
             >
               {t.loginPage.request}

@@ -1,7 +1,7 @@
 // Funil "Empreenda com IA" (veridian.4profitai.com/pt/empreenda).
 // Ordem (Leandro, 07/11/2026): meta de faturamento → dados (milionários ou demanda)
 // → área → dados da área → contato (salva o lead) → tem ideia? → dores e desejos
-// (caminho próprio para cada resposta) → ecossistema Veridian e parceiros
+// (caminho próprio para cada resposta) → ecossistema Veriddan e parceiros
 // estratégicos → (sem ideia: micro soluções da área) → horas, início e investimento
 // → fechamento: WhatsApp (> R$ 10 mil/mês), agenda (R$ 3–10 mil, ou muitas vendas
 // esperadas no 1º mês) ou avaliação. Todo número nas telas tem fonte.
@@ -23,7 +23,7 @@ export type Etapa = Base &
   );
 export type Visual = "milionarios" | "demanda" | "area" | "mandala" | "entregas" | "fases" | "validacao" | "comparar" | "parceiros";
 
-export const BLOCOS = ["Sua meta", "Sua área", "Seu ponto de partida", "Ecossistema Veridian", "Seu plano"];
+export const BLOCOS = ["Sua meta", "Sua área", "Seu ponto de partida", "Ecossistema Veriddan", "Seu plano"];
 
 // Página de agendamento do Google Agenda do Leandro (criada em 07/11/2026).
 export const AGENDA_URL =
@@ -47,7 +47,7 @@ export const PORTFOLIO = [
   { id: "superrdo", nome: "SuperRDO", setor: "construcao", linha: "Relatório diário de obra integrado ao MS Project.", logo: `${LOGO_BASE}/superrdo/logo.png?v=1791135407` },
 ] as const;
 
-// O que a Veridian entrega (tela "o que fazemos").
+// O que a Veriddan entrega (tela "o que fazemos").
 export const ENTREGAS = [
   { icone: "pesquisa", titulo: "Pesquisa e validação", texto: "Mercado, dor e concorrência com dados e fontes, antes de investir." },
   { icone: "marca", titulo: "Marca, site e conteúdo", texto: "Posicionamento, identidade, página da oferta e presença nas redes." },
@@ -251,17 +251,17 @@ export const ETAPAS: Etapa[] = [
     ],
   },
   // com ideia
-  { id: "ideia-frase", bloco: 2, tipo: "texto", campo: "ideia_frase", se: temIdeia, pergunta: "Conte a sua ideia em uma frase", ajuda: "Só a equipe da Veridian vai ler.", placeholder: "Ex.: um app que confirma consultas de clínicas pelo WhatsApp" },
+  { id: "ideia-frase", bloco: 2, tipo: "texto", campo: "ideia_frase", se: temIdeia, pergunta: "Conte a sua ideia em uma frase", ajuda: "Só a equipe da Veriddan vai ler.", placeholder: "Ex.: um app que confirma consultas de clínicas pelo WhatsApp" },
   {
     id: "ideia-estagio", bloco: 2, tipo: "unica", campo: "ideia_estagio", se: temIdeia, pergunta: "Em que ponto ela está?",
     opcoes: [{ v: "papel", t: "Só no papel" }, { v: "conversas", t: "Já conversei com possíveis clientes" }, { v: "prototipo", t: "Tenho um protótipo" }, { v: "vendendo", t: "Já vendo, mas preciso crescer" }],
   },
   { id: "f-validar", bloco: 2, tipo: "frase", campo: "frase_validar", se: temIdeia, frase: "Tenho medo de investir e ninguém comprar." },
-  { id: "i-validar", bloco: 2, tipo: "info", visual: "validacao", se: (r) => temIdeia(r) && r.frase_validar === "sim", titulo: "Primeiro validar, depois construir", texto: "Antes de qualquer código, a Veridian pesquisa o mercado, define público e proposta de valor e coloca a oferta no ar." },
+  { id: "i-validar", bloco: 2, tipo: "info", visual: "validacao", se: (r) => temIdeia(r) && r.frase_validar === "sim", titulo: "Primeiro validar, depois construir", texto: "Antes de qualquer código, a Veriddan pesquisa o mercado, define público e proposta de valor e coloca a oferta no ar." },
   // algumas possibilidades
   { id: "ideias-texto", bloco: 2, tipo: "texto", campo: "ideia_frase", se: temAlgumas, pergunta: "Quais ideias você está considerando?", ajuda: "Uma por linha, do jeito que vier.", placeholder: "Ex.: sistema de cobrança para clínicas\nagente de vendas para imobiliárias" },
   { id: "f-qual", bloco: 2, tipo: "frase", campo: "frase_qual", se: temAlgumas, frase: "Tenho ideias, mas não sei qual tem mais chance de dar certo." },
-  { id: "i-qual", bloco: 2, tipo: "info", visual: "comparar", se: (r) => temAlgumas(r) && r.frase_qual === "sim", titulo: "A pesquisa escolhe a mais promissora", texto: "A Veridian pesquisa o mercado de cada ideia, com dados e fontes, e mostra qual tem dor real e cliente disposto a pagar." },
+  { id: "i-qual", bloco: 2, tipo: "info", visual: "comparar", se: (r) => temAlgumas(r) && r.frase_qual === "sim", titulo: "A pesquisa escolhe a mais promissora", texto: "A Veriddan pesquisa o mercado de cada ideia, com dados e fontes, e mostra qual tem dor real e cliente disposto a pagar." },
   // sem ideia
   {
     id: "rede", bloco: 2, tipo: "unica", campo: "rede", se: semIdeia, pergunta: "Você tem uma boa rede de contatos profissionais?",
@@ -272,10 +272,10 @@ export const ETAPAS: Etapa[] = [
     pergunta: "Em que áreas estão os seus contatos?", ajuda: "Marque quantas quiser.", opcoes: AREAS.filter((a) => a.v !== "outra"), outro: "rede_outro",
   },
   { id: "f-ideia", bloco: 2, tipo: "frase", campo: "frase_ideia", se: semIdeia, frase: "Quero empreender, mas falta a ideia certa." },
-  { id: "i-ideia", bloco: 2, tipo: "info", se: (r) => semIdeia(r) && r.frase_ideia === "sim", titulo: "Você não precisa começar do zero", texto: "A Veridian seleciona parceiros para liderar projetos que já passaram pela pesquisa de mercado. Você leva o negócio ao mercado; a Veridian entra com o produto e a estrutura." },
+  { id: "i-ideia", bloco: 2, tipo: "info", se: (r) => semIdeia(r) && r.frase_ideia === "sim", titulo: "Você não precisa começar do zero", texto: "A Veriddan seleciona parceiros para liderar projetos que já passaram pela pesquisa de mercado. Você leva o negócio ao mercado; a Veriddan entra com o produto e a estrutura." },
   // dores comuns
   { id: "f-programar", bloco: 2, tipo: "frase", campo: "frase_programar", frase: "Não sei programar, e isso me trava." },
-  { id: "i-programar", bloco: 2, tipo: "info", visual: "entregas", se: sim("frase_programar"), titulo: "Você não precisa programar", texto: "A Veridian faz o trabalho de ponta a ponta. Você decide o que o negócio precisa e aprova o que é entregue." },
+  { id: "i-programar", bloco: 2, tipo: "info", visual: "entregas", se: sim("frase_programar"), titulo: "Você não precisa programar", texto: "A Veriddan faz o trabalho de ponta a ponta. Você decide o que o negócio precisa e aprova o que é entregue." },
   { id: "f-sozinho", bloco: 2, tipo: "frase", campo: "frase_sozinho", frase: "Não quero empreender sozinho." },
   { id: "i-sozinho", bloco: 2, tipo: "info", visual: "fases", se: sim("frase_sozinho"), titulo: "Um time completo desde o primeiro dia", texto: "Produto, marketing, operação e finanças no mesmo lugar, em cada fase, da ideia ao primeiro cliente pagante e além." },
 
@@ -288,7 +288,7 @@ export const ETAPAS: Etapa[] = [
   {
     id: "i-parceiros", bloco: 3, tipo: "info", visual: "parceiros",
     titulo: "Estamos selecionando parceiros estratégicos",
-    texto: "A Veridian está escolhendo poucas pessoas para construir novos negócios junto com ela. As próximas perguntas mostram se o seu perfil combina.",
+    texto: "A Veriddan está escolhendo poucas pessoas para construir novos negócios junto com ela. As próximas perguntas mostram se o seu perfil combina.",
   },
   {
     id: "solucoes", bloco: 3, tipo: "solucoes", campo: "solucoes", se: semIdeia, outro: "solucao_outro",
@@ -341,13 +341,13 @@ export function perfil(r: Respostas): Perfil {
 export const PERFIS: Record<Perfil, { nome: string; texto: string; voce: string[] }> = {
   "ai-founder": {
     nome: "AI Founder",
-    texto: "Você pode investir e dedicar tempo para liderar um negócio novo com IA. A Veridian entra com produto, marketing, operação e gestão.",
-    voce: ["Lidera o negócio e as decisões", "Investe e dedica tempo ao projeto", "Tem a Veridian como time completo"],
+    texto: "Você pode investir e dedicar tempo para liderar um negócio novo com IA. A Veriddan entra com produto, marketing, operação e gestão.",
+    voce: ["Lidera o negócio e as decisões", "Investe e dedica tempo ao projeto", "Tem a Veriddan como time completo"],
   },
   "business-partner": {
     nome: "AI Business Partner",
-    texto: "Você leva o negócio ao mercado com a sua rede e a sua experiência. A Veridian entra com o produto e toda a estrutura.",
-    voce: ["Abre portas e traz clientes", "Usa a sua rede e o seu conhecimento", "Conta com o produto e a estrutura da Veridian"],
+    texto: "Você leva o negócio ao mercado com a sua rede e a sua experiência. A Veriddan entra com o produto e toda a estrutura.",
+    voce: ["Abre portas e traz clientes", "Usa a sua rede e o seu conhecimento", "Conta com o produto e a estrutura da Veriddan"],
   },
 };
 

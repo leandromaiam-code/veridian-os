@@ -7,7 +7,7 @@ import { scrollStore, smoothstep, zoneById } from "@/lib/scroll-store";
 /* -----------------------------------------------------------------------------
  * Scroll-driven backdrop.
  *
- * Entry: the Veridian shrine (the intro image). Scrolling "enters the studio":
+ * Entry: the Veriddan shrine (the intro image). Scrolling "enters the studio":
  * the camera dollies into the shrine while it dissolves into the light studio.
  *
  * Studio: off-white space with soft green / gold light, a fine grid and a

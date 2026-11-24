@@ -9,23 +9,23 @@ export type Locale = "en" | "pt";
  * Headlines are split into parts so each locale keeps the same highlight
  * styling around its own words.
  *
- * Content and order follow the commercial deck (Veridian - Comercial):
+ * Content and order follow the commercial deck (Veriddan - Comercial):
  * who we are (hero) → portfolio → who it's for (+ business model) → how it
- * works (stages) → the platform (modules) → why Veridian → contact.
+ * works (stages) → the platform (modules) → why Veriddan → contact.
  * --------------------------------------------------------------------------- */
 
 const en = {
   htmlLang: "en",
   home: "/",
   login: "/login",
-  brand: "Veridian · AI Studio & Ventures",
-  brandName: "VERIDIAN",
+  brand: "Veriddan · AI Studio & Ventures",
+  brandName: "VERIDDAN",
   brandTag: "AI Studio & Ventures",
   nav: {
     portfolio: "Portfolio",
     audience: "Who it's for",
     how: "How it works",
-    edge: "Why Veridian",
+    edge: "Why Veriddan",
     platform: "Platform",
     contact: "Contact",
   } as Record<string, string>,
@@ -34,9 +34,9 @@ const en = {
   scrollCue: "Scroll to enter the studio",
   cta: "Send your idea",
   ctaPortfolio: "See the portfolio",
-  whatsappText: "I would like to talk to Veridian about an idea",
+  whatsappText: "I would like to talk to Veriddan about an idea",
   hero: {
-    eyebrow: "Veridian AI Studio & Ventures",
+    eyebrow: "Veriddan AI Studio & Ventures",
     lead: "We create and develop startups on our own platform, with autonomous modules that do the product, marketing, operations and management work.",
     fact: "12 startups in the portfolio",
   },
@@ -50,7 +50,7 @@ const en = {
   },
   portfolio: {
     title: "Our portfolio",
-    sub: "Startups created and run on the Veridian platform.",
+    sub: "Startups created and run on the Veriddan platform.",
     cases: "Cases",
     invest: "Investments",
     tags: {
@@ -92,7 +92,7 @@ const en = {
       {
         n: "02",
         title: "Partners",
-        text: "Solutions built and run on the Veridian platform, taken to your clients.",
+        text: "Solutions built and run on the Veriddan platform, taken to your clients.",
         who: "Companies that want to develop solutions together or distribute the platform.",
         model: "Enterprise plan + equity",
       },
@@ -142,7 +142,7 @@ const en = {
     ],
   },
   edge: {
-    title: "Why Veridian",
+    title: "Why Veriddan",
     sub: "What changes for you.",
     items: [
       { title: "Development speed", text: "The development modules write, test and ship code every night, from 10 pm to 6 am. The product evolves in daily cycles." },
@@ -157,8 +157,8 @@ const en = {
     emailLabel: "E-mail",
     siteLabel: "Site",
     groupLabel: "Group",
-    group: "Veridian AI Studio & Ventures is a 4Profit AI group company.",
-    footer: "© 2026 · Veridian AI Studio & Ventures",
+    group: "Veriddan AI Studio & Ventures is a 4Profit AI group company.",
+    footer: "© 2026 · Veriddan AI Studio & Ventures",
     email: "contact@4profitai.com",
   },
   soon: "soon",
@@ -179,7 +179,7 @@ const en = {
     waOpen: "Open WhatsApp",
     waNameError: "Enter your full name.",
     waPhoneError: "Enter a phone number with area code.",
-    waMessage: "Hi! I'm {name} ({phone}). I would like to talk to Veridian about an idea.",
+    waMessage: "Hi! I'm {name} ({phone}). I would like to talk to Veriddan about an idea.",
   },
   audio: {
     mute: "Mute background track",
@@ -187,10 +187,10 @@ const en = {
   },
   veris: {
     welcome:
-      "I'm Veris, the Veridian intelligence. Tell me about your idea — I'll show you what we would build.",
+      "I'm Veris, the Veriddan intelligence. Tell me about your idea — I'll show you what we would build.",
     bootError: "Connection failed. Try again.",
     sendError: "Connection slipped. Try once more — I'm still here.",
-    orbLabel: "Talk to Veris, the Veridian intelligence",
+    orbLabel: "Talk to Veris, the Veriddan intelligence",
     balloon: "Need help? I'm here.",
     minimize: "Minimize",
     loading: "Materializing…",
@@ -217,8 +217,8 @@ const pt: Dict = {
   htmlLang: "pt-BR",
   home: "/pt",
   login: "/pt/login",
-  brand: "Veridian · AI Studio & Ventures",
-  brandName: "VERIDIAN",
+  brand: "Veriddan · AI Studio & Ventures",
+  brandName: "VERIDDAN",
   brandTag: "AI Studio & Ventures",
   nav: {
     portfolio: "Portfólio",
@@ -233,9 +233,9 @@ const pt: Dict = {
   scrollCue: "Role para entrar no estúdio",
   cta: "Envie sua ideia",
   ctaPortfolio: "Ver o portfólio",
-  whatsappText: "Quero falar com a Veridian sobre uma ideia",
+  whatsappText: "Quero falar com a Veriddan sobre uma ideia",
   hero: {
-    eyebrow: "Veridian AI Studio & Ventures",
+    eyebrow: "Veriddan AI Studio & Ventures",
     lead: "Criamos e desenvolvemos startups com uma plataforma própria, com módulos autônomos que fazem o trabalho de produto, marketing, operação e gestão.",
     fact: "12 startups no portfólio",
   },
@@ -249,7 +249,7 @@ const pt: Dict = {
   },
   portfolio: {
     title: "Nosso portfólio",
-    sub: "Startups criadas e operadas na plataforma Veridian.",
+    sub: "Startups criadas e operadas na plataforma Veriddan.",
     cases: "Cases",
     invest: "Investimentos",
     tags: {
@@ -291,7 +291,7 @@ const pt: Dict = {
       {
         n: "02",
         title: "Parceiros",
-        text: "Soluções construídas e operadas pela plataforma da Veridian, levadas aos seus clientes.",
+        text: "Soluções construídas e operadas pela plataforma da Veriddan, levadas aos seus clientes.",
         who: "Empresas que querem desenvolver soluções em conjunto ou distribuir a plataforma.",
         model: "Plano Enterprise + equity",
       },
@@ -356,8 +356,8 @@ const pt: Dict = {
     emailLabel: "E-mail",
     siteLabel: "Site",
     groupLabel: "Grupo",
-    group: "A Veridian AI Studio & Ventures é uma empresa do grupo 4Profit AI.",
-    footer: "© 2026 · Veridian AI Studio & Ventures",
+    group: "A Veriddan AI Studio & Ventures é uma empresa do grupo 4Profit AI.",
+    footer: "© 2026 · Veriddan AI Studio & Ventures",
     email: "contact@4profitai.com",
   },
   soon: "em breve",
@@ -378,7 +378,7 @@ const pt: Dict = {
     waOpen: "Abrir WhatsApp",
     waNameError: "Informe o nome completo.",
     waPhoneError: "Informe o telefone com DDD.",
-    waMessage: "Olá! Sou {name} ({phone}). Quero falar com a Veridian sobre uma ideia.",
+    waMessage: "Olá! Sou {name} ({phone}). Quero falar com a Veriddan sobre uma ideia.",
   },
   audio: {
     mute: "Silenciar trilha de fundo",
@@ -386,10 +386,10 @@ const pt: Dict = {
   },
   veris: {
     welcome:
-      "Sou Veris, a inteligência da Veridian. Me conte sua ideia — eu mostro o que construiríamos.",
+      "Sou Veris, a inteligência da Veriddan. Me conte sua ideia — eu mostro o que construiríamos.",
     bootError: "Falha na conexão. Tente de novo.",
     sendError: "A conexão caiu. Tente mais uma vez — continuo aqui.",
-    orbLabel: "Fale com Veris, a inteligência da Veridian",
+    orbLabel: "Fale com Veris, a inteligência da Veriddan",
     balloon: "Precisa de ajuda? Estou aqui.",
     minimize: "Minimizar",
     loading: "Materializando…",

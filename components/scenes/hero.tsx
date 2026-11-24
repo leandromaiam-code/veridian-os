@@ -54,14 +54,14 @@ export function Hero() {
         <div className="flex items-center gap-3">
           <Image
             src="/assets/logos/veridian-symbol.png"
-            alt="Veridian"
+            alt="Veriddan"
             width={32}
             height={32}
             priority
             className="opacity-90"
           />
           <Eyebrow className="hidden sm:inline">
-            Veridian · AI Studio & Venture
+            Veriddan · AI Studio & Venture
           </Eyebrow>
         </div>
         <nav className="hidden md:flex items-center gap-8">
@@ -92,7 +92,7 @@ export function Hero() {
             <div className="breathe relative w-full h-full">
               <Image
                 src="/assets/logos/veridian-symbol.png"
-                alt="Veridian shield"
+                alt="Veriddan shield"
                 fill
                 priority
                 className="object-contain"

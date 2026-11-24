@@ -38,7 +38,7 @@ const modules: ModuleSpec[] = [
     number: "02",
     name: "Fabric",
     role: "The Foundry",
-    body: "Autonomous AI solutions platform. Builds, trains, deploys agents at scale. Every Veridian venture inherits Fabric on day one.",
+    body: "Autonomous AI solutions platform. Builds, trains, deploys agents at scale. Every Veriddan venture inherits Fabric on day one.",
     imageSrc: "/assets/modules/fabric.png",
     accent: "#3fb48f",
     metrics: [
@@ -51,7 +51,7 @@ const modules: ModuleSpec[] = [
     number: "03",
     name: "Vortex",
     role: "The Engine",
-    body: "Sales operating system. Lead-to-cash autopilot, 24/7 revenue motion, multi-language outreach. Already in production across Veridian ventures.",
+    body: "Sales operating system. Lead-to-cash autopilot, 24/7 revenue motion, multi-language outreach. Already in production across Veriddan ventures.",
     imageSrc: "/assets/modules/vortex.png",
     accent: "#0ea5e9",
     metrics: [
@@ -107,7 +107,7 @@ export function Modules() {
           </h2>
           <p className="font-sans text-stone text-lg max-w-md leading-relaxed">
             Each module operates autonomously. Together they compound. Every
-            venture born inside Veridian is powered by all three from day zero.
+            venture born inside Veriddan is powered by all three from day zero.
           </p>
         </div>
       </div>

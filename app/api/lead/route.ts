@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 /* -----------------------------------------------------------------------------
  * POST /api/lead — the closing form of the site.
  *
- * Stores the lead in `vortex_service_leads` (Veridian Supabase) and pings the
+ * Stores the lead in `vortex_service_leads` (Veriddan Supabase) and pings the
  * operator on WhatsApp. Both credentials are server-only env vars; when the
  * storage one is missing, or the insert fails, the route answers 503 and the
  * form falls back to opening WhatsApp with the message prefilled — a lead is
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
   const number = process.env.LEADS_NOTIFY_NUMBER;
   if (evoUrl && evoKey && evoInstance && number) {
     const text =
-      `Novo lead no site Veridian (${locale})\n\n` +
+      `Novo lead no site Veriddan (${locale})\n\n` +
       `Nome: ${name}\nContato: ${contact}\n\nIdeia: ${idea}`;
     await fetch(`${evoUrl.replace(/\/$/, "")}/message/sendText/${evoInstance}`, {
       method: "POST",

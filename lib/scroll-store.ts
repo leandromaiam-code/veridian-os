@@ -30,7 +30,7 @@ const ZONE_DEFS = [
   { id: "audience",  weight: 1.0, label: "Who it's for", navHidden: false }, // clients, partners, investors
   { id: "how",       weight: 1.0, label: "How it works", navHidden: false }, // maturity stages
   { id: "platform",  weight: 1.0, label: "Platform",     navHidden: false }, // modules
-  { id: "edge",      weight: 1.0, label: "Why Veridian", navHidden: false }, // differentiators
+  { id: "edge",      weight: 1.0, label: "Why Veriddan", navHidden: false }, // differentiators
   { id: "contact",   weight: 1.4, label: "Contact",      navHidden: false }, // lead form
 ] as const;
 

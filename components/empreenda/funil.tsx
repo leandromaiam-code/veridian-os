@@ -130,7 +130,7 @@ function Dados({ lista }: { lista: Dado[] }) {
   );
 }
 
-// Mandala: a Veridian no centro, as áreas de uma empresa em volta; pontos dourados
+// Mandala: a Veriddan no centro, as áreas de uma empresa em volta; pontos dourados
 // discretos marcam áreas com parceria aberta.
 function Mandala() {
   const N = MANDALA.length, C = 180, R = 118, RL = 152;
@@ -244,7 +244,7 @@ function Comparar() {
 function Parceiros({ r }: { r: Respostas }) {
   const itens = [
     "Você lidera o negócio e a relação com o mercado",
-    "A Veridian entra com produto, marketing, operação e gestão",
+    "A Veriddan entra com produto, marketing, operação e gestão",
     `Juntos, rumo aos ${reais(meta(r))} por mês que você definiu`,
   ];
   return (
@@ -252,7 +252,7 @@ function Parceiros({ r }: { r: Respostas }) {
       <div aria-hidden className="absolute inset-[10px] rounded-[18px] border border-gold/35" />
       <div aria-hidden className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(184,146,90,.35),transparent_65%)]" />
       <p className="relative font-cormorant text-[15px] italic text-gold-soft">Seleção aberta</p>
-      <p className="relative mt-1 font-cormorant text-[30px] leading-[1.05]">Parceiros estratégicos Veridian</p>
+      <p className="relative mt-1 font-cormorant text-[30px] leading-[1.05]">Parceiros estratégicos Veriddan</p>
       <ul className="relative mt-5 space-y-3">
         {itens.map((t, i) => (
           <li key={t} className="emp-em flex gap-3 text-[14.5px] leading-snug text-white/90" style={{ animationDelay: `${420 + i * 120}ms` }}>
@@ -312,8 +312,8 @@ function Moldura({ children }: { children: React.ReactNode }) {
       <header className="relative z-10 mx-auto flex w-full max-w-xl items-center justify-between px-5 pb-4 pt-5">
         <a href="/pt" className="flex items-center gap-2.5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={LOGO} alt="Veridian" className="h-7 w-7 rounded-md object-contain" />
-          <span className="font-cormorant text-[19px] text-graphite">Veridian</span>
+          <img src={LOGO} alt="Veriddan" className="h-7 w-7 rounded-md object-contain" />
+          <span className="font-cormorant text-[19px] text-graphite">Veriddan</span>
         </a>
         <span className="font-cormorant text-[16px] italic text-green">Empreenda com IA</span>
       </header>
@@ -549,7 +549,7 @@ function Contato({ e, dir, onSalvo }: { e: Estado; dir: "fwd" | "back"; onSalvo:
   return (
     <>
       <main className={`mx-auto w-full max-w-xl flex-1 px-5 pb-10 pt-9 emp-tela-${dir}`}>
-        <Titulo sub="Faltam poucas perguntas. Com o seu contato, a equipe da Veridian recebe o seu plano e fala com você pelo WhatsApp.">Para quem preparamos o seu plano?</Titulo>
+        <Titulo sub="Faltam poucas perguntas. Com o seu contato, a equipe da Veriddan recebe o seu plano e fala com você pelo WhatsApp.">Para quem preparamos o seu plano?</Titulo>
         <form id="emp-contato" onSubmit={enviar} className="mt-9 space-y-3">
           <Em i={0}><input className={campoCls} placeholder="Seu nome" autoComplete="name" value={nome} onChange={(x) => setNome(x.target.value)} /></Em>
           <Em i={1}><input className={campoCls} placeholder="WhatsApp com DDD" inputMode="tel" autoComplete="tel" value={whats} onChange={(x) => setWhats(x.target.value)} /></Em>
@@ -557,7 +557,7 @@ function Contato({ e, dir, onSalvo }: { e: Estado; dir: "fwd" | "back"; onSalvo:
           <input tabIndex={-1} aria-hidden className="hidden" value={site} onChange={(x) => setSite(x.target.value)} name="website" />
           <Em i={3}><p className="flex items-center justify-center gap-2 pt-2 text-[12.5px] text-muted">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="10" width="16" height="11" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
-            Seus dados ficam só com a Veridian e são usados apenas para este contato.
+            Seus dados ficam só com a Veriddan e são usados apenas para este contato.
           </p></Em>
           {erro && <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{erro}</p>}
         </form>
@@ -582,7 +582,7 @@ function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
     return (
       <Moldura>
         <main className="emp-tela-fwd mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-5 pb-16 pt-6">
-          <Em i={0}><p className="text-center font-cormorant text-[18px] italic text-muted">{primeiro ? `${primeiro}, este é o seu perfil na Veridian` : "Este é o seu perfil na Veridian"}</p></Em>
+          <Em i={0}><p className="text-center font-cormorant text-[18px] italic text-muted">{primeiro ? `${primeiro}, este é o seu perfil na Veriddan` : "Este é o seu perfil na Veriddan"}</p></Em>
           <Em i={1}><div className="relative mt-6 overflow-hidden rounded-[30px] bg-green-3 px-7 pb-8 pt-10 text-center text-white shadow-[0_60px_100px_-50px_rgba(11,74,55,.95)]">
             <div aria-hidden className="absolute inset-[10px] rounded-[22px] border border-gold/40" />
             <div aria-hidden className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(184,146,90,.45),transparent_65%)]" />
@@ -598,8 +598,8 @@ function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
               ))}
             </ul>
           </div></Em>
-          {d === "whatsapp" && <Em i={6}><p className="mt-6 text-center text-[15px] leading-relaxed text-text">Você foi pré-selecionado. O fundador da Veridian vai falar com você pessoalmente.</p></Em>}
-          {d === "agenda" && <Em i={6}><p className="mt-6 text-center text-[15px] leading-relaxed text-text">O próximo passo é uma conversa de 30 minutos para desenhar o seu caminho com a Veridian.</p></Em>}
+          {d === "whatsapp" && <Em i={6}><p className="mt-6 text-center text-[15px] leading-relaxed text-text">Você foi pré-selecionado. O fundador da Veriddan vai falar com você pessoalmente.</p></Em>}
+          {d === "agenda" && <Em i={6}><p className="mt-6 text-center text-[15px] leading-relaxed text-text">O próximo passo é uma conversa de 30 minutos para desenhar o seu caminho com a Veriddan.</p></Em>}
         </main>
         <Rodape>
           {d === "whatsapp"
@@ -620,7 +620,7 @@ function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
           <>
             <Titulo sub="Escolha um horário. A conversa é por vídeo, leva 30 minutos e o link chega no seu e-mail.">{`Vamos desenhar o seu caminho como ${pf.nome}`}</Titulo>
             <Em i={2}><div className="mt-8 overflow-hidden rounded-[22px] border border-line bg-white shadow-[0_30px_60px_-40px_rgba(20,24,26,.45)]">
-              <iframe src={`${AGENDA_URL}?gv=true`} title="Agendar conversa com a Veridian" className="h-[680px] w-full border-0" />
+              <iframe src={`${AGENDA_URL}?gv=true`} title="Agendar conversa com a Veriddan" className="h-[680px] w-full border-0" />
             </div></Em>
             <a href={AGENDA_URL} target="_blank" rel="noopener" onClick={() => registrar("agenda-aberta", e.utm)} className="mt-4 block text-center text-[13px] text-green underline decoration-line-2 underline-offset-4">Abrir a agenda em outra aba</a>
           </>
@@ -628,7 +628,7 @@ function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
 
         {d === "whatsapp" && (
           <div className="pt-6 text-center">
-            <Titulo sub="O fundador da Veridian vai falar com você pessoalmente.">Você foi pré-selecionado</Titulo>
+            <Titulo sub="O fundador da Veriddan vai falar com você pessoalmente.">Você foi pré-selecionado</Titulo>
             <Em i={2}><a href={whatsappUrl(msg)} target="_blank" rel="noopener" onClick={() => registrar("whatsapp", e.utm)} className={`${btn} mt-8 flex items-center justify-center`}>Falar com o fundador no WhatsApp</a></Em>
           </div>
         )}
@@ -647,7 +647,7 @@ function Fechamento({ e, onRefazer }: { e: Estado; onRefazer: () => void }) {
 
         <Em i={5}><div className="mt-6 flex items-center justify-center gap-6 text-[13px]">
           {d !== "avaliar" && <button type="button" onClick={() => setFase("perfil")} className="text-green underline decoration-line-2 underline-offset-4">Ver meu perfil</button>}
-          <a href="/pt" className="text-green underline decoration-line-2 underline-offset-4">Conhecer a Veridian</a>
+          <a href="/pt" className="text-green underline decoration-line-2 underline-offset-4">Conhecer a Veriddan</a>
           <button type="button" onClick={onRefazer} className="text-muted underline decoration-line-2 underline-offset-4">Refazer</button>
         </div></Em>
       </main>

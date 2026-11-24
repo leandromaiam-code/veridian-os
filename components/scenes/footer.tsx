@@ -11,13 +11,13 @@ export function Footer() {
             <div className="flex items-center gap-3 mb-6">
               <Image
                 src="/assets/logos/veridian-symbol.png"
-                alt="Veridian"
+                alt="Veriddan"
                 width={40}
                 height={40}
                 className="opacity-95"
               />
               <span className="font-cormorant font-light text-3xl text-parchment">
-                Veridian
+                Veriddan
               </span>
             </div>
             <p className="font-cormorant italic font-light text-seafoam text-xl leading-snug max-w-xs">
@@ -70,7 +70,7 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <span className="font-mono uppercase tracking-[0.22em] text-[10px] text-celadon/60">
-            © 2026 Veridian AI Studio · Built by 4Profit.AI
+            © 2026 Veriddan AI Studio · Built by 4Profit.AI
           </span>
           <span className="font-mono uppercase tracking-[0.22em] text-[10px] text-celadon/60">
             v0.1 · Forge edition
