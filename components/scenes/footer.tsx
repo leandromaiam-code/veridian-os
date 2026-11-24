@@ -57,7 +57,7 @@ export function Footer() {
               Contact
             </span>
             <ul className="flex flex-col gap-3 font-sans text-[15px] text-parchment/85">
-              <li><a className="hover:text-brass-light transition-colors" href="mailto:contato@veridian.ai">contato@veridian.ai</a></li>
+              <li><a className="hover:text-brass-light transition-colors" href="mailto:leandro@veriddan.com">leandro@veriddan.com</a></li>
               <li><a className="hover:text-brass-light transition-colors" href="https://linkedin.com">linkedin/leandromaia</a></li>
               <li className="text-celadon/60">São Paulo · Brasil</li>
             </ul>

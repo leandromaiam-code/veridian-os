@@ -774,8 +774,8 @@ function ContactCopy({ p, zone }: { p: number; zone: Z }) {
   );
 }
 
-const CASES_URL = "https://cases.4profitai.com";
-const VENTURES_URL = "https://ventures.4profitai.com";
+const CASES_URL = "https://cases.veriddan.com";
+const VENTURES_URL = "https://www.veriddan.com";
 
 function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (

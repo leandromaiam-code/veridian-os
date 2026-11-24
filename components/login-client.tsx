@@ -138,7 +138,7 @@ export default function LoginClient({ locale = "en" }: { locale?: Locale }) {
             type="email"
             value={email}
             onChange={setEmail}
-            placeholder="founder@veridian.ai"
+            placeholder="founder@empresa.com"
             autoFocus
           />
 
@@ -170,7 +170,7 @@ export default function LoginClient({ locale = "en" }: { locale?: Locale }) {
           <p className="mt-8 text-center font-mono uppercase tracking-[0.22em] text-[9px] text-parchment/45">
             {t.loginPage.newHere}{" "}
             <a
-              href="mailto:contato@veridian.ai?subject=Veriddan%20access"
+              href="mailto:leandro@veriddan.com?subject=Veriddan%20access"
               className="text-brass-light/85 hover:text-brass-light transition-colors"
             >
               {t.loginPage.request}

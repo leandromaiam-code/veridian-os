@@ -159,7 +159,7 @@ const en = {
     groupLabel: "Group",
     group: "Veriddan AI Studio & Ventures is a 4Profit AI group company.",
     footer: "© 2026 · Veriddan AI Studio & Ventures",
-    email: "contact@4profitai.com",
+    email: "leandro@veriddan.com",
   },
   soon: "soon",
   form: {
@@ -358,7 +358,7 @@ const pt: Dict = {
     groupLabel: "Grupo",
     group: "A Veriddan AI Studio & Ventures é uma empresa do grupo 4Profit AI.",
     footer: "© 2026 · Veriddan AI Studio & Ventures",
-    email: "contact@4profitai.com",
+    email: "leandro@veriddan.com",
   },
   soon: "em breve",
   form: {
