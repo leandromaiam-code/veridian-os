@@ -36,7 +36,7 @@ function Copiar({ texto }: { texto: string }) {
 
 function Codigo({ texto }: { texto: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-[#0f1714] px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]">
+    <div className="flex min-w-0 items-center gap-3 rounded-2xl bg-[#0f1714] px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]">
       <span className="select-none font-mono text-[13px] text-sage">$</span>
       <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap font-mono text-[13px] leading-6 text-white/95">{texto}</code>
       <Copiar texto={texto} />
@@ -172,7 +172,7 @@ export function SkillSelfLearning() {
         <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Skills</span>
       </header>
 
-      <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-6 sm:px-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-14 lg:pb-24 lg:pt-14">
+      <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,.85fr)] lg:gap-14 lg:pb-24 lg:pt-14">
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-green">Skill para o Claude Code · código aberto</p>
           <h1 className="mt-5 font-cormorant text-[44px] leading-[1.02] tracking-[-0.015em] text-graphite sm:text-[60px]">
@@ -190,7 +190,7 @@ export function SkillSelfLearning() {
           </ul>
           <p className="mt-8 text-[13.5px] text-muted">Em uso na Veriddan AI Studio desde outubro de 2026, cuidando das skills e da memória dos agentes que operam as nossas startups.</p>
         </div>
-        <div id="instalar" className="lg:sticky lg:top-8 lg:self-start">
+        <div id="instalar" className="min-w-0 lg:sticky lg:top-8 lg:self-start">
           <Portao />
         </div>
       </section>
