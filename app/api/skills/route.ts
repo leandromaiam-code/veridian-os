@@ -91,7 +91,16 @@ export async function POST(request: Request) {
     `${url}/rest/v1/vortex_leads?select=id,metadata,tags,instagram&company_id=eq.${COMPANY_ID}&email=eq.${encodeURIComponent(email)}&order=created_at.desc&limit=1`,
     { headers: h },
   ).then((x) => (x.ok ? x.json() : [])).catch(() => []);
-  const existente = Array.isArray(achou) && achou[0] ? achou[0] as { id: string; metadata: Record<string, unknown> | null; tags: string[] | null; instagram: string | null } : null;
+  type Lead = { id: string; metadata: Record<string, unknown> | null; tags: string[] | null; instagram: string | null; email?: string | null };
+  let existente = Array.isArray(achou) && achou[0] ? achou[0] as Lead : null;
+  if (!existente && ig) {
+    // quem veio do Direct de um post já é lead (origem instagram_post, criado pelo n8n): junta pelo @
+    const peloIg = await fetch(
+      `${url}/rest/v1/vortex_leads?select=id,metadata,tags,instagram,email&company_id=eq.${COMPANY_ID}&instagram=ilike.${encodeURIComponent(ig)}&order=created_at.asc&limit=1`,
+      { headers: h },
+    ).then((x) => (x.ok ? x.json() : [])).catch(() => []);
+    if (Array.isArray(peloIg) && peloIg[0]) existente = peloIg[0] as Lead;
+  }
 
   let ok = false;
   if (existente) {
@@ -102,6 +111,7 @@ export async function POST(request: Request) {
       tags: Array.from(new Set([...(existente.tags || []), "skills", tag])),
     };
     if (ig && !existente.instagram) patch.instagram = ig;
+    if (!existente.email) patch.email = email;
     const res = await fetch(`${url}/rest/v1/vortex_leads?id=eq.${existente.id}`, { method: "PATCH", headers: { ...h, Prefer: "return=minimal" }, body: JSON.stringify(patch) }).catch(() => null);
     ok = !!res && res.ok;
   } else {
