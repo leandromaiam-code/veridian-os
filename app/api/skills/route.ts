@@ -39,6 +39,19 @@ const SKILLS: Record<string, { nome: string; liberar: (email: string) => Liberac
       };
     },
   },
+  "especificacao-de-produto": {
+    nome: "Skill de especificação de produto para o Claude Code",
+    liberar: (email) => {
+      const url = linkDeDownload("especificacao-de-produto", email);
+      return {
+        download: url,
+        comandos: {
+          mac: `curl -fsSL "${url}" -o /tmp/especificacao.zip && mkdir -p ~/.claude/skills && unzip -o /tmp/especificacao.zip -d ~/.claude/skills`,
+          windows: `iwr "${url}" -OutFile "$env:TEMP\\especificacao.zip"; Expand-Archive "$env:TEMP\\especificacao.zip" "$HOME\\.claude\\skills" -Force`,
+        },
+      };
+    },
+  },
 };
 
 const limpa = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
