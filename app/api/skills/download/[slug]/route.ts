@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { conferir } from "@/lib/skills/download";
 import { PLANEJAMENTO_ZIP_B64 } from "@/lib/skills/planejamento-de-conteudo-zip";
-import { ESPECIFICACAO_ZIP_B64 } from "@/lib/skills/especificacao-de-produto-zip";
+import { MVP_PLAN_AGENT_ZIP_B64 } from "@/lib/skills/mvp-plan-agent-zip";
 
 /* GET /api/skills/download/<slug>?e=&k= — entrega o .zip da skill para o link
  * assinado que a página mostra depois do e-mail. */
 
 const ARQUIVOS: Record<string, { b64: string; nome: string }> = {
   "planejamento-de-conteudo": { b64: PLANEJAMENTO_ZIP_B64, nome: "planejamento-de-conteudo.zip" },
-  "especificacao-de-produto": { b64: ESPECIFICACAO_ZIP_B64, nome: "especificacao-de-produto.zip" },
+  "mvp-plan-agent": { b64: MVP_PLAN_AGENT_ZIP_B64, nome: "mvp-plan-agent.zip" },
 };
 
 export async function GET(request: Request, ctx: { params: Promise<{ slug: string }> }) {

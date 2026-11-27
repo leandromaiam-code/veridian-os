@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/* Página pública do guia de planejamento de conteúdo com o Claude Code. O download
+/* Página pública da skill mvp-plan-agent. O download
  * (link assinado) e os comandos só aparecem depois do e-mail: POST /api/skills grava
  * o lead no Vortex. O link do Direct do Instagram traz ?ig=<usuario>. */
 
-const SLUG = "especificacao-de-produto";
+const SLUG = "mvp-plan-agent";
 const CHAVE = "veriddan-skill-" + SLUG;
 const LOGO = "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/veridian/logo.png";
 const PEDIDO =
@@ -109,7 +109,7 @@ function Portao() {
         </div>
         <div className="mt-3"><Codigo texto={liberado.comandos[so]} /></div>
         <p className="mt-3 text-[13px] leading-relaxed text-muted">
-          Baixou o .zip? Descompacte a pasta <span className="font-mono text-graphite">especificacao-de-produto</span> dentro de <span className="font-mono text-graphite">{so === "mac" ? "~/.claude/skills" : "C:\\Users\\<você>\\.claude\\skills"}</span>.
+          Baixou o .zip? Descompacte a pasta <span className="font-mono text-graphite">mvp-plan-agent</span> dentro de <span className="font-mono text-graphite">{so === "mac" ? "~/.claude/skills" : "C:\\Users\\<você>\\.claude\\skills"}</span>.
         </p>
         <a href="#como-usar" className="mt-5 inline-flex text-[14px] font-medium text-green underline decoration-green/30 underline-offset-4 hover:decoration-green">Ver como usar ↓</a>
       </div>
@@ -164,7 +164,7 @@ const PERGUNTAS: [string, string][] = [
   ["Ela já constrói o produto?", "Ela entrega a especificação e, no fim, oferece começar a construir a Etapa 0 seguindo o documento. Você decide."],
 ];
 
-export function SkillEspecificacao() {
+export function SkillMvpPlanAgent() {
   return (
     <main className="min-h-screen bg-studio text-graphite">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6 sm:px-8">
@@ -178,7 +178,7 @@ export function SkillEspecificacao() {
 
       <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,.85fr)] lg:gap-14 lg:pb-24 lg:pt-14">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-green">Skill para o Claude Code</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-green">Skill para o Claude Code · mvp-plan-agent</p>
           <h1 className="mt-5 font-cormorant text-[44px] leading-[1.02] tracking-[-0.015em] text-graphite sm:text-[58px]">
             Da ideia à especificação que o Claude Code constrói.
           </h1>
@@ -232,7 +232,7 @@ export function SkillEspecificacao() {
           <div className="rounded-3xl border border-line bg-surface p-6">
             <span className="font-mono text-[12px] text-muted">03</span>
             <h3 className="mt-3 font-cormorant text-[26px] leading-tight">Conte a ideia</h3>
-            <p className="mt-2 text-[14.5px] leading-[1.65] text-text">Diga em uma frase o que o produto faz e para quem, ou chame direto com <span className="font-mono text-[13px] text-graphite">/especificacao-de-produto</span>. Depois é só responder às perguntas.</p>
+            <p className="mt-2 text-[14.5px] leading-[1.65] text-text">Diga em uma frase o que o produto faz e para quem, ou chame direto com <span className="font-mono text-[13px] text-graphite">/mvp-plan-agent</span>. Depois é só responder às perguntas.</p>
           </div>
         </div>
 

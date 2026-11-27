@@ -39,15 +39,15 @@ const SKILLS: Record<string, { nome: string; liberar: (email: string) => Liberac
       };
     },
   },
-  "especificacao-de-produto": {
-    nome: "Skill de especificação de produto para o Claude Code",
+  "mvp-plan-agent": {
+    nome: "mvp-plan-agent, skill de especificação de produto para o Claude Code",
     liberar: (email) => {
-      const url = linkDeDownload("especificacao-de-produto", email);
+      const url = linkDeDownload("mvp-plan-agent", email);
       return {
         download: url,
         comandos: {
-          mac: `curl -fsSL "${url}" -o /tmp/especificacao.zip && mkdir -p ~/.claude/skills && unzip -o /tmp/especificacao.zip -d ~/.claude/skills`,
-          windows: `iwr "${url}" -OutFile "$env:TEMP\\especificacao.zip"; Expand-Archive "$env:TEMP\\especificacao.zip" "$HOME\\.claude\\skills" -Force`,
+          mac: `curl -fsSL "${url}" -o /tmp/mvp-plan-agent.zip && mkdir -p ~/.claude/skills && unzip -o /tmp/mvp-plan-agent.zip -d ~/.claude/skills`,
+          windows: `iwr "${url}" -OutFile "$env:TEMP\\mvp-plan-agent.zip"; Expand-Archive "$env:TEMP\\mvp-plan-agent.zip" "$HOME\\.claude\\skills" -Force`,
         },
       };
     },

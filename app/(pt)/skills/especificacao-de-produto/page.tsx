@@ -1,20 +1,9 @@
-import type { Metadata } from "next";
-import { SkillEspecificacao } from "@/components/skills/especificacao-de-produto";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Especificação de produto com o Claude Code — skill grátis · Veriddan",
-  description:
-    "Skill grátis para o Claude Code: transforma a sua ideia de app, site ou SaaS numa especificação completa, com MVP, regras, telas, dados e roadmap em etapas.",
-  alternates: { canonical: "/skills/especificacao-de-produto" },
-  openGraph: {
-    title: "Da ideia à especificação que o Claude Code constrói",
-    description: "Perguntas curtas, sem jargão, e no fim um documento com MVP, regras, telas e roadmap em etapas.",
-    url: "https://studio.veriddan.com/skills/especificacao-de-produto",
-    locale: "pt_BR",
-    type: "website",
-  },
-};
-
-export default function Page() {
-  return <SkillEspecificacao />;
+// A skill passou a se chamar mvp-plan-agent; o endereço antigo leva para o novo, com o ?ig= junto.
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const q = new URLSearchParams();
+  for (const [k, v] of Object.entries(await searchParams)) if (typeof v === "string") q.set(k, v);
+  const s = q.toString();
+  redirect("/skills/mvp-plan-agent" + (s ? "?" + s : ""));
 }
