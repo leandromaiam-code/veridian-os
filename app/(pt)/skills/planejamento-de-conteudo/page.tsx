@@ -1,20 +1,9 @@
-import type { Metadata } from "next";
-import { SkillPlanejamento } from "@/components/skills/planejamento-de-conteudo";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Planejamento de conteúdo com o Claude Code — guia e skill · Veriddan",
-  description:
-    "Guia e skill grátis para o Claude Code planejar o seu conteúdo na ordem certa: público, dor ou desejo, objetivo, estratégia, tática, tema, headline, conteúdo e pesquisa.",
-  alternates: { canonical: "/skills/planejamento-de-conteudo" },
-  openGraph: {
-    title: "Planejamento de conteúdo com o Claude Code",
-    description: "Guia e skill grátis: calendário em tabela, headlines com nota e roteiros de Reels, na ordem certa.",
-    url: "https://studio.veriddan.com/skills/planejamento-de-conteudo",
-    locale: "pt_BR",
-    type: "website",
-  },
-};
-
-export default function Page() {
-  return <SkillPlanejamento />;
+// A skill passou a se chamar content-planner-agent; o endereço antigo leva para o novo, com o ?ig= junto.
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const q = new URLSearchParams();
+  for (const [k, v] of Object.entries(await searchParams)) if (typeof v === "string") q.set(k, v);
+  const s = q.toString();
+  redirect("/skills/content-planner-agent" + (s ? "?" + s : ""));
 }

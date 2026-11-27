@@ -150,7 +150,7 @@ const ORDEM: [string, string][] = [
 ];
 
 const SAI: [string, string][] = [
-  ["docs/ESPECIFICACAO.md", "Um documento em 13 seções que qualquer pessoa entende e o Claude Code consegue seguir."],
+  ["docs/ESPECIFICACAO.md", "Em inglês, docs/SPEC.md. Um documento em 13 seções que qualquer pessoa entende e o Claude Code consegue seguir."],
   ["Escopo do MVP fechado", "O que faz, o que não faz de propósito e o número que define sucesso."],
   ["Regras no código desde o início", "Os limites que você escolheu entram já na Etapa 0."],
   ["Roadmap testável", "Cada etapa com entrega, como testar e o que não faz."],
@@ -266,6 +266,7 @@ export function SkillMvpPlanAgent() {
             {[
               ["SKILL.md", "Como a conversa é conduzida: os blocos de perguntas, as regras e o roadmap em etapas."],
               ["modelo-especificacao.md", "O modelo do documento final, em 13 seções, do resumo em uma frase ao histórico de decisões."],
+              ["spec-template.md", "O mesmo modelo em inglês, usado quando a conversa é em inglês."],
             ].map(([f, d]) => (
               <div key={f}>
                 <p className="font-mono text-[13px] text-graphite">{f}</p>

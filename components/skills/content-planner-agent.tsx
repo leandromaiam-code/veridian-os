@@ -2,15 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/* Página pública do guia de planejamento de conteúdo com o Claude Code. O download
+/* Página pública da skill content-planner-agent (planejamento de conteúdo com o Claude Code). O download
  * (link assinado) e os comandos só aparecem depois do e-mail: POST /api/skills grava
  * o lead no Vortex. O link do Direct do Instagram traz ?ig=<usuario>. */
 
-const SLUG = "planejamento-de-conteudo";
+const SLUG = "content-planner-agent";
 const CHAVE = "veriddan-skill-" + SLUG;
 const LOGO = "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces/veridian/logo.png";
 const PEDIDO =
-  "Use a skill planejamento-de-conteudo e monte um plano de 2 semanas para o Instagram da minha clínica de fisioterapia. Público: mulheres de 35 a 55 anos com dor nas costas. Objetivo: crescer. Quatro posts por semana, com pelo menos dois Reels.";
+  "Use a skill content-planner-agent e monte um plano de 2 semanas para o Instagram da minha clínica de fisioterapia. Público: mulheres de 35 a 55 anos com dor nas costas. Objetivo: crescer. Quatro posts por semana, com pelo menos dois Reels.";
 
 type Liberado = { download: string; comandos: { mac: string; windows: string } };
 
@@ -109,7 +109,7 @@ function Portao() {
         </div>
         <div className="mt-3"><Codigo texto={liberado.comandos[so]} /></div>
         <p className="mt-3 text-[13px] leading-relaxed text-muted">
-          Baixou o .zip? Descompacte a pasta <span className="font-mono text-graphite">planejamento-de-conteudo</span> dentro de <span className="font-mono text-graphite">{so === "mac" ? "~/.claude/skills" : "C:\\Users\\<você>\\.claude\\skills"}</span>.
+          Baixou o .zip? Descompacte a pasta <span className="font-mono text-graphite">content-planner-agent</span> dentro de <span className="font-mono text-graphite">{so === "mac" ? "~/.claude/skills" : "C:\\Users\\<você>\\.claude\\skills"}</span>.
         </p>
         <a href="#como-usar" className="mt-5 inline-flex text-[14px] font-medium text-green underline decoration-green/30 underline-offset-4 hover:decoration-green">Ver como usar ↓</a>
       </div>
@@ -164,7 +164,7 @@ const PERGUNTAS: [string, string][] = [
   ["Posso usar fora do Claude Code?", "Os arquivos são texto. Dá para colar o SKILL.md como instrução em outra IA, mas a skill foi feita para o Claude Code, que a carrega sozinho quando o pedido combina."],
 ];
 
-export function SkillPlanejamento() {
+export function SkillContentPlannerAgent() {
   return (
     <main className="min-h-screen bg-studio text-graphite">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6 sm:px-8">
@@ -178,10 +178,13 @@ export function SkillPlanejamento() {
 
       <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,.85fr)] lg:gap-14 lg:pb-24 lg:pt-14">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-green">Guia + skill para o Claude Code</p>
-          <h1 className="mt-5 font-cormorant text-[44px] leading-[1.02] tracking-[-0.015em] text-graphite sm:text-[58px]">
-            Planejamento de conteúdo com o Claude Code.
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-green">Skill para o Claude Code</p>
+          <h1 className="mt-5 font-cormorant text-[48px] leading-[1.02] tracking-[-0.015em] text-graphite sm:text-[64px]">
+            content-planner-agent
           </h1>
+          <p className="mt-4 max-w-[30ch] font-cormorant text-[26px] leading-[1.2] text-graphite sm:text-[30px]">
+            A skill do Claude Code que planeja o seu conteúdo na ordem certa, do público ao post.
+          </p>
           <p className="mt-6 max-w-[54ch] text-[17px] leading-[1.65] text-text">
             Pedir para a IA &quot;melhorar o texto&quot; deixa o texto bonito e o plano vazio. Esta skill faz o Claude Code planejar na ordem certa: começa por quem você quer alcançar e o que essa pessoa quer, e só no fim escreve a headline e o post.
           </p>
@@ -261,10 +264,10 @@ export function SkillPlanejamento() {
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold">O que vem no pacote</p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              ["SKILL.md", "O método completo, etapa por etapa, e as regras da peça pública."],
+              ["SKILL.md", "O método completo, etapa por etapa, e as regras da peça pública. Responde em português ou inglês."],
               ["headlines-e-qualidade.md", "Os dez critérios de nota e a regra de escolha da headline."],
               ["modelos-e-reels.md", "17 modelos de composição e como dirigir um Reel."],
-              ["estrategia-e-ctas.md", "Fases da marca, CTA por objetivo e o que medir."],
+              ["estrategia-e-ctas.md", "Fases da marca, CTA por objetivo e o que medir. As referências vêm em português e em inglês."],
             ].map(([f, d]) => (
               <div key={f}>
                 <p className="font-mono text-[13px] text-graphite">{f}</p>

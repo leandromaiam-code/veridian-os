@@ -26,15 +26,15 @@ const SKILLS: Record<string, { nome: string; liberar: (email: string) => Liberac
       ],
     }),
   },
-  "planejamento-de-conteudo": {
-    nome: "Guia de planejamento de conteúdo com o Claude Code",
+  "content-planner-agent": {
+    nome: "content-planner-agent, skill de planejamento de conteúdo para o Claude Code",
     liberar: (email) => {
-      const url = linkDeDownload("planejamento-de-conteudo", email);
+      const url = linkDeDownload("content-planner-agent", email);
       return {
         download: url,
         comandos: {
-          mac: `curl -fsSL "${url}" -o /tmp/planejamento.zip && mkdir -p ~/.claude/skills && unzip -o /tmp/planejamento.zip -d ~/.claude/skills`,
-          windows: `iwr "${url}" -OutFile "$env:TEMP\\planejamento.zip"; Expand-Archive "$env:TEMP\\planejamento.zip" "$HOME\\.claude\\skills" -Force`,
+          mac: `curl -fsSL "${url}" -o /tmp/content-planner-agent.zip && mkdir -p ~/.claude/skills && unzip -o /tmp/content-planner-agent.zip -d ~/.claude/skills`,
+          windows: `iwr "${url}" -OutFile "$env:TEMP\\content-planner-agent.zip"; Expand-Archive "$env:TEMP\\content-planner-agent.zip" "$HOME\\.claude\\skills" -Force`,
         },
       };
     },
