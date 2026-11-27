@@ -109,7 +109,7 @@ function Portao() {
         </div>
         <div className="mt-3"><Codigo texto={liberado.comandos[so]} /></div>
         <p className="mt-3 text-[13px] leading-relaxed text-muted">
-          Baixou o .zip? Descompacte a pasta <span className="font-mono text-graphite">mvp-plan-agent</span> dentro de <span className="font-mono text-graphite">{so === "mac" ? "~/.claude/skills" : "C:\\Users\\<você>\\.claude\\skills"}</span>.
+          Baixou o .zip? Descompacte a pasta <span className="font-mono text-graphite">mvp-plan-agent</span> dentro de <span className="font-mono text-graphite">{so === "mac" ? "~/.claude/skills" : "C:\\Users\\<você>\\.claude\\skills"}</span>. {so === "mac" ? "No Finder, Cmd+Shift+. mostra a pasta oculta .claude. " : ""}Depois feche e abra o Claude Code de novo.
         </p>
         <a href="#como-usar" className="mt-5 inline-flex text-[14px] font-medium text-green underline decoration-green/30 underline-offset-4 hover:decoration-green">Ver como usar ↓</a>
       </div>
@@ -225,7 +225,7 @@ export function SkillMvpPlanAgent() {
           <div className="rounded-3xl border border-line bg-surface p-6">
             <span className="font-mono text-[12px] text-muted">01</span>
             <h3 className="mt-3 font-cormorant text-[26px] leading-tight">Instale</h3>
-            <p className="mt-2 text-[14.5px] leading-[1.65] text-text">Libere a skill acima e rode o comando no terminal, ou baixe o .zip e descompacte a pasta em <span className="font-mono text-[13px] text-graphite">~/.claude/skills</span>. Não precisa reiniciar nada.</p>
+            <p className="mt-2 text-[14.5px] leading-[1.65] text-text">Libere a skill acima e rode o comando no terminal, ou baixe o .zip e descompacte a pasta em <span className="font-mono text-[13px] text-graphite">~/.claude/skills</span>. Depois de instalar, feche e abra o Claude Code de novo.</p>
           </div>
           <div className="rounded-3xl border border-line bg-surface p-6">
             <span className="font-mono text-[12px] text-muted">02</span>
