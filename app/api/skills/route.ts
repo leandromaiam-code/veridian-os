@@ -1,25 +1,43 @@
 import { NextResponse } from "next/server";
+import { linkDeDownload } from "@/lib/skills/download";
 
 /* -----------------------------------------------------------------------------
- * POST /api/skills — libera o comando de instalação de uma skill depois do e-mail.
+ * POST /api/skills — libera uma skill depois do e-mail.
  *
  * Cria (ou atualiza) o lead no Growth Project "Veriddan AI Studio" do Vortex
  * (`vortex_leads`), com a tag da skill e o @ do Instagram quando vier no link
- * (?ig=). Só depois de gravar devolve os comandos. Chaves só no servidor:
- * LEADS_SUPABASE_URL e LEADS_SUPABASE_SERVICE_KEY.
+ * (?ig=). Só depois de gravar devolve o que a página mostra (comandos ou link
+ * de download assinado). Chaves só no servidor: LEADS_SUPABASE_URL e
+ * LEADS_SUPABASE_SERVICE_KEY.
  * --------------------------------------------------------------------------- */
 
 const COMPANY_ID = process.env.EMPREENDA_VORTEX_COMPANY_ID || "b4d016b3-3747-4259-8a5c-27522a865381";
 const TENANT_ID = process.env.EMPREENDA_VORTEX_TENANT_ID || "e3155f9e-989c-4705-87f7-19a00d8fae10";
 
-const SKILLS: Record<string, { nome: string; repo: string; comandos: string[] }> = {
+type Liberacao = Record<string, unknown>;
+const SKILLS: Record<string, { nome: string; liberar: (email: string) => Liberacao }> = {
   "self-learning-agent": {
     nome: "self-learning-agent",
-    repo: "https://github.com/leandromaiam-code/self-learning-agent",
-    comandos: [
-      "npx skills add leandromaiam-code/self-learning-agent",
-      "node ~/.claude/skills/self-learning-agent/scripts/learn.js plan",
-    ],
+    liberar: () => ({
+      repo: "https://github.com/leandromaiam-code/self-learning-agent",
+      comandos: [
+        "npx skills add leandromaiam-code/self-learning-agent",
+        "node ~/.claude/skills/self-learning-agent/scripts/learn.js plan",
+      ],
+    }),
+  },
+  "planejamento-de-conteudo": {
+    nome: "Guia de planejamento de conteúdo com o Claude Code",
+    liberar: (email) => {
+      const url = linkDeDownload("planejamento-de-conteudo", email);
+      return {
+        download: url,
+        comandos: {
+          mac: `curl -fsSL "${url}" -o /tmp/planejamento.zip && mkdir -p ~/.claude/skills && unzip -o /tmp/planejamento.zip -d ~/.claude/skills`,
+          windows: `iwr "${url}" -OutFile "$env:TEMP\\planejamento.zip"; Expand-Archive "$env:TEMP\\planejamento.zip" "$HOME\\.claude\\skills" -Force`,
+        },
+      };
+    },
   },
 };
 
@@ -32,9 +50,9 @@ export async function POST(request: Request) {
   const slug = limpa(body.skill, 60);
   const skill = SKILLS[slug];
   if (!skill) return NextResponse.json({ ok: false, error: "skill_not_found" }, { status: 404 });
-  if (limpa(body.website, 200)) return NextResponse.json({ ok: true, ...skill }); // honeypot
 
   const email = limpa(body.email, 160).toLowerCase();
+  if (limpa(body.website, 200)) return NextResponse.json({ ok: true, ...skill.liberar(email || "x@x.invalid") }); // honeypot
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     return NextResponse.json({ ok: false, error: "invalid_email" }, { status: 400 });
   }
@@ -83,7 +101,7 @@ export async function POST(request: Request) {
         email, instagram: ig, source: "website", bucket: "captacao", score: 0,
         automation_paused: true,
         tags: ["skills", tag, ig ? "instagram" : null, teste ? "teste" : null].filter(Boolean),
-        notes: `Liberou a skill ${skill.nome} em studio.veriddan.com/skills/${slug}${ig ? ` (veio do Instagram, @${ig})` : ""}.`,
+        notes: `Liberou ${skill.nome} em studio.veriddan.com/skills/${slug}${ig ? ` (veio do Instagram, @${ig})` : ""}.`,
         metadata: { origem: `skill:${slug}`, landing_page: `https://studio.veriddan.com/skills/${slug}`, skills: { [slug]: registro } },
       }),
     }).catch(() => null);
@@ -91,5 +109,5 @@ export async function POST(request: Request) {
   }
   if (!ok) return NextResponse.json({ ok: false, error: "storage_failed" }, { status: 503 });
 
-  return NextResponse.json({ ok: true, ...skill });
+  return NextResponse.json({ ok: true, nome: skill.nome, ...skill.liberar(email) });
 }
