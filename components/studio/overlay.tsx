@@ -17,7 +17,7 @@ type Session = { email: string } | null;
 
 const LOGO_BASE =
   "https://heqrvpoebkmliwnslxpi.supabase.co/storage/v1/object/public/brand-assets/workspaces";
-const VERIDIAN_LOGO = "/assets/logos/veridian-symbol.png";
+const VERIDIAN_LOGO = "/assets/logos/veriddan-mark.png";
 
 export function Overlay() {
   const [p, setP] = useState(0);
