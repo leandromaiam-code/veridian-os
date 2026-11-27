@@ -178,10 +178,13 @@ export function SkillMvpPlanAgent() {
 
       <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,.85fr)] lg:gap-14 lg:pb-24 lg:pt-14">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-green">Skill para o Claude Code · mvp-plan-agent</p>
-          <h1 className="mt-5 font-cormorant text-[44px] leading-[1.02] tracking-[-0.015em] text-graphite sm:text-[58px]">
-            Da ideia à especificação que o Claude Code constrói.
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-green">Skill para o Claude Code</p>
+          <h1 className="mt-5 font-cormorant text-[48px] leading-[1.02] tracking-[-0.015em] text-graphite sm:text-[64px]">
+            mvp-plan-agent
           </h1>
+          <p className="mt-4 max-w-[30ch] font-cormorant text-[26px] leading-[1.2] text-graphite sm:text-[30px]">
+            A skill do Claude Code que transforma sua ideia em um plano pronto para construir, etapa por etapa.
+          </p>
           <p className="mt-6 max-w-[54ch] text-[17px] leading-[1.65] text-text">
             Pedir &quot;cria um app que faz X&quot; dá um protótipo bonito e um produto sem rumo. Esta skill conduz você por perguntas curtas, uma de cada vez, e entrega a especificação completa: público, MVP, regras, telas, dados e um roadmap em etapas que o Claude Code segue para construir.
           </p>
